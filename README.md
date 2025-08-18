@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Food Court Menus
+
+Fast, friendly viewer for weekly mess/food-court menus with time-aware highlighting in Indian Standard Time (IST). Drop weekly JSON files in `src/data/weeks/` and the site discovers them automatically.
+
+### Highlights
+- Time-aware: detects current/upcoming meal using device time converted to IST and auto-focuses it
+- Minimal “playing card” UI with tasteful icons for Breakfast/Lunch/Snacks/Dinner
+- Horizontal carousel: highlights the primary meal, dims the rest, auto-scrolls to the current one
+- Inline navigation: click Year / Week / Day in-place to switch context
+- Fully responsive for mobile, tablets, and laptops
+
+### Tech
+- Next.js (App Router), TypeScript
+- Tailwind CSS v4
+- shadcn-inspired components (Cards)
+- lucide-react icons
+
+---
 
 ## Getting Started
 
-First, run the development server:
+Prereqs: Node 18+ and Bun.
 
+Development server:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun run dev
+```
+Visit `http://localhost:3000`.
+
+Production build & start:
+```bash
+bun run build
+bun run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Lint:
+```bash
+bun run lint
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Data: Adding Weekly Menus (Main Contribution)
 
-## Learn More
+The main way to contribute is to add a weekly JSON file. No code changes are required.
 
-To learn more about Next.js, take a look at the following resources:
+1) Create a file in `src/data/weeks/` named:
+```
+YYYY-MM-DD_to_YYYY-MM-DD.json
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2) Use this shape (example):
+```json
+{
+  "foodCourt": "Food Court 2",
+  "week": "August 18 - August 24, 2025",
+  "menu": {
+    "2025-08-18": {
+      "day": "Monday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": ["…"]
+        },
+        "lunch": { "name": "…", "startTime": "11:45", "endTime": "14:15", "items": ["…"] },
+        "snacks": { "name": "…", "startTime": "16:30", "endTime": "18:00", "items": ["…"] },
+        "dinner": { "name": "…", "startTime": "19:00", "endTime": "21:30", "items": ["…"] }
+      }
+    }
+  }
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Notes:
+- Day keys inside `menu` are dates in `YYYY-MM-DD`.
+- Times are `HH:mm` in IST.
+- Meal keys supported: `breakfast`, `lunch`, `snacks`, `dinner`.
 
-## Deploy on Vercel
+After saving the file, the site will list it automatically in the Year/Week selectors and in `/week/[id]`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+- `src/app/` — pages (home, weeks, per-week page) and API routes for week discovery
+- `src/components/` — UI components (cards, carousel, inline selectors)
+- `src/data/weeks/` — weekly JSON files (auto-discovered)
+- `src/lib/` — types and IST/time utilities
+
+---
+
+## Future Work (Scope)
+- Adding support for other messes
+- User-defined local input for their own mess with a client-side OCR pipeline
+
+---
+
+## Deployment
+Any Node-compatible host will work. Build with `bun run build` and serve with `bun run start`.
+
