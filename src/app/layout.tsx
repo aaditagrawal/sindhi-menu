@@ -24,10 +24,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script defer src="https://stat.sys256.com/script.js"></script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <footer className="px-4 py-4 text-xs text-muted-foreground">
+          <div className="mx-auto max-w-4xl">
+            Contribute at
+            {" "}
+            <a
+              href="https://github.com/aaditagrawal/fc-menu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              github.com/aaditagrawal/fc-menu
+            </a>
+          </div>
+        </footer>
       </body>
     </html>
   );
