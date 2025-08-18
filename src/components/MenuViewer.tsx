@@ -27,7 +27,6 @@ export function MenuViewer({
   React.useEffect(() => {
     fetchWeekIds().then(setAllWeekIds).catch(() => {});
   }, []);
-
   const [dateKey, setDateKey] = React.useState<string>(() => {
     const ptr = findCurrentOrUpcomingMeal(initialWeek);
     return ptr?.dateKey ?? Object.keys(initialWeek.menu)[0];
@@ -41,7 +40,7 @@ export function MenuViewer({
       const latestForYear = getLatestWeekIdForYearFromList(allWeekIds, year);
       if (latestForYear) setWeekId(latestForYear);
     }
-  }, [year, allWeekIds]);
+  }, [year, allWeekIds, weekId]);
 
   // When weekId changes, either route (week mode) or load locally (home mode)
   React.useEffect(() => {
@@ -55,7 +54,7 @@ export function MenuViewer({
       const ptr = findCurrentOrUpcomingMeal(w);
       setDateKey(ptr?.dateKey ?? Object.keys(w.menu)[0]);
     });
-  }, [weekId]);
+  }, [weekId, initialWeekId, router, routingMode]);
 
   // Ensure dateKey is valid for current week
   React.useEffect(() => {

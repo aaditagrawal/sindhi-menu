@@ -1,6 +1,8 @@
 import { getLatestWeekId, getWeekMenu } from "@/data/weeks";
 import { MenuViewer } from "@/components/MenuViewer";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const weekId = getLatestWeekId();
   const week = await getWeekMenu(weekId);
@@ -11,7 +13,7 @@ export default async function Home() {
         <p className="text-muted-foreground">{week.week}</p>
       </header>
       <main className="mx-auto max-w-4xl space-y-6">
-        <MenuViewer initialWeekId={weekId as any} initialWeek={week} routingMode="home" />
+        <MenuViewer initialWeekId={weekId} initialWeek={week} routingMode="home" />
       </main>
     </div>
   );

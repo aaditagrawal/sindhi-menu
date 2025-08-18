@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { listWeekIds } from "@/data/weeks/server";
+import { getAllWeeks } from "@/data/weeks";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const ids = await listWeekIds();
-  return NextResponse.json({ weekIds: ids });
+  const weekIds = getAllWeeks();
+  return NextResponse.json({ weekIds });
 }
 
 
