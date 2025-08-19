@@ -2,6 +2,10 @@
 
 Fast, friendly viewer for weekly mess/food-court menus with time-aware highlighting in Indian Standard Time (IST). Drop weekly JSON files in `src/data/weeks/` and the site discovers them automatically.
 
+## Contributions, Please
+
+Data is crowdsourced, so we look forward to community contributions. Manually might be tedious, so you can ask any LLM (with vision) that you use - like Gemini, ChatGPT, Claude etc. - to convert the data into the JSON spec listed below.
+
 ### Highlights
 - Time-aware: detects current/upcoming meal using device time converted to IST and auto-focuses it
 - Minimal “playing card” UI with tasteful icons for Breakfast/Lunch/Snacks/Dinner

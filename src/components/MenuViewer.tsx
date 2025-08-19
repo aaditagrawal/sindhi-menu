@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import type { MealKey, WeekMenu } from "@/lib/types";
-import { findCurrentOrUpcomingMeal } from "@/lib/date";
+import { findCurrentOrUpcomingMeal, pickHighlightMealForDay } from "@/lib/date";
 import { InlineSelect } from "@/components/InlineSelect";
 import { MealCarousel } from "@/components/MealCarousel";
 import { getWeekMenuClient, type WeekId, fetchWeekIds, getAllYearsFromList, getWeeksByYearFromList, getLatestWeekIdForYearFromList } from "@/data/weeks/client";
@@ -78,9 +78,9 @@ export function MenuViewer({
       title: k[0].toUpperCase() + k.slice(1),
     }));
 
-  const highlightKey = (pointer && pointer.dateKey === effectiveDateKey
-    ? pointer.mealKey
-    : (meals[0]?.key ?? "breakfast")) as MealKey;
+  const picked = pickHighlightMealForDay(week, effectiveDateKey);
+  const highlightKey = (picked?.mealKey ?? (meals[0]?.key ?? "breakfast")) as MealKey;
+  const isPrimaryUpcoming = Boolean(picked?.isPrimaryUpcoming);
 
   const yearOptions = getAllYearsFromList(allWeekIds).map((y) => ({ label: y, value: y }));
   const weekOptions = getWeeksByYearFromList(allWeekIds, year).map((id) => ({ label: id, value: id }));
@@ -113,7 +113,7 @@ export function MenuViewer({
         />
       </div>
 
-      <MealCarousel meals={meals} highlightKey={highlightKey} />
+      <MealCarousel meals={meals} highlightKey={highlightKey} isPrimaryUpcoming={isPrimaryUpcoming} />
     </div>
   );
 }

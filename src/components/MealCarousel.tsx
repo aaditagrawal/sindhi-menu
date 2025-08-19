@@ -9,9 +9,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export function MealCarousel({
   meals,
   highlightKey,
+  isPrimaryUpcoming,
 }: {
   meals: Array<{ key: MealKey; meal: Meal; timeRange: string; title: string }>;
   highlightKey: MealKey;
+  isPrimaryUpcoming: boolean;
 }) {
   const itemRefs = React.useRef<Array<HTMLDivElement | null>>([]);
   const [tilt, setTilt] = React.useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -91,6 +93,7 @@ export function MealCarousel({
                 meal={meal}
                 mealKey={key}
                 highlight={isActive}
+                primaryUpcoming={isActive && isPrimaryUpcoming}
                 tilt={tilt}
               />
             </div>

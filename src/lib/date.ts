@@ -87,4 +87,55 @@ export function findCurrentOrUpcomingMeal(
   return null;
 }
 
+export function pickHighlightMealForDay(
+  week: WeekMenu,
+  dateKey: string,
+  nowIST: Date = getISTNow()
+): { mealKey: MealKey; isPrimaryUpcoming: boolean } | null {
+  const orderedMeals: MealKey[] = ["breakfast", "lunch", "snacks", "dinner"];
+  const dateKeys = sortDateKeysAsc(Object.keys(week.menu));
+  const todayKey = formatDateKey(nowIST);
+  const day = week.menu[dateKey];
+  if (!day) return null;
+
+  // Today: ongoing -> upcoming -> last
+  if (dateKey === todayKey) {
+    const minutes = getTimeOfDayMinutes(nowIST);
+    for (const mk of orderedMeals) {
+      const m = day.meals[mk];
+      if (!m) continue;
+      const s = parseTimeToMinutes(m.startTime);
+      const e = parseTimeToMinutes(m.endTime);
+      if (minutes >= s && minutes <= e) return { mealKey: mk, isPrimaryUpcoming: true };
+    }
+    for (const mk of orderedMeals) {
+      const m = day.meals[mk];
+      if (!m) continue;
+      const s = parseTimeToMinutes(m.startTime);
+      if (minutes < s) return { mealKey: mk, isPrimaryUpcoming: true };
+    }
+    // All done today → last available
+    for (let i = orderedMeals.length - 1; i >= 0; i--) {
+      const mk = orderedMeals[i];
+      if (day.meals[mk]) return { mealKey: mk, isPrimaryUpcoming: false };
+    }
+    return null;
+  }
+
+  // Past day: last meal
+  if (dateKey < todayKey) {
+    for (let i = orderedMeals.length - 1; i >= 0; i--) {
+      const mk = orderedMeals[i];
+      if (day.meals[mk]) return { mealKey: mk, isPrimaryUpcoming: false };
+    }
+    return null;
+  }
+
+  // Future day: first meal
+  for (const mk of orderedMeals) {
+    if (day.meals[mk]) return { mealKey: mk, isPrimaryUpcoming: false };
+  }
+  return null;
+}
+
 

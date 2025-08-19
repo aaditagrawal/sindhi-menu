@@ -12,6 +12,7 @@ export function MealCard({
   meal,
   mealKey,
   highlight,
+  primaryUpcoming,
   tilt,
 }: {
   title: string;
@@ -19,6 +20,7 @@ export function MealCard({
   meal: Meal;
   mealKey: MealKey;
   highlight?: boolean;
+  primaryUpcoming?: boolean;
   tilt?: { x: number; y: number };
 }) {
   const Icon = mealKey === "breakfast" ? Coffee : mealKey === "lunch" ? UtensilsCrossed : mealKey === "snacks" ? Cookie : Moon;
@@ -57,7 +59,9 @@ export function MealCard({
     <div
       className="rounded-2xl p-[6px]"
       style={{
-        background: `linear-gradient(135deg, hsl(${hue} 80% 70% / 0.7), hsl(${(hue + 120) % 360} 80% 70% / 0.7))`,
+        background: primaryUpcoming
+          ? "linear-gradient(135deg, hsl(50 95% 70% / 0.85), hsl(330 95% 70% / 0.85))"
+          : `linear-gradient(135deg, hsl(${hue} 80% 70% / 0.7), hsl(${(hue + 120) % 360} 80% 70% / 0.7))`,
         ...glow,
       }}
     >
