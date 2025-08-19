@@ -31,24 +31,31 @@ export default function RootLayout({
         <script defer src="https://stat.sys256.com/script.js"></script>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        {children}
-        <footer className="px-4 py-4 text-xs text-muted-foreground">
-          <div className="mx-auto max-w-4xl flex flex-wrap items-center gap-2">
-            <span>
-              Contribute at
-            </span>
-            <a
-              href="https://github.com/aaditagrawal/fc-menu"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              github.com/aaditagrawal/fc-menu
-            </a>
-            <span className="text-muted-foreground">•</span>
-            <a href="/contributing" className="underline">Contributing guide</a>
+        
+
+        <main className="flex-1">
+          {children}
+        </main>
+        <footer className="border-t bg-secondary/40">
+          <div className="mx-auto max-w-4xl px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-foreground">
+                This site is crowdsourced — add weekly menus to help everyone.
+              </p>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://github.com/aaditagrawal/fc-menu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-primary-foreground text-sm"
+                >
+                  Contribute on GitHub
+                </a>
+                <a href="/contributing" className="underline text-sm">Guide</a>
+              </div>
+            </div>
           </div>
         </footer>
       </body>
