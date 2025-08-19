@@ -24,4 +24,11 @@ export interface CurrentMealPointer {
   isOngoing: boolean;
 }
 
+export interface WeekMeta {
+  id: string;
+  year: string;
+  foodCourt: string;
+  week: string;
+}
+
 

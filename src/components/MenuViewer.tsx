@@ -5,7 +5,8 @@ import type { MealKey, WeekMenu } from "@/lib/types";
 import { findCurrentOrUpcomingMeal, pickHighlightMealForDay } from "@/lib/date";
 import { InlineSelect } from "@/components/InlineSelect";
 import { MealCarousel } from "@/components/MealCarousel";
-import { getWeekMenuClient, type WeekId, fetchWeekIds, getAllYearsFromList, getWeeksByYearFromList, getLatestWeekIdForYearFromList } from "@/data/weeks/client";
+import { getWeekMenuClient, type WeekId, fetchWeeksInfo, getAllYearsFromList, getWeeksByYearFromList, getLatestWeekIdForYearFromList } from "@/data/weeks/client";
+import type { WeekMeta } from "@/lib/types";
 import { useRouter } from "next/navigation";
 
 export function MenuViewer({
@@ -19,28 +20,51 @@ export function MenuViewer({
 }) {
   const router = useRouter();
   const [allWeekIds, setAllWeekIds] = React.useState<WeekId[]>([initialWeekId]);
+  const [weeksMeta, setWeeksMeta] = React.useState<WeekMeta[]>([]);
   const [weekId, setWeekId] = React.useState<WeekId>(initialWeekId);
   const [week, setWeek] = React.useState<WeekMenu>(initialWeek);
   const initialYear = React.useMemo(() => initialWeekId.slice(0, 4), [initialWeekId]);
   const [year, setYear] = React.useState<string>(initialYear);
+  const [foodCourt, setFoodCourt] = React.useState<string>(initialWeek.foodCourt);
   // Fetch available week ids on mount
   React.useEffect(() => {
-    fetchWeekIds().then(setAllWeekIds).catch(() => {});
+    fetchWeeksInfo().then(({ weekIds, meta }) => {
+      setAllWeekIds(weekIds);
+      setWeeksMeta(meta);
+    }).catch(() => {});
+  }, []);
+
+  // Load preferred mess from cookie on mount; default to "Food Court 2" if missing
+  React.useEffect(() => {
+    try {
+      const m = document.cookie.match(/(?:^|; )preferredFoodCourt=([^;]+)/);
+      const fromCookie = m ? decodeURIComponent(m[1]) : null;
+      if (fromCookie) {
+        setFoodCourt(fromCookie);
+      } else {
+        setFoodCourt("Food Court 2");
+      }
+    } catch {
+      // noop
+    }
   }, []);
   const [dateKey, setDateKey] = React.useState<string>(() => {
     const ptr = findCurrentOrUpcomingMeal(initialWeek);
     return ptr?.dateKey ?? Object.keys(initialWeek.menu)[0];
   });
 
-  // When year changes, adjust week list and pick the latest for that year
+  // When year changes, adjust week list for the selected mess and pick the latest
   React.useEffect(() => {
-    const weeks = getWeeksByYearFromList(allWeekIds, year);
-    if (weeks.length === 0) return;
-    if (!weeks.includes(weekId)) {
-      const latestForYear = getLatestWeekIdForYearFromList(allWeekIds, year);
+    const yearWeeksForMess = weeksMeta
+      .filter((m) => m.foodCourt === foodCourt && m.id.startsWith(`${year}-`))
+      .map((m) => m.id)
+      .sort();
+    if (yearWeeksForMess.length === 0) return;
+    if (!yearWeeksForMess.includes(weekId)) {
+      const latestForYear = yearWeeksForMess[yearWeeksForMess.length - 1] as WeekId;
       if (latestForYear) setWeekId(latestForYear);
     }
-  }, [year, allWeekIds, weekId]);
+  }, [year, weeksMeta, foodCourt, weekId]);
 
   // When weekId changes, either route (week mode) or load locally (home mode)
   React.useEffect(() => {
@@ -53,6 +77,7 @@ export function MenuViewer({
       setWeek(w);
       const ptr = findCurrentOrUpcomingMeal(w);
       setDateKey(ptr?.dateKey ?? Object.keys(w.menu)[0]);
+      setFoodCourt(w.foodCourt);
     });
   }, [weekId, initialWeekId, router, routingMode]);
 
@@ -83,13 +108,60 @@ export function MenuViewer({
   const isPrimaryUpcoming = Boolean(picked?.isPrimaryUpcoming);
 
   const yearOptions = getAllYearsFromList(allWeekIds).map((y) => ({ label: y, value: y }));
-  const weekOptions = getWeeksByYearFromList(allWeekIds, year).map((id) => ({ label: id, value: id }));
+  const weekOptions = React.useMemo(() => {
+    const ids = weeksMeta
+      .filter((m) => m.foodCourt === foodCourt && m.id.startsWith(`${year}-`))
+      .map((m) => m.id);
+    const uniqueSorted = Array.from(new Set(ids)).sort();
+    return uniqueSorted.map((id) => ({ label: id, value: id }));
+  }, [weeksMeta, foodCourt, year]);
   const dayOptions = Object.keys(week.menu)
     .sort()
     .map((k) => ({ label: `${week.menu[k].day} • ${k}`, value: k }));
+  const messOptions = React.useMemo(() => {
+    const set = new Set<string>();
+    for (const m of weeksMeta) set.add(m.foodCourt);
+    const list = Array.from(set);
+    list.sort();
+    return list.map((name) => ({ label: name, value: name }));
+  }, [weeksMeta]);
+
+  // Handle mess changes: pick the latest week for the chosen mess, same year if possible
+  React.useEffect(() => {
+    if (!foodCourt) return;
+    // persist in cookie
+    try {
+      document.cookie = `preferredFoodCourt=${encodeURIComponent(foodCourt)}; path=/; max-age=${60 * 60 * 24 * 365}`;
+    } catch {}
+    const candidates = weeksMeta.filter((m) => m.foodCourt === foodCourt);
+    if (candidates.length === 0) return;
+    const candidateIds = candidates.map((m) => m.id);
+    const sameYearIds = candidateIds.filter((id) => id.startsWith(`${year}-`)).sort();
+    const pick = (sameYearIds[sameYearIds.length - 1] ?? candidateIds.sort()[candidateIds.length - 1]) as WeekId;
+    if (pick && pick !== weekId) setWeekId(pick);
+  }, [foodCourt, weeksMeta, year]);
+
+  // Update page title client-side when mess changes
+  React.useEffect(() => {
+    if (!foodCourt) return;
+    const base = "The Indian Kitchen";
+    document.title = `${foodCourt} Menu — ${base}`;
+  }, [foodCourt]);
 
   return (
     <div className="space-y-4">
+      <header className="mb-2">
+        <div className="text-2xl sm:text-3xl font-semibold">
+          <InlineSelect
+            label="Mess"
+            value={foodCourt}
+            options={messOptions}
+            onChange={(v) => setFoodCourt(String(v))}
+            menuClassName="text-sm"
+          />
+        </div>
+        <p className="text-muted-foreground mt-1">{week.week}</p>
+      </header>
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <InlineSelect
           label="Year"

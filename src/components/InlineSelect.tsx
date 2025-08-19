@@ -9,12 +9,14 @@ export function InlineSelect<T extends string | number>({
   options,
   onChange,
   className,
+  menuClassName,
 }: {
   label?: string;
   value: T;
   options: { label: string; value: T }[];
   onChange: (v: T) => void;
   className?: string;
+  menuClassName?: string;
 }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLDivElement | null>(null);
@@ -50,7 +52,10 @@ export function InlineSelect<T extends string | number>({
       {open ? (
         <div
           role="listbox"
-          className="absolute z-50 mt-2 min-w-[200px] rounded-md border bg-popover p-1 shadow-md"
+          className={cn(
+            "absolute z-50 mt-2 min-w-[200px] rounded-md border bg-popover p-1 shadow-md",
+            menuClassName
+          )}
         >
           {options.map((opt) => (
             <button

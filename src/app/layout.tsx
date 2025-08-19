@@ -13,7 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Food Court Menu — The Indian Kitchen",
+  title: {
+    default: "Food Court 2 Menu — The Indian Kitchen",
+    template: "%s — The Indian Kitchen",
+  },
   description: "A fast, friendly viewer for weekly menus with time-aware highlighting (IST).",
 };
 
@@ -32,9 +35,10 @@ export default function RootLayout({
       >
         {children}
         <footer className="px-4 py-4 text-xs text-muted-foreground">
-          <div className="mx-auto max-w-4xl">
-            Contribute at
-            {" "}
+          <div className="mx-auto max-w-4xl flex flex-wrap items-center gap-2">
+            <span>
+              Contribute at
+            </span>
             <a
               href="https://github.com/aaditagrawal/fc-menu"
               target="_blank"
@@ -43,6 +47,8 @@ export default function RootLayout({
             >
               github.com/aaditagrawal/fc-menu
             </a>
+            <span className="text-muted-foreground">•</span>
+            <a href="/contributing" className="underline">Contributing guide</a>
           </div>
         </footer>
       </body>

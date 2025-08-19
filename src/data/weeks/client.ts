@@ -1,14 +1,14 @@
 "use client";
 
-import type { WeekMenu } from "@/lib/types";
+import type { WeekMenu, WeekMeta } from "@/lib/types";
 
 export type WeekId = string;
 
-export async function fetchWeekIds(): Promise<WeekId[]> {
+export async function fetchWeeksInfo(): Promise<{ weekIds: WeekId[]; meta: WeekMeta[] }>{
   const res = await fetch(`/api/weeks`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch week ids");
-  const data = (await res.json()) as { weekIds: WeekId[] };
-  return data.weekIds;
+  const data = (await res.json()) as { weekIds: WeekId[]; meta: WeekMeta[] };
+  return data;
 }
 
 export async function getWeekMenuClient(id: WeekId): Promise<WeekMenu> {
