@@ -93,7 +93,6 @@ export function pickHighlightMealForDay(
   nowIST: Date = getISTNow()
 ): { mealKey: MealKey; isPrimaryUpcoming: boolean } | null {
   const orderedMeals: MealKey[] = ["breakfast", "lunch", "snacks", "dinner"];
-  const dateKeys = sortDateKeysAsc(Object.keys(week.menu));
   const todayKey = formatDateKey(nowIST);
   const day = week.menu[dateKey];
   if (!day) return null;

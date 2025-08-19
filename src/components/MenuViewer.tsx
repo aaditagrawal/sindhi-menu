@@ -5,7 +5,7 @@ import type { MealKey, WeekMenu } from "@/lib/types";
 import { findCurrentOrUpcomingMeal, pickHighlightMealForDay } from "@/lib/date";
 import { InlineSelect } from "@/components/InlineSelect";
 import { MealCarousel } from "@/components/MealCarousel";
-import { getWeekMenuClient, type WeekId, fetchWeeksInfo, getAllYearsFromList, getWeeksByYearFromList, getLatestWeekIdForYearFromList } from "@/data/weeks/client";
+import { getWeekMenuClient, type WeekId, fetchWeeksInfo, getAllYearsFromList } from "@/data/weeks/client";
 import type { WeekMeta } from "@/lib/types";
 import { useRouter } from "next/navigation";
 
@@ -139,7 +139,7 @@ export function MenuViewer({
     const sameYearIds = candidateIds.filter((id) => id.startsWith(`${year}-`)).sort();
     const pick = (sameYearIds[sameYearIds.length - 1] ?? candidateIds.sort()[candidateIds.length - 1]) as WeekId;
     if (pick && pick !== weekId) setWeekId(pick);
-  }, [foodCourt, weeksMeta, year]);
+  }, [foodCourt, weeksMeta, year, weekId]);
 
   // Update page title client-side when mess changes
   React.useEffect(() => {

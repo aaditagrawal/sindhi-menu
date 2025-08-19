@@ -60,7 +60,7 @@ export default function ContributingPage() {
         <h2 id="adding-data">Adding data for other messes</h2>
         <ol>
           <li>Create a new file under <code>src/data/weeks</code> (e.g. <code>2025-09-01_to_2025-09-07.json</code>).</li>
-          <li>Copy the structure above and set <code>foodCourt</code> to the exact mess name (e.g. <code>"Food Court 1"</code>, <code>"Food Court 2"</code>, <code>"Annex Mess"</code>).</li>
+          <li>Copy the structure above and set <code>foodCourt</code> to the exact mess name (e.g. <code>&quot;Food Court 1&quot;</code>, <code>&quot;Food Court 2&quot;</code>, <code>&quot;Annex Mess&quot;</code>).</li>
           <li>Fill the <code>week</code> range and each date in <code>menu</code> with the correct meals, times, and items.</li>
           <li>Save and commit. The app will automatically list the new week and expose the mess in the selector.</li>
         </ol>
@@ -76,6 +76,11 @@ export default function ContributingPage() {
         <h2 id="submitting-changes">Submitting changes</h2>
         <p>
           Open a pull request with your JSON updates or UI improvements. See the repository README for local setup and contribution etiquette.
+        </p>
+
+        <h2 id="PS">PS</h2>
+        <p>
+          You can use any LLM (with vision) that you use - like Gemini, ChatGPT, Claude etc. - to convert the data into the JSON spec listed above.
         </p>
       </div>
     </div>
