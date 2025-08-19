@@ -66,13 +66,15 @@
           "startTime": "19:00",
           "endTime": "21:30",
           "items": [
-            "Chapati",
-            "Plain Roti",
-            "Lemon Rice",
-            "Jeera Rice",
-            "Dal Tadka",
-            "Veg Jalfrezi",
-            "Green Gabes",
+            "Methi Chapati",
+            "Chicken Roganjosh",
+            "Paneer Rara Masala",
+            "Papdiwal Dry Subzi",
+            "Chickpea Rice",
+            "Raitha",
+            "Dal Kolhapuri",
+            "Tomato Rasam",
+            "Onion Cubes",
             "Plain Curd",
             "Pickle"
           ]
@@ -257,16 +259,16 @@
           "items": [
             "Phulka Roti",
             "Veg Kholapuri",
-            "Kadai Paneer",
+            "Bhindi Do Pyaza",
             "Dal Sultani",
             "Lemon Rice",
             "Plain Rice",
             "Brown Rice",
-            "Pineapple Rasam",
-            "Carrot Peas Poriyal",
+            "Horsegram Rasam",
+            "Carrot Peas Subzi",
             "Plain Curd",
             "Pickle",
-            "Masala Papad"
+            "Mixed Veg Chutney"
           ]
         },
         "snacks": {
@@ -274,12 +276,12 @@
           "startTime": "16:30",
           "endTime": "18:00",
           "items": [
-            "Wheat Dose",
+            "Wheat Dosa",
             "Chocolate Sauce",
             "Banana Slice Cake (1 Pc)",
             "Tea",
             "Coffee",
-            "Hot Milk"
+            "Bournvita Hot Milk"
           ]
         },
         "dinner": {
@@ -287,15 +289,17 @@
           "startTime": "19:00",
           "endTime": "21:30",
           "items": [
-            "Plain Chapathi",
+            "Palak Chapathi",
             "Malabar Egg Curry",
             "Mushroom Capsicum Curry",
             "Red Channa Dry",
             "Jeera Rice",
+            "Plain Rice",
             "Dal Fry",
             "Sambar",
             "Plain Curd",
-            "Pickle"
+            "Pickle",
+            "Jalebi"
           ]
         }
       }
@@ -332,7 +336,7 @@
           "items": [
             "Ajwain Roti",
             "Soya Chunk Sabji",
-            "Mixed Veg Dry",
+            "Aloo Gobi Dry",
             "Dal Masala Tadka",
             "Plain Rice",
             "Brown Rice",
@@ -348,7 +352,8 @@
           "startTime": "16:30",
           "endTime": "18:00",
           "items": [
-            "Pung Bonda (2 Pcs)",
+            "Veg Puff (1 Pc)",
+            "Tomato Ketchup",
             "Salted Popcorn",
             "Tea",
             "Coffee",
@@ -361,11 +366,12 @@
           "endTime": "21:30",
           "items": [
             "Plain Paratha",
-            "Plain Roti",
+            "Lemon Chicken",
             "Indo-Chinese Paneer Chilli",
             "Lemon Sauce",
             "Mix Pulses Subzi",
             "Spring Onion Fried Rice",
+            "Plain Dal",
             "Plain Rice",
             "Plain Rasam",
             "Plain Curd",
@@ -421,8 +427,8 @@
           "startTime": "16:30",
           "endTime": "18:00",
           "items": [
-            "Hongkong Buns (2 Pcs)",
-            "Veg Samosa",
+            "Mangalore Buns (2 Pcs)",
+            "Veg ",
             "Coconut Chutney",
             "Tea",
             "Coffee",
@@ -435,8 +441,8 @@
           "endTime": "21:30",
           "items": [
             "Masala Roti",
-            "Makai Kofta (1 Pc)",
-            "Malai Paneer Curry",
+            "Malai Kofta (1 Pc)",
+            "Veg Jalfrezi",
             "Bhindi Do Pyaza",
             "Cholar Dal",
             "Butter Garlic Rice",
@@ -468,7 +474,7 @@
             "Chocolate Bread",
             "Peanut Butter",
             "Make Your Own Sandwich",
-            "Sprouted Sprouts",
+            "Assorted Sprouts",
             "Butter n Mix Jam",
             "Tea",
             "Coffee",
@@ -508,7 +514,7 @@
           "items": [
             "Bread Masala (Veg)",
             "Tomato Ketchup",
-            "Black Channa Salad",
+            "Banana Rava Kesari",
             "Tea",
             "Coffee",
             "Hot Milk"
@@ -523,8 +529,8 @@
             "Chapati",
             "Hariyali Egg Curry",
             "Corn Capsicum Curry",
-            "Dal Panchratna",
-            "Kaeema Vegetable Pulao",
+            "Mutter ki Subzi",
+            "Keema Vegetable Pulao",
             "Plain Dal",
             "Plain Rice",
             "Rasam",
