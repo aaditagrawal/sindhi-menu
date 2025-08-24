@@ -26,6 +26,15 @@ export function MenuViewer({
   const initialYear = React.useMemo(() => initialWeekId.slice(0, 4), [initialWeekId]);
   const [year, setYear] = React.useState<string>(initialYear);
   const [foodCourt, setFoodCourt] = React.useState<string>(initialWeek.foodCourt);
+  // Sync state when server-provided props change (e.g., navigating between week routes)
+  React.useEffect(() => {
+    setWeekId(initialWeekId);
+    setWeek(initialWeek);
+    setYear(initialWeekId.slice(0, 4));
+    setFoodCourt(initialWeek.foodCourt);
+    const ptr = findCurrentOrUpcomingMeal(initialWeek);
+    setDateKey(ptr?.dateKey ?? Object.keys(initialWeek.menu)[0]);
+  }, [initialWeekId, initialWeek]);
   // Fetch available week ids on mount
   React.useEffect(() => {
     fetchWeeksInfo().then(({ weekIds, meta }) => {
