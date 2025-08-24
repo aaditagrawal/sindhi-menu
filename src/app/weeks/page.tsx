@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getAllWeeks } from "@/data/weeks";
 
-export default function WeeksPage() {
-  const weeks = getAllWeeks();
+export default async function WeeksPage() {
+  const weeks = await getAllWeeks();
   return (
     <div className="px-4 py-8 sm:px-6 md:px-8">
       <div className="mx-auto max-w-3xl space-y-6">

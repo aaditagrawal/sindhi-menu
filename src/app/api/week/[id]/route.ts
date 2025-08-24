@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const segments = url.pathname.split("/");
   const id = decodeURIComponent(segments[segments.length - 1] || "");
-  const all = getAllWeeks();
+  const all = await getAllWeeks();
   if (!all.includes(id)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }

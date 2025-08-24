@@ -4,7 +4,7 @@ import { MenuViewer } from "@/components/MenuViewer";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const weekId = getLatestWeekId();
+  const weekId = await getLatestWeekId();
   const week = await getWeekMenu(weekId);
   return (
     <div className="px-4 py-8 sm:px-6 md:px-8">

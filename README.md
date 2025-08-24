@@ -1,10 +1,10 @@
 ## Food Court Menus
 
-Fast, friendly viewer for weekly mess/food-court menus with time-aware highlighting in Indian Standard Time (IST). Drop weekly JSON files in `src/data/weeks/` and the site discovers them automatically.
+Fast, friendly viewer for weekly mess/food-court menus with time-aware highlighting in Indian Standard Time (IST). The app now integrates with the Food Court API to automatically fetch and display the latest menu data.
 
 ## Contributions, Please
 
-Data is crowdsourced, so we look forward to community contributions. Manually might be tedious, so you can ask any LLM (with vision) that you use - like Gemini, ChatGPT, Claude etc. - to convert the data into the JSON spec listed below.
+The app now uses an external API for data, so contributions focus on code improvements, UI enhancements, and feature development. Data is managed through the Food Court API at https://tikm.coolstuff.work/docs/reference.
 
 ### Highlights
 - Time-aware: detects current/upcoming meal using device time converted to IST and auto-focuses it
@@ -44,52 +44,10 @@ bun run lint
 
 ---
 
-## Data: Adding Weekly Menus (Main Contribution)
-
-The main way to contribute is to add a weekly JSON file. No code changes are required.
-
-1) Create a file in `src/data/weeks/` named:
-```
-YYYY-MM-DD_to_YYYY-MM-DD.json
-```
-
-2) Use this shape (example):
-```json
-{
-  "foodCourt": "Food Court 2",
-  "week": "August 18 - August 24, 2025",
-  "menu": {
-    "2025-08-18": {
-      "day": "Monday",
-      "meals": {
-        "breakfast": {
-          "name": "Happy Morning Breakfast",
-          "startTime": "07:00",
-          "endTime": "09:30",
-          "items": ["…"]
-        },
-        "lunch": { "name": "…", "startTime": "11:45", "endTime": "14:15", "items": ["…"] },
-        "snacks": { "name": "…", "startTime": "16:30", "endTime": "18:00", "items": ["…"] },
-        "dinner": { "name": "…", "startTime": "19:00", "endTime": "21:30", "items": ["…"] }
-      }
-    }
-  }
-}
-```
-
-Notes:
-- Day keys inside `menu` are dates in `YYYY-MM-DD`.
-- Times are `HH:mm` in IST.
-- Meal keys supported: `breakfast`, `lunch`, `snacks`, `dinner`.
-
-After saving the file, the site will list it automatically in the Year/Week selectors and in `/week/[id]`.
-
----
-
 ## Project Structure
 - `src/app/` — pages (home, weeks, per-week page) and API routes for week discovery
 - `src/components/` — UI components (cards, carousel, inline selectors)
-- `src/data/weeks/` — weekly JSON files (auto-discovered)
+- `src/data/weeks/` — API client functions for fetching menu data
 - `src/lib/` — types and IST/time utilities
 
 ---

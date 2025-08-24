@@ -4,7 +4,7 @@ import { getAllWeeks, getWeeksMeta } from "@/data/weeks";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const weekIds = getAllWeeks();
+  const weekIds = await getAllWeeks();
   const meta = await getWeeksMeta();
   return NextResponse.json({ weekIds, meta });
 }

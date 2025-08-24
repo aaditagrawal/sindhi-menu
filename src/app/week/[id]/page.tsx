@@ -5,12 +5,13 @@ import { MenuViewer } from "@/components/MenuViewer";
 export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  return getAllWeeks().map((id) => ({ id }));
+  const all = await getAllWeeks();
+  return all.map((id) => ({ id }));
 }
 
 export default async function WeekPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const weeks = getAllWeeks();
+  const weeks = await getAllWeeks();
   if (!weeks.includes(id)) return notFound();
   const week = await getWeekMenu(id);
 

@@ -40,22 +40,18 @@ export default function RootLayout({
         </main>
         <footer className="border-t bg-secondary/40">
           <div className="mx-auto max-w-4xl px-4 py-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm text-foreground">
-                This site is crowdsourced — add weekly menus to help everyone.
-              </p>
-              <div className="flex items-center gap-2">
-                <a
-                  href="https://github.com/aaditagrawal/fc-menu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-primary-foreground text-sm"
-                >
-                  Contribute on GitHub
-                </a>
-                <a href="/contributing" className="underline text-sm">Guide</a>
-              </div>
-            </div>
+            <p className="text-sm text-foreground text-center">
+              Thanks to The Indian Kitchen, Manipal for providing data for this project. Use the{" "}
+              <a
+                href="https://tikm.coolstuff.work/docs/reference"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+              >
+                API docs
+              </a>{" "}
+              to integrate this data in your own app.
+            </p>
           </div>
         </footer>
       </body>
