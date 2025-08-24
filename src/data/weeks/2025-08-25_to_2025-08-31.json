@@ -1,0 +1,503 @@
+{
+  "foodCourt": "Food Court 2",
+  "week": "August 25 - 31, 2025",
+  "menu": {
+    "2025-08-25": {
+      "day": "Monday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": [
+            "Corainder Topped Idli",
+            "Sambhar",
+            "Bombay Poha",
+            "Bull's Eye / Watermelon",
+            "White n Brown Bread",
+            "Make Your Own Sandwich",
+            "Sprouted Red Channa",
+            "Ciabatta Bread",
+            "Pineapple Jam",
+            "Butter n Mix Jam",
+            "Tea"
+          ]
+        },
+        "lunch": {
+          "name": "Wholesome Lunch",
+          "startTime": "11:45",
+          "endTime": "14:15",
+          "items": [
+            "Pudina Roti",
+            "Corn Capsicum Masala",
+            "Aloo Masala Tadka",
+            "Buttered Dal Fry",
+            "Plain Rice",
+            "Boiled Rice",
+            "Gulla Sambhar",
+            "Tondekai Palya",
+            "Plain Curd",
+            "Rava Coconut Burfi"
+          ]
+        },
+        "snacks": {
+          "name": "Refreshing Snacks",
+          "startTime": "16:30",
+          "endTime": "18:00",
+          "items": [
+            "Crispy Bread Balls (2 PC)",
+            "Tomato Sauce",
+            "Dilkush (1 PC)",
+            "Tea"
+          ]
+        },
+        "dinner": {
+          "name": "Delicious Dinner",
+          "startTime": "19:00",
+          "endTime": "21:30",
+          "items": [
+            "Coriander Roti",
+            "Chicken Kolhapuri",
+            "Paneer Chettinad",
+            "Carrot Peas Subzi",
+            "Panchmel Dal",
+            "Achari Pulao",
+            "Plain Rice",
+            "Pepper Rasam",
+            "Plain Curd",
+            "Masala Onion Slices",
+            "Double filtered water is used for beverages",
+            "Please Inform Our Manager",
+            "Note: Items in the menu may change due to non-availabilty of fresh produce."
+          ]
+        }
+      }
+    },
+    "2025-08-26": {
+      "day": "Tuesday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": [
+            "Stuffed Tofu Paratha",
+            "Chutney",
+            "Bisibele Bath",
+            "Boiled Egg / Papaya",
+            "Chocoflakes with Cold Milk",
+            "Make Your Own Sandwich",
+            "Boiles Black Eyed Peas",
+            "White Bread",
+            "Brown Bread",
+            "Butter n Mix Jam",
+            "Coffee"
+          ]
+        },
+        "lunch": {
+          "name": "Wholesome Lunch",
+          "startTime": "11:45",
+          "endTime": "14:15",
+          "items": [
+            "Plain Roti",
+            "Gujarati Kadhi Pakoda",
+            "Bhendi Matar Fry",
+            "Tomato Dal",
+            "Plain Rice",
+            "Udupi Style Sambhar",
+            "Cabbage Subzi",
+            "Curd Rice",
+            "Pickle",
+            "Spicy Kachumber Salad"
+          ]
+        },
+        "snacks": {
+          "name": "Refreshing Snacks",
+          "startTime": "16:30",
+          "endTime": "18:00",
+          "items": [
+            "Oats Dosa (2 PC)",
+            "Sambhar",
+            "Coconut Chutney",
+            "Coffee"
+          ]
+        },
+        "dinner": {
+          "name": "Delicious Dinner",
+          "startTime": "19:00",
+          "endTime": "21:30",
+          "items": [
+            "Ajwain Paratha",
+            "Egg Manchurian Dry",
+            "Baked Gobi 65",
+            "Manchurian Sauce",
+            "Schezwan Fried Rice",
+            "Onion Raitha",
+            "Lobia Dry Subzi",
+            "Garlic Rasam",
+            "Pickle",
+            "Chinese Accompaniments",
+            "chutney and salads.",
+            "If you are allergic to any ingredients.",
+            "Note: Items in the menu may change due to non-availabilty of fresh produce."
+          ]
+        }
+      }
+    },
+    "2025-08-27": {
+      "day": "Wednesday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": [
+            "Poori",
+            "Imli n Green Chutney",
+            "Kara Boondi",
+            "Pineapple Sheera",
+            "Boiled Egg / Sweet Lemon",
+            "Make Your Own Sandwich",
+            "Sweet Potatoes",
+            "White n Brown Bread",
+            "Peanut Butter",
+            "Butter n Mix Jam",
+            "Hot Boost"
+          ]
+        },
+        "lunch": {
+          "name": "Wholesome Lunch",
+          "startTime": "11:45",
+          "endTime": "14:15",
+          "items": [
+            "Palak Chapathi",
+            "Veg Shabnam",
+            "Aloo Masaledar",
+            "Masoor Dal Tadka",
+            "Boiled Rice",
+            "Boiled Rice",
+            "Yam Subzi",
+            "Kokum Rasam",
+            "Plain Curd",
+            "Pipe Fryums"
+          ]
+        },
+        "snacks": {
+          "name": "Refreshing Snacks",
+          "startTime": "16:30",
+          "endTime": "18:00",
+          "items": [
+            "Pav Bhaji (2 PC)",
+            "Chopped Onion",
+            "Lemon Wedges",
+            "Hot Milk"
+          ]
+        },
+        "dinner": {
+          "name": "Delicious Dinner",
+          "startTime": "19:00",
+          "endTime": "21:30",
+          "items": [
+            "Carrot Chapathi",
+            "Kerala Chicken Fry",
+            "Honey Chilli Paneer",
+            "White Vatana Aloo Curry",
+            "Dum Peas Pulav",
+            "Cholar Dal",
+            "Corainder Dal",
+            "Southe Sambhar",
+            "Plain Curd",
+            "Boost Burfi",
+            "Double filtered water is used for beverages",
+            "Please Inform Our Manager",
+            "Note: Items in the menu may change due to non-availabilty of fresh produce."
+          ]
+        }
+      }
+    },
+    "2025-08-28": {
+      "day": "Thursday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": [
+            "Onion Uttappam",
+            "Curd",
+            "Coconut Chutney",
+            "Boiled Egg / Banana",
+            "Cornflakes with Cold Milk",
+            "Make Your Own Sandwich",
+            "Boiled Chickpea",
+            "White Bread",
+            "Brown Bread",
+            "Butter n Mix Jam",
+            "Ginger Tea"
+          ]
+        },
+        "lunch": {
+          "name": "Wholesome Lunch",
+          "startTime": "11:45",
+          "endTime": "14:15",
+          "items": [
+            "Chapathi",
+            "Curried Red Chana With Spinach",
+            "Soya Chunks Dry",
+            "Dal Sultani",
+            "Plain Rice",
+            "Methi Khichdi",
+            "Beetroot Subzi",
+            "Harive Sambhar",
+            "Pickle",
+            "Semiya Kheer"
+          ]
+        },
+        "snacks": {
+          "name": "Refreshing Snacks",
+          "startTime": "16:30",
+          "endTime": "18:00",
+          "items": [
+            "Pesto Sauce",
+            "Assorted Pasta",
+            "Garlic Bread",
+            "Tea"
+          ]
+        },
+        "dinner": {
+          "name": "Delicious Dinner",
+          "startTime": "19:00",
+          "endTime": "21:30",
+          "items": [
+            "Plain Paratha",
+            "Garlic Egg Curry",
+            "Babycorn Angara",
+            "Cabbage Matar Subzi",
+            "Mix Raitha",
+            "Plain Rice",
+            "Mixed dal Tadka",
+            "Tomato Rasam",
+            "Pickle",
+            "Cucumber n Carrot Slices",
+            "chutney and salads.",
+            "If you are allergic to any ingredients.",
+            "Note: Items in the menu may change due to non-availabilty of fresh produce."
+          ]
+        }
+      }
+    },
+    "2025-08-29": {
+      "day": "Friday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": [
+            "Corn Stuffed Paratha",
+            "Aloo Pathal Bhaji",
+            "Semiya Pulav",
+            "Coconut Chutney",
+            "Boiled Egg / Watermelon",
+            "White n Brown Bread",
+            "Make Your Own Sandwich",
+            "Sprouted Moong",
+            "Pineapple Jam",
+            "Butter n Mix Jam",
+            "Coffee"
+          ]
+        },
+        "lunch": {
+          "name": "Wholesome Lunch",
+          "startTime": "11:45",
+          "endTime": "14:15",
+          "items": [
+            "Jeera Roti",
+            "Rajma Masala",
+            "Gobi Shimla Mirchi",
+            "Dal Jeera Tadka",
+            "Plain Rice",
+            "Brown Rice",
+            "Long Beans Subzi",
+            "Lemon Rasam",
+            "Plain Curd",
+            "Sweet Boondi"
+          ]
+        },
+        "snacks": {
+          "name": "Refreshing Snacks",
+          "startTime": "16:30",
+          "endTime": "18:00",
+          "items": [
+            "Chocolate Doughnut (1 PC)",
+            "Tomato Bath",
+            "Coconut Chutney",
+            "Coffee"
+          ]
+        },
+        "dinner": {
+          "name": "Delicious Dinner",
+          "startTime": "19:00",
+          "endTime": "21:30",
+          "items": [
+            "Methi Roti",
+            "Chicken Lajawab",
+            "Matar Paneer Curry",
+            "Green Chana Dry Subzi",
+            "Tomato Rice",
+            "Steam Rice",
+            "Plain Rice",
+            "Mix Sambhar",
+            "Plain Curd",
+            "Ice - Cream",
+            "Double filtered water is used for beverages",
+            "Please Inform Our Manager",
+            "Note: Items in the menu may change due to non-availabilty of fresh produce."
+          ]
+        }
+      }
+    },
+    "2025-08-30": {
+      "day": "Saturday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": [
+            "Podi Idli / Plain idli",
+            "Sambhar",
+            "Mix Raitha",
+            "Coconut Chutney",
+            "Egg Omelette / Pineapple",
+            "Chocoflakes with Cold Milk",
+            "Make Your Own Sandwich",
+            "White n Brown Bread",
+            "Boiled Peanuts",
+            "Butter n Mix Jam",
+            "Hot Milk"
+          ]
+        },
+        "lunch": {
+          "name": "Wholesome Lunch",
+          "startTime": "11:45",
+          "endTime": "14:15",
+          "items": [
+            "Poori / Phulka",
+            "Chole Masala",
+            "Aloo Saag",
+            "Plain Rice",
+            "Boiled Rice",
+            "Drumstick Sambhar",
+            "Pumpkin Peas Subzi",
+            "Plain Curd",
+            "Pickle",
+            "Mint Chutney"
+          ]
+        },
+        "snacks": {
+          "name": "Refreshing Snacks",
+          "startTime": "16:30",
+          "endTime": "18:00",
+          "items": [
+            "Sev Topped Dahi Vada (2 PC)",
+            "Sweet n Mint Chutney",
+            "Coffee Cookies (1 PC)",
+            "Hot Badam"
+          ]
+        },
+        "dinner": {
+          "name": "Delicious Dinner",
+          "startTime": "19:00",
+          "endTime": "21:30",
+          "items": [
+            "Aloo Stuffed Paratha (2 PC)",
+            "Phulka",
+            "Veg Kheema Masala",
+            "Sprouts Tamatar Dry",
+            "Kushka Rice",
+            "Plain Rice",
+            "Rasam",
+            "Plain Curd",
+            "Pickle",
+            "Tulsi Tea",
+            "chutney and salads.",
+            "If you are allergic to any ingredients.",
+            "Note: Items in the menu may change due to non-availabilty of fresh produce."
+          ]
+        }
+      }
+    },
+    "2025-08-31": {
+      "day": "Sunday",
+      "meals": {
+        "breakfast": {
+          "name": "Happy Morning Breakfast",
+          "startTime": "07:00",
+          "endTime": "09:30",
+          "items": [
+            "Masala Dosa/ Plain Dosa",
+            "Chutney",
+            "Milk Upma",
+            "Boiled Egg / Banana",
+            "White n Brown Bread",
+            "Make Your Own Sandwich",
+            "Assorted Sprouts",
+            "Focaccia Bread",
+            "Peanut Butter",
+            "Butter n Mix Jam",
+            "Tea"
+          ]
+        },
+        "lunch": {
+          "name": "Wholesome Lunch",
+          "startTime": "11:45",
+          "endTime": "14:15",
+          "items": [
+            "Mint Paratha",
+            "Kundapur Chicken Curry",
+            "Paneer Hyderabadi",
+            "Aloo Palak Subzi",
+            "White Rice",
+            "Cilantro Dum Rice",
+            "Dal Garlic Tadka",
+            "Onion Cucumber Raitha",
+            "Plain Curd",
+            "Balushahi"
+          ]
+        },
+        "snacks": {
+          "name": "Refreshing Snacks",
+          "startTime": "16:30",
+          "endTime": "18:00",
+          "items": [
+            "Mutter Seviya",
+            "Mix Raitha",
+            "Pound Cake (1 PC)",
+            "Tea"
+          ]
+        },
+        "dinner": {
+          "name": "Delicious Dinner",
+          "startTime": "19:00",
+          "endTime": "21:30",
+          "items": [
+            "Chapathi",
+            "Malvani Anda Curry",
+            "Tofu Butter Masala",
+            "Tindora Dry Subzi",
+            "Raitha",
+            "Masala Dal",
+            "Rasam",
+            "Plain Curd",
+            "Plain Curd",
+            "Onion Cubes",
+            "Double filtered water is used for beverages",
+            "Please Inform Our Manager",
+            "Note: Items in the menu may change due to non-availabilty of fresh produce."
+          ]
+        }
+      }
+    }
+  }
+}
