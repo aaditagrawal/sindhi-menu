@@ -41,6 +41,16 @@ export default function RootLayout({
         <footer className="border-t bg-secondary/40">
           <div className="mx-auto max-w-4xl px-4 py-3 space-y-2">
             <p className="text-sm text-foreground text-center">
+              Made by{" "}
+              <a
+                href="https://aadit.cc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+              >
+                Aadit (aadit.cc)
+              </a>
+              {" • "}
               Thanks to The Indian Kitchen, Manipal for providing data for this project. Use the{" "}
               <a
                 href="https://tikm.coolstuff.work/docs/reference"
@@ -51,8 +61,7 @@ export default function RootLayout({
                 API docs
               </a>{" "}
               to integrate this data in your own app.
-            </p>
-            <p className="text-sm text-foreground text-center">
+              {" • "}
               This project is{" "}
               <a
                 href="https://github.com/aaditagrawal/fc-menu"
