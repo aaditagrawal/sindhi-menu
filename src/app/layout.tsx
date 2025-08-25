@@ -39,7 +39,7 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="border-t bg-secondary/40">
-          <div className="mx-auto max-w-4xl px-4 py-3">
+          <div className="mx-auto max-w-4xl px-4 py-3 space-y-2">
             <p className="text-sm text-foreground text-center">
               Thanks to The Indian Kitchen, Manipal for providing data for this project. Use the{" "}
               <a
@@ -51,6 +51,18 @@ export default function RootLayout({
                 API docs
               </a>{" "}
               to integrate this data in your own app.
+            </p>
+            <p className="text-sm text-foreground text-center">
+              This project is{" "}
+              <a
+                href="https://github.com/aaditagrawal/fc-menu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+              >
+                open source on GitHub
+              </a>
+              . Contributions are welcome!
             </p>
           </div>
         </footer>
