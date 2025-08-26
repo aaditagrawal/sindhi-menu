@@ -5,6 +5,7 @@ import type { Meal, MealKey } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Coffee, UtensilsCrossed, Cookie, Moon } from "lucide-react";
+import { filterMenuItems } from "@/lib/exceptions";
 
 export function MealCard({
   title,
@@ -46,7 +47,7 @@ export function MealCard({
       </CardHeader>
       <CardContent>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          {meal.items.map((item, idx) => (
+          {filterMenuItems(meal.items).map((item, idx) => (
             <li key={idx} className="rounded-md bg-muted px-2 py-1">{item}</li>
           ))}
         </ul>
