@@ -163,22 +163,14 @@ export function MenuViewer({
   return (
     <div className="space-y-4">
       <header className="mb-2">
-        <div className="flex items-start justify-between">
-          <div className="text-2xl sm:text-3xl font-semibold">
-            <InlineSelect
-              label="Mess"
-              value={foodCourt}
-              options={messOptions}
-              onChange={(v) => setFoodCourt(String(v))}
-              menuClassName="text-sm"
-            />
-          </div>
-          <Button asChild variant="outline" size="sm" className="shrink-0">
-            <Link href={`/week/${weekId}/full`} title="View full week menu">
-              <Grid3X3 className="h-4 w-4 mr-2" />
-              Full Week
-            </Link>
-          </Button>
+        <div className="text-2xl sm:text-3xl font-semibold">
+          <InlineSelect
+            label="Mess"
+            value={foodCourt}
+            options={messOptions}
+            onChange={(v) => setFoodCourt(String(v))}
+            menuClassName="text-sm"
+          />
         </div>
         <p className="text-muted-foreground mt-1">{week.week}</p>
       </header>
@@ -206,6 +198,15 @@ export function MenuViewer({
       </div>
 
       <MealCarousel meals={meals} highlightKey={highlightKey} isPrimaryUpcoming={isPrimaryUpcoming} />
+
+      <div className="flex justify-center mt-6">
+        <Button asChild variant="outline">
+          <Link href={`/week/${weekId}/full`} title="View full week menu">
+            <Grid3X3 className="h-4 w-4 mr-2" />
+            View Full Week Menu
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }

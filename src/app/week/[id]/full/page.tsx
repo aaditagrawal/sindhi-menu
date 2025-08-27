@@ -9,20 +9,22 @@ interface PageProps {
   params: Promise<{ id: WeekId }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function FullWeekPage({ params }: PageProps) {
   const { id } = await params;
   const week = await getWeekMenu(id);
 
   return (
     <div className="px-4 py-8 sm:px-6 md:px-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+      <div className="mx-auto max-w-full space-y-6">
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-semibold">Full Week Menu</h1>
+              <h1 className="text-2xl sm:text-3xl font-semibold">Full Week Menu</h1>
               <p className="text-muted-foreground">{week.week} • {week.foodCourt}</p>
             </div>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="self-start sm:self-auto">
               <Link href={`/week/${id}`} title="Back to daily view">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Daily View
