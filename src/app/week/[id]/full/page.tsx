@@ -1,0 +1,37 @@
+import Link from "next/link";
+import { getWeekMenu } from "@/data/weeks";
+import { ComprehensiveWeekView } from "@/components/ComprehensiveWeekView";
+import type { WeekId } from "@/data/weeks/client";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+
+interface PageProps {
+  params: Promise<{ id: WeekId }>;
+}
+
+export default async function FullWeekPage({ params }: PageProps) {
+  const { id } = await params;
+  const week = await getWeekMenu(id);
+
+  return (
+    <div className="px-4 py-8 sm:px-6 md:px-8">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold">Full Week Menu</h1>
+              <p className="text-muted-foreground">{week.week} • {week.foodCourt}</p>
+            </div>
+            <Button asChild variant="outline">
+              <Link href={`/week/${id}`} title="Back to daily view">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Daily View
+              </Link>
+            </Button>
+          </div>
+        </div>
+        <ComprehensiveWeekView week={week} />
+      </div>
+    </div>
+  );
+}
