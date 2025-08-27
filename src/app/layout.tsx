@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner";
+import { MenuNotification } from "@/components/MenuNotification";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,55 +30,65 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script defer src="https://stat.sys256.com/script.js"></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        
-
-        <main className="flex-1">
-          {children}
-        </main>
-        <footer className="border-t bg-secondary/40">
-          <div className="mx-auto max-w-4xl px-4 py-3 space-y-2">
-            <p className="text-sm text-foreground text-center">
-              Made by{" "}
-              <a
-                href="https://aadit.cc"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:no-underline"
-              >
-                Aadit (aadit.cc)
-              </a>
-              {" • "}
-              Thanks to The Indian Kitchen, Manipal for providing data for this project. Use the{" "}
-              <a
-                href="https://tikm.coolstuff.work/docs/reference"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:no-underline"
-              >
-                API docs
-              </a>{" "}
-              to integrate this data in your own app.
-              {" • "}
-              This project is{" "}
-              <a
-                href="https://github.com/aaditagrawal/fc-menu"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:no-underline"
-              >
-                open source on GitHub
-              </a>
-              . Contributions are welcome!
-            </p>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="fixed top-4 right-4 z-50">
+            <ThemeSwitcher />
           </div>
-        </footer>
+          <MenuNotification />
+          <main className="flex-1">
+            {children}
+          </main>
+          <footer className="border-t bg-secondary/40">
+            <div className="mx-auto max-w-4xl px-4 py-3 space-y-2">
+              <p className="text-sm text-foreground text-center">
+                Made by{" "}
+                <a
+                  href="https://aadit.cc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  Aadit (aadit.cc)
+                </a>
+                {" • "}
+                Thanks to The Indian Kitchen, Manipal for providing data for this project. Use the{" "}
+                <a
+                  href="https://tikm.coolstuff.work/docs/reference"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  API docs
+                </a>{" "}
+                to integrate this data in your own app.
+                {" • "}
+                This project is{" "}
+                <a
+                  href="https://github.com/aaditagrawal/fc-menu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  open source on GitHub
+                </a>
+                . Contributions are welcome!
+              </p>
+            </div>
+          </footer>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
