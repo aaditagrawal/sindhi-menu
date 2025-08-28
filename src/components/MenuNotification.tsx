@@ -21,18 +21,9 @@ export function MenuNotification() {
 
       // Try different toast methods
       toast(
-        "The menu is now contributed by the Indian Kitchen and is up to date with what they provide. According to them, this is more up to date than print.",
+        "The menu is now contributed by the Indian Kitchen and is up to date with what they provide.",
         {
-          duration: 2500,
-          description:
-            "For any changes, kindly contact tikmenu@aaditagrawal.com",
-          action: {
-            label: "Contact Support",
-            onClick: () => {
-              console.log("Contact Support button clicked");
-              window.open("mailto:tikmenu@aaditagrawal.com");
-            },
-          },
+          duration: 1500,
         },
       );
     }, 1000);

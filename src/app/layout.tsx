@@ -21,7 +21,8 @@ export const metadata: Metadata = {
     default: "Food Court 2 Menu — The Indian Kitchen",
     template: "%s — The Indian Kitchen",
   },
-  description: "A fast, friendly viewer for weekly menus with time-aware highlighting (IST).",
+  description:
+    "A fast, friendly viewer for weekly menus with time-aware highlighting (IST).",
 };
 
 export default function RootLayout({
@@ -47,9 +48,7 @@ export default function RootLayout({
             <ThemeSwitcher />
           </div>
           <MenuNotification />
-          <main className="flex-1">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
           <footer className="border-t bg-secondary/40">
             <div className="mx-auto max-w-4xl px-4 py-3 space-y-2">
               <p className="text-sm text-foreground text-center">
@@ -63,7 +62,8 @@ export default function RootLayout({
                   Aadit (aadit.cc)
                 </a>
                 {" • "}
-                Thanks to The Indian Kitchen, Manipal for providing data for this project. Use the{" "}
+                Thanks to The Indian Kitchen, Manipal for providing data for
+                this project. Use the{" "}
                 <a
                   href="https://tikm.coolstuff.work/docs/reference"
                   target="_blank"
@@ -84,6 +84,10 @@ export default function RootLayout({
                   open source on GitHub
                 </a>
                 . Contributions are welcome!
+                {" • "}
+                <a href="/changelog" className="underline hover:no-underline">
+                  Changelog
+                </a>
               </p>
             </div>
           </footer>
