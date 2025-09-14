@@ -5,7 +5,7 @@ import type { MealKey, WeekMenu } from "@/lib/types";
 import { findCurrentOrUpcomingMeal, pickHighlightMealForDay } from "@/lib/date";
 import { InlineSelect } from "@/components/InlineSelect";
 import { MealCarousel } from "@/components/MealCarousel";
-import { getWeekMenuClient, type WeekId, fetchWeeksInfo, getAllYearsFromList } from "@/data/weeks/client";
+import { getWeekMenuClient, type WeekId, fetchWeeksInfo, getAllYearsFromList, refreshDataIfNeeded } from "@/data/weeks/client";
 import type { WeekMeta } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -29,6 +29,7 @@ export function MenuViewer({
   const initialYear = React.useMemo(() => initialWeekId.slice(0, 4), [initialWeekId]);
   const [year, setYear] = React.useState<string>(initialYear);
   const [foodCourt, setFoodCourt] = React.useState<string>(initialWeek.foodCourt);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
   // Sync state when server-provided props change (e.g., navigating between week routes)
   React.useEffect(() => {
     setWeekId(initialWeekId);
@@ -45,6 +46,24 @@ export function MenuViewer({
       setWeeksMeta(meta);
     }).catch(() => {});
   }, []);
+
+  // Handle smart refresh
+  const handleRefresh = React.useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      const wasRefreshed = await refreshDataIfNeeded(week);
+
+      if (wasRefreshed) {
+        // If data was refreshed, reload the page to get the latest data
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [week]);
+
 
   // Load preferred mess from cookie on mount; default to "Food Court 2" if missing
   React.useEffect(() => {
@@ -199,12 +218,23 @@ export function MenuViewer({
 
       <MealCarousel meals={meals} highlightKey={highlightKey} isPrimaryUpcoming={isPrimaryUpcoming} />
 
-      <div className="flex justify-center mt-6">
+      <div className="flex flex-col items-center gap-2 mt-6">
         <Button asChild variant="outline">
           <Link href={`/week/${weekId}/full`} title="View full week menu">
             <Grid3X3 className="h-4 w-4 mr-2" />
             View Full Week Menu
           </Link>
+        </Button>
+
+        <Button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          variant="ghost"
+          size="sm"
+          className="text-xs"
+          title="Refresh data if no upcoming meal is available"
+        >
+          {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
         </Button>
       </div>
     </div>

@@ -10,7 +10,12 @@ async function fetchMenuFromAPI(params?: { week?: string; weekStart?: string; da
   if (params?.week) url.searchParams.set("week", params.week);
   if (params?.weekStart) url.searchParams.set("weekStart", params.weekStart);
   if (params?.date) url.searchParams.set("date", params.date);
-  const res = await fetch(url.toString(), { cache: "no-store" });
+
+  // Use default fetch caching for server-side requests (5 minutes cache)
+  const res = await fetch(url.toString(), {
+    next: { revalidate: 300 } // Cache for 5 minutes on the server
+  });
+
   if (!res.ok) {
     throw new Error(`Menu API error: ${res.status}`);
   }

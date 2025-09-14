@@ -13,7 +13,13 @@ export async function GET(req: Request) {
   }
   try {
     const menu = await getWeekMenu(id);
-    return NextResponse.json(menu);
+
+    // Add cache headers for client-side caching
+    const response = NextResponse.json(menu);
+    response.headers.set('Cache-Control', 'public, s-maxage=900, max-age=300'); // 15 min server, 5 min client
+    response.headers.set('CDN-Cache-Control', 'max-age=900'); // 15 min on CDN
+
+    return response;
   } catch {
     return NextResponse.json({ error: "Failed to load" }, { status: 500 });
   }
