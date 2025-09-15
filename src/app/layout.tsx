@@ -74,7 +74,15 @@ export default function RootLayout({
                 >
                   open source on GitHub
                 </a>
-                .
+                {" • "}
+                <a
+                  href="/openapi.json"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  API docs (OpenAPI JSON)
+                </a>
               </p>
             </div>
           </footer>

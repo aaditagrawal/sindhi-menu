@@ -16,6 +16,17 @@ export interface Meal {
   sections: MealSection[];
 }
 
+export interface MenuExtraItem {
+  name: string;
+  price: number;
+}
+
+export interface MenuExtras {
+  category: string;
+  currency: string;
+  items: MenuExtraItem[];
+}
+
 export interface DayMenu {
   day: string; // e.g. Monday
   displayDate: string; // e.g. Sep 04
@@ -26,6 +37,7 @@ export interface WeekMenu {
   foodCourt: string;
   week: string; // e.g. "Sindhi Mess — Weekly Menu"
   menu: Record<string, DayMenu>; // key: YYYY-MM-DD
+  extras: MenuExtras;
 }
 
 export interface CurrentMealPointer {

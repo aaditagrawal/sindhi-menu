@@ -64,6 +64,23 @@ export function MenuViewer({
         }))
     : [];
 
+  const extras = React.useMemo(() => {
+    const data = initialWeek.extras;
+    if (!data || data.items.length === 0) return undefined;
+    let formatter: Intl.NumberFormat | undefined;
+    try {
+      formatter = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: data.currency,
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0,
+      });
+    } catch {
+      formatter = undefined;
+    }
+    return { data, formatter };
+  }, [initialWeek.extras]);
+
   const picked = pickHighlightMealForDay(initialWeek, effectiveDateKey);
   const highlightKey = (picked?.mealKey ?? (meals[0]?.key ?? "breakfast")) as MealKey;
   const isPrimaryUpcoming = Boolean(picked?.isPrimaryUpcoming);
@@ -99,7 +116,33 @@ export function MenuViewer({
         />
       </div>
 
-      <MealCarousel meals={meals} highlightKey={highlightKey} isPrimaryUpcoming={isPrimaryUpcoming} />
+      <MealCarousel
+        meals={meals}
+        highlightKey={highlightKey}
+        isPrimaryUpcoming={isPrimaryUpcoming}
+      />
+
+      {extras ? (
+        <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/30 px-4 py-3 sm:px-5">
+          <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">{extras.data.category}</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
+            Prices are listed in {extras.data.currency}.
+          </p>
+          <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2" aria-label={`${extras.data.category} add-ons`}>
+            {extras.data.items.map((item) => (
+              <li
+                key={item.name}
+                className="flex items-center justify-between rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm"
+              >
+                <span className="font-medium text-foreground/90">{item.name}</span>
+                <span className="font-semibold text-primary">
+                  {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <div className="flex flex-col items-center gap-2 mt-6">
         <Button asChild variant="outline">

@@ -41,6 +41,23 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
   const sortedDays = React.useMemo(() => Object.keys(week.menu).sort(), [week.menu]);
   const dayCount = sortedDays.length;
 
+  const extras = React.useMemo(() => {
+    const data = week.extras;
+    if (!data || data.items.length === 0) return undefined;
+    let formatter: Intl.NumberFormat | undefined;
+    try {
+      formatter = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: data.currency,
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0,
+      });
+    } catch {
+      formatter = undefined;
+    }
+    return { data, formatter };
+  }, [week.extras]);
+
   return (
     <div className="space-y-8">
       {/* Mobile/Tablet View - Days stacked vertically */}
@@ -117,6 +134,28 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
           </div>
         </div>
       </div>
+
+      {extras ? (
+        <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/40 px-4 py-3 sm:px-5">
+          <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">{extras.data.category}</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
+            Add-ons available for any meal. Prices listed in {extras.data.currency}.
+          </p>
+          <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2" aria-label={`${extras.data.category} add-ons`}>
+            {extras.data.items.map((item) => (
+              <li
+                key={item.name}
+                className="flex items-center justify-between rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm"
+              >
+                <span className="font-medium text-foreground/90">{item.name}</span>
+                <span className="font-semibold text-primary">
+                  {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }
@@ -155,7 +194,7 @@ function DaySection({ day }: { day: DayMenu }) {
 const MealGridCard = React.memo(function MealGridCard({
   meal,
   mealKey,
-  timeRange
+  timeRange,
 }: {
   meal: Meal;
   mealKey: MealKey;

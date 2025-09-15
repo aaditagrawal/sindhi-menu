@@ -3,6 +3,7 @@ import type {
   MealKey,
   MealSection,
   MealSectionKind,
+  MenuExtras,
   WeekMenu,
   WeekMeta,
 } from "@/lib/types";
@@ -32,6 +33,18 @@ interface RawMeal {
   veg?: string[];
   nonVeg?: string[];
 }
+
+const MENU_EXTRAS: MenuExtras = {
+  category: "Extras",
+  currency: "INR",
+  items: [
+    { name: "Butter Milk", price: 10 },
+    { name: "Fruit Juice", price: 50 },
+    { name: "Lassi", price: 35 },
+    { name: "Boiled Eggs", price: 10 },
+    { name: "Lime", price: 25 },
+  ],
+};
 
 const MEAL_TIMINGS: Record<MealKey, { start: string; end: string }> = {
   lunch: { start: "11:30", end: "14:15" },
@@ -132,6 +145,7 @@ async function loadFixedMenu(): Promise<WeekMenu> {
     foodCourt: 'Sindhi Mess',
     week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • Fixed weekly menu`,
     menu,
+    extras: MENU_EXTRAS,
   };
   return week;
 }

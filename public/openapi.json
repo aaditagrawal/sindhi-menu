@@ -1,0 +1,140 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Sindhi Menu API",
+    "version": "1.0.0",
+    "description": "API contract describing the fixed Sindhi Mess weekly menu endpoint."
+  },
+  "servers": [
+    { "url": "/" }
+  ],
+  "paths": {
+    "/api/menu": {
+      "get": {
+        "summary": "Get the current Sindhi Mess menu",
+        "description": "Returns the latest generated week with all meals, sections, and add-on extras.",
+        "responses": {
+          "200": {
+            "description": "Current weekly menu",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MenuResponse" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MenuExtraItem": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "price": { "type": "number", "example": 10 }
+        },
+        "required": ["name", "price"]
+      },
+      "MenuExtras": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string", "example": "Extras" },
+          "currency": { "type": "string", "example": "INR" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MenuExtraItem" }
+          }
+        },
+        "required": ["category", "currency", "items"]
+      },
+      "MealSection": {
+        "type": "object",
+        "properties": {
+          "kind": { "type": "string", "enum": ["specialVeg", "veg", "nonVeg", "note"] },
+          "title": { "type": "string" },
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["kind", "title", "items"]
+      },
+      "Meal": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "startTime": { "type": "string", "example": "11:30" },
+          "endTime": { "type": "string", "example": "14:15" },
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "sections": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MealSection" }
+          }
+        },
+        "required": ["name", "startTime", "endTime", "items", "sections"]
+      },
+      "DayMenu": {
+        "type": "object",
+        "properties": {
+          "day": { "type": "string", "example": "Monday" },
+          "displayDate": { "type": "string", "example": "Sep 04" },
+          "meals": {
+            "type": "object",
+            "properties": {
+              "lunch": { "$ref": "#/components/schemas/Meal" },
+              "dinner": { "$ref": "#/components/schemas/Meal" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": ["day", "displayDate", "meals"]
+      },
+      "WeekMenu": {
+        "type": "object",
+        "properties": {
+          "foodCourt": { "type": "string", "example": "Sindhi Mess" },
+          "week": { "type": "string", "example": "04 Sep – 09 Sep • Fixed weekly menu" },
+          "menu": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/components/schemas/DayMenu" }
+          },
+          "extras": { "$ref": "#/components/schemas/MenuExtras" }
+        },
+        "required": ["foodCourt", "week", "menu", "extras"]
+      },
+      "MenuResponse": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "example": "2024-09-02_to_2024-09-07" },
+              "generatedAt": { "type": "string", "format": "date-time" },
+              "source": { "type": "string", "example": "/sindhi-menu.json" }
+            },
+            "required": ["id", "generatedAt", "source"]
+          },
+          { "$ref": "#/components/schemas/WeekMenu" }
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" },
+          "details": { "type": "string" }
+        }
+      }
+    }
+  }
+}
