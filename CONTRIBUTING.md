@@ -1,50 +1,63 @@
 ## Contributing
 
-Thanks for your interest in improving the Sindhi Menu project! The app uses a static JSON file for data, so contributions focus on code improvements, UI enhancements, and updating the JSON at public/sindhi-menu.json.
+Thanks for your interest in improving Sindhi Menu! The project is intentionally lightweight: data comes from a static JSON file bundled in `public/sindhi-menu.json`, while the UI focuses on clarity and time awareness. Contributions typically fall into one of three buckets:
+
+- Refining the menu JSON when the banner changes
+- Improving UI/UX or accessibility
+- Enhancing tooling, performance, or developer ergonomics
 
 ### Code of Conduct
-Be kind and respectful. Assume positive intent. Keep discussions constructive and focused on solving problems.
+Be kind and respectful. Assume positive intent, keep feedback actionable, and focus conversations on solving the problem at hand.
 
 ---
 
-## Quick Start (Dev)
+## Quick Start
 
-Prereqs: Node 18+ and Bun.
+**Prerequisites**
+- Node.js 18+
+- [Bun](https://bun.sh)
+
+Install dependencies and run the dev server:
 
 ```bash
 bun install
 bun run dev
 ```
-Open http://localhost:3000.
 
-Build & lint:
+The app serves from http://localhost:3000. Each reload rebuilds the synthetic week from `public/sindhi-menu.json` using IST timers.
+
+### Build & Lint
 ```bash
 bun run build
 bun run lint
 ```
 
+Run these before opening a PR.
+
 ---
 
 ## Project Conventions
 
-Tech stack: Next.js (App Router), TypeScript, Tailwind v4, lucide-react.
+- **TypeScript** – strict mode enabled. Avoid `any`, prefer explicit return types for exported helpers.
+- **React** – mark components with `"use client"` only when interactive. Keep hook dependency arrays exhaustive.
+- **Styling** – Tailwind CSS with design tokens defined in `src/app/globals.css`. Light/dark palettes must maintain contrast (check chips for special veg/non-veg).
+- **Data** – Menu data lives in `public/sindhi-menu.json`. Strings may contain comma/newline separated items which are split at runtime; keep wording consistent so splitting works predictably.
+- **UX** – Preserve the time-aware highlighting. Verify both light and dark themes after UI changes.
+- **Accessibility** – Keep ARIA labels when removing headings, ensure interactive elements have discernible text, and test keyboard navigation where applicable.
 
-- **TypeScript**: strict mode; avoid `any`. Prefer explicit types on exported APIs.
-- **React**: client components only when interaction is needed. Keep hooks dependency arrays correct.
-- **Styling**: Tailwind classes; keep UI minimalist and consistent.
-- **Data**: Menu is read from a fixed JSON (public/sindhi-menu.json). Handle loading/empty states gracefully.
-- **UX**: prioritize "upcoming meal first" logic and responsiveness.
+### Updating the Menu JSON
+1. Edit `public/sindhi-menu.json` with the latest banner details.
+2. Maintain the `specialVeg`, `veg`, and `nonVeg` keys. Arrays are preferred; single strings are allowed.
+3. Run `bun run dev` and check that each meal renders all options (Tuesday dinner is a useful smoke test).
+4. Include screenshots in the PR if the banner change noticeably affects layout.
 
 ---
 
 ## Submitting Changes
 
-1) Fork and create a feature branch.
-2) Make your changes and ensure:
-   - `bun run lint` passes
-   - `bun run build` succeeds
-3) Open a PR with a concise description and screenshots if UI changes.
+1. Create a feature branch.
+2. Make updates and ensure `bun run lint` and `bun run build` pass locally.
+3. Commit with clear messages. If UI changes are visible, attach before/after screenshots in the PR.
+4. Open the PR with a concise summary, mentioning any follow-up work or testing gaps.
 
-Thank you for contributing!
-
-
+Thank you for helping keep Sindhi Menu accurate and delightful!

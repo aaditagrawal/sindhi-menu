@@ -67,7 +67,7 @@ export default function RootLayout({
                 {" • "}
                 This project is{" "}
                 <a
-                  href="https://github.com/aaditagrawal/fc-menu"
+                  href="https://github.com/aaditagrawal/sindhu-menu"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline hover:no-underline"
