@@ -1,7 +1,8 @@
 import { getLatestWeekId, getWeekMenu } from "@/data/weeks";
 import { MenuViewer } from "@/components/MenuViewer";
 
-export const dynamic = "force-dynamic";
+// Regenerate page every 7 days in the background (ISR)
+export const revalidate = 604800; // 7 days
 
 export default async function Home() {
   const weekId = await getLatestWeekId();

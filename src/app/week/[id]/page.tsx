@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import { getAllWeeks, getWeekMenu } from "@/data/weeks";
 import { MenuViewer } from "@/components/MenuViewer";
 
-export const dynamic = "force-dynamic";
+// Regenerate individual week pages every 7 days in background
+export const revalidate = 604800; // 7 days
 
 export async function generateStaticParams() {
   const all = await getAllWeeks();

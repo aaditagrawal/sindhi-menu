@@ -11,9 +11,9 @@ async function fetchMenuFromAPI(params?: { week?: string; weekStart?: string; da
   if (params?.weekStart) url.searchParams.set("weekStart", params.weekStart);
   if (params?.date) url.searchParams.set("date", params.date);
 
-  // Use default fetch caching for server-side requests (5 minutes cache)
+  // Use fetch caching aligned with 7-day frontend strategy
   const res = await fetch(url.toString(), {
-    next: { revalidate: 300 } // Cache for 5 minutes on the server
+    next: { revalidate: 604800 } // Cache for 7 days on the server
   });
 
   if (!res.ok) {

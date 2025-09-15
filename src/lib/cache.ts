@@ -150,11 +150,11 @@ export class LocalStorageCache {
   }
 }
 
-// Cache TTL configurations (in minutes)
+// Cache TTL configurations (in minutes) - aligned with 7-day frontend caching
 export const CACHE_TTL = {
-  WEEKS_INFO: 60, // 1 hour - weeks list doesn't change often
-  WEEK_MENU: 15,  // 15 minutes - menu data changes more frequently
-  LATEST_WEEK: 30, // 30 minutes - latest week info
+  WEEKS_INFO: 10080, // 7 days - weeks list doesn't change often
+  WEEK_MENU: 10080,  // 7 days - menu data can be cached longer
+  LATEST_WEEK: 10080, // 7 days - latest week info
 } as const;
 
 // Cache key generators

@@ -9,7 +9,8 @@ interface PageProps {
   params: Promise<{ id: WeekId }>;
 }
 
-export const dynamic = "force-dynamic";
+// Regenerate full week pages every 7 days in background
+export const revalidate = 604800; // 7 days
 
 export default async function FullWeekPage({ params }: PageProps) {
   const { id } = await params;

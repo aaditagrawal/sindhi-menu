@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   },
   description:
     "A fast, friendly viewer for weekly menus with time-aware highlighting (IST).",
+  other: {
+    // Encourage browser caching for static content - 7 days
+    'cache-control': 'public, max-age=604800',
+  },
 };
 
 export default function RootLayout({
