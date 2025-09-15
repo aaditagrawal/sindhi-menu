@@ -26,8 +26,10 @@ export function InlineSelect<T extends string | number>({
       if (!ref.current) return;
       if (!ref.current.contains(e.target as Node)) setOpen(false);
     }
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
+    if (typeof window !== 'undefined') {
+      document.addEventListener("click", onDocClick);
+      return () => document.removeEventListener("click", onDocClick);
+    }
   }, []);
 
   const selected = options.find((o) => o.value === value);
