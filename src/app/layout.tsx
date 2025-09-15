@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { MenuNotification } from "@/components/MenuNotification";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,10 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script defer src="https://stat.sys256.com/script.js"></script>
-      </head>
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
@@ -82,6 +80,7 @@ export default function RootLayout({
           </footer>
           <Toaster />
         </ThemeProvider>
+        <Script defer src="https://stat.sys256.com/script.js" />
       </body>
     </html>
   );
