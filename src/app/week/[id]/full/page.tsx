@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getWeekMenu } from "@/data/weeks";
+import { getAllWeeks, getWeekMenu } from "@/data/weeks";
 import { ComprehensiveWeekView } from "@/components/ComprehensiveWeekView";
 import type { WeekId } from "@/data/weeks";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,11 @@ import { ArrowLeft } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ id: WeekId }>;
+}
+
+export async function generateStaticParams() {
+  const all = await getAllWeeks();
+  return all.map((id) => ({ id }));
 }
 
 // Regenerate full week pages every 7 days in background
