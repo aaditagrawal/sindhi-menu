@@ -1,16 +1,16 @@
-## Food Court Menus
+## Sindhi Menu
 
-Fast, friendly viewer for weekly mess/food-court menus with time-aware highlighting in Indian Standard Time (IST). The app now integrates with the Food Court API to automatically fetch and display the latest menu data.
+Fast, friendly viewer for Sindhi Mess weekly menu with time-aware highlighting in Indian Standard Time (IST). The app reads from a static JSON file bundled with the app.
 
 ## Contributions, Please
 
-The app now uses an external API for data, so contributions focus on code improvements, UI enhancements, and feature development. Data is managed through the Food Court API at https://tikm.coolstuff.work/docs/reference.
+The app uses a static JSON file for data. Contributions focus on code improvements, UI enhancements, and refining the JSON data in public/sindhi-menu.json.
 
 ### Highlights
 - Time-aware: detects current/upcoming meal using device time converted to IST and auto-focuses it
-- Minimal “playing card” UI with tasteful icons for Breakfast/Lunch/Snacks/Dinner
+- Minimal “playing card” UI with tasteful icons for Lunch/Dinner
 - Horizontal carousel: highlights the primary meal, dims the rest, auto-scrolls to the current one
-- Inline navigation: click Year / Week / Day in-place to switch context
+- Inline navigation: choose Day; fixed weekly pattern
 - Fully responsive for mobile, tablets, and laptops
 
 ### Tech
@@ -45,9 +45,9 @@ bun run lint
 ---
 
 ## Project Structure
-- `src/app/` — pages (home, weeks, per-week page) and API routes for week discovery
+- `src/app/` — pages (home, weeks, per-week page). API routes removed.
 - `src/components/` — UI components (cards, carousel, inline selectors)
-- `src/data/weeks/` — API client functions for fetching menu data
+- `src/data/weeks/` — static loader that builds a synthetic week from public/sindhi-menu.json
 - `src/lib/` — types and IST/time utilities
 
 ---

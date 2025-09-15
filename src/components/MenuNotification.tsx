@@ -21,7 +21,7 @@ export function MenuNotification() {
 
       // Try different toast methods
       toast(
-        "The menu is now contributed by the Indian Kitchen and is up to date with what they provide.",
+        "Data as put on the Sindhi Mess banner.",
         {
           duration: 1500,
         },

@@ -6,25 +6,21 @@ export default function ContributingPage() {
       <div className="mx-auto max-w-3xl prose prose-zinc dark:prose-invert">
         <h1>Contributing</h1>
         <p className="lead">
-          Thanks for your interest in improving this menu viewer! The app now fetches data from an external API, so the main way to contribute is through code improvements and UI enhancements.
+          Thanks for your interest in improving this menu viewer! The app now reads from a static JSON file, so the main way to contribute is through code improvements, UI enhancements, or updating the JSON.
         </p>
 
         <nav>
           <ul>
-            <li><a href="#api-integration">API Integration</a></li>
+
             <li><a href="#code-contributions">Code Contributions</a></li>
             <li><a href="#guidelines">Guidelines</a></li>
             <li><a href="#submitting-changes">Submitting changes</a></li>
           </ul>
         </nav>
 
-        <h2 id="api-integration">API Integration</h2>
+        <h2>Data</h2>
         <p>
-          This app now integrates with the <a href="https://tikm.coolstuff.work/docs/reference" target="_blank" rel="noopener noreferrer">Food Court API</a> to fetch menu data automatically.
-          The API provides real-time menu data, eliminating the need for manual JSON file management.
-        </p>
-        <p>
-          If you&apos;d like to contribute data or improve the API itself, please visit the <a href="https://tikm.coolstuff.work/docs/reference" target="_blank" rel="noopener noreferrer">API documentation</a>.
+          This app reads a fixed weekly menu from <code>public/sindhi-menu.json</code>.
         </p>
         <h2 id="code-contributions">Code Contributions</h2>
         <p>

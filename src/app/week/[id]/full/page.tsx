@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getWeekMenu } from "@/data/weeks";
 import { ComprehensiveWeekView } from "@/components/ComprehensiveWeekView";
-import type { WeekId } from "@/data/weeks/client";
+import type { WeekId } from "@/data/weeks";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 

@@ -51,24 +51,24 @@ export function MealCarousel({
   return (
     <div className="relative overflow-visible">
       {/* Arrows */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 sm:px-3">
+      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-1 sm:px-4">
         <button
           type="button"
           aria-label="Previous"
           onClick={goPrev}
-          className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border bg-background/90 backdrop-blur hover:bg-muted"
+          className="pointer-events-auto inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border-2 border-primary/20 bg-background/95 backdrop-blur shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-200 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100"
           disabled={centerIndex === 0}
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
         <button
           type="button"
           aria-label="Next"
           onClick={goNext}
-          className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border bg-background/90 backdrop-blur hover:bg-muted"
+          className="pointer-events-auto inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border-2 border-primary/20 bg-background/95 backdrop-blur shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-200 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100"
           disabled={centerIndex === meals.length - 1}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
       </div>
 

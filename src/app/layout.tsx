@@ -18,13 +18,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Food Court 2 Menu — The Indian Kitchen",
-    template: "%s — The Indian Kitchen",
+    default: "Sindhi Menu",
+    template: "%s — Sindhi Menu",
   },
   description:
-    "A fast, friendly viewer for weekly menus with time-aware highlighting (IST).",
+    "A fast, friendly viewer for Sindhi Mess weekly menu with time-aware highlighting (IST).",
   other: {
-    // Encourage browser caching for static content - 7 days
     'cache-control': 'public, max-age=604800',
   },
 };
@@ -66,17 +65,7 @@ export default function RootLayout({
                   Aadit (aadit.cc)
                 </a>
                 {" • "}
-                Thanks to The Indian Kitchen, Manipal for providing data for
-                this project. Use the{" "}
-                <a
-                  href="https://tikm.coolstuff.work/docs/reference"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:no-underline"
-                >
-                  API docs
-                </a>{" "}
-                to integrate this data in your own app.
+                Data as put on the Sindhi Mess banner.
                 {" • "}
                 This project is{" "}
                 <a
@@ -87,11 +76,7 @@ export default function RootLayout({
                 >
                   open source on GitHub
                 </a>
-                . Contributions are welcome!
-                {" • "}
-                <a href="/changelog" className="underline hover:no-underline">
-                  Changelog
-                </a>
+                .
               </p>
             </div>
           </footer>

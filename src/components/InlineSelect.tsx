@@ -37,7 +37,8 @@ export function InlineSelect<T extends string | number>({
       <button
         className={cn(
           "underline decoration-dotted underline-offset-4 text-foreground/90 hover:text-foreground",
-          "px-1 py-0.5 rounded focus:outline-none focus:ring-2 focus:ring-ring"
+          "px-1.5 py-1 rounded focus:outline-none focus:ring-2 focus:ring-ring",
+          "text-base sm:text-lg font-semibold"
         )}
         onClick={(e) => {
           e.preventDefault();
@@ -53,7 +54,7 @@ export function InlineSelect<T extends string | number>({
         <div
           role="listbox"
           className={cn(
-            "absolute z-50 mt-2 min-w-[200px] rounded-md border bg-popover p-1 shadow-md",
+            "absolute z-50 mt-2 min-w-[220px] rounded-lg border bg-popover p-1 shadow-lg",
             menuClassName
           )}
         >
@@ -63,7 +64,7 @@ export function InlineSelect<T extends string | number>({
               role="option"
               aria-selected={opt.value === value}
               className={cn(
-                "block w-full text-left px-3 py-2 rounded-md",
+                "block w-full text-left px-3 py-2 rounded-md text-base",
                 opt.value === value ? "bg-muted" : "hover:bg-muted"
               )}
               onClick={() => {
@@ -79,5 +80,4 @@ export function InlineSelect<T extends string | number>({
     </div>
   );
 }
-
 

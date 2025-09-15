@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <div className="px-4 py-8 sm:px-6 md:px-8">
       <div className="mx-auto max-w-4xl space-y-6">
-        <MenuViewer initialWeekId={weekId} initialWeek={week} routingMode="home" />
+        <MenuViewer initialWeekId={weekId} initialWeek={week} />
       </div>
     </div>
   );

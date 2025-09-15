@@ -1,6 +1,6 @@
 ## Contributing
 
-Thanks for your interest in improving the Food Court Menus project! The app now uses an external API for data, so contributions focus on code improvements, UI enhancements, and feature development.
+Thanks for your interest in improving the Sindhi Menu project! The app uses a static JSON file for data, so contributions focus on code improvements, UI enhancements, and updating the JSON at public/sindhi-menu.json.
 
 ### Code of Conduct
 Be kind and respectful. Assume positive intent. Keep discussions constructive and focused on solving problems.
@@ -32,7 +32,7 @@ Tech stack: Next.js (App Router), TypeScript, Tailwind v4, lucide-react.
 - **TypeScript**: strict mode; avoid `any`. Prefer explicit types on exported APIs.
 - **React**: client components only when interaction is needed. Keep hooks dependency arrays correct.
 - **Styling**: Tailwind classes; keep UI minimalist and consistent.
-- **API Integration**: Data is fetched from external Food Court API. Handle loading states and errors gracefully.
+- **Data**: Menu is read from a fixed JSON (public/sindhi-menu.json). Handle loading/empty states gracefully.
 - **UX**: prioritize "upcoming meal first" logic and responsiveness.
 
 ---

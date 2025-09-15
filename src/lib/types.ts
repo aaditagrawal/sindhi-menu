@@ -1,20 +1,30 @@
-export type MealKey = "breakfast" | "lunch" | "snacks" | "dinner";
+export type MealKey = "lunch" | "dinner";
+
+export type MealSectionKind = "specialVeg" | "veg" | "nonVeg" | "note";
+
+export interface MealSection {
+  kind: MealSectionKind;
+  title: string;
+  items: string[];
+}
 
 export interface Meal {
   name: string;
   startTime: string; // HH:mm in IST
   endTime: string;   // HH:mm in IST
   items: string[];
+  sections: MealSection[];
 }
 
 export interface DayMenu {
   day: string; // e.g. Monday
-  meals: Record<MealKey, Meal>;
+  displayDate: string; // e.g. Sep 04
+  meals: Partial<Record<MealKey, Meal>>;
 }
 
 export interface WeekMenu {
   foodCourt: string;
-  week: string; // e.g. "August 18 - August 24, 2024"
+  week: string; // e.g. "Sindhi Mess — Weekly Menu"
   menu: Record<string, DayMenu>; // key: YYYY-MM-DD
 }
 
@@ -30,5 +40,3 @@ export interface WeekMeta {
   foodCourt: string;
   week: string;
 }
-
-

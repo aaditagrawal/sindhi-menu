@@ -1,6 +1,32 @@
 import { type MealKey, type WeekMenu, type CurrentMealPointer } from "./types";
 
 const IST_OFFSET_MINUTES = 5 * 60 + 30; // +05:30
+const IST_TIME_ZONE = "Asia/Kolkata";
+const DAY_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+const DAY_INDEX_LOOKUP = Object.fromEntries(DAY_ORDER.map((name, index) => [name, index])) as Record<
+  (typeof DAY_ORDER)[number],
+  number
+>;
+
+const dateKeyFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: IST_TIME_ZONE,
+});
+
+const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: IST_TIME_ZONE,
+  month: "short",
+  day: "numeric",
+});
+
+const dayNameFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: IST_TIME_ZONE,
+  weekday: "long",
+});
+
+const shortDayNameFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: IST_TIME_ZONE,
+  weekday: "short",
+});
 
 export function getISTNow(): Date {
   const now = new Date();
@@ -9,10 +35,34 @@ export function getISTNow(): Date {
 }
 
 export function formatDateKey(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+  return dateKeyFormatter.format(date);
+}
+
+export function parseDateKey(dateKey: string): Date {
+  return new Date(`${dateKey}T00:00:00Z`);
+}
+
+export function formatISTShortDate(date: Date): string {
+  return shortDateFormatter.format(date);
+}
+
+export function formatISTDayName(date: Date): string {
+  return dayNameFormatter.format(date);
+}
+
+export function getISTDayIndex(date: Date): number {
+  const shortName = shortDayNameFormatter.format(date) as keyof typeof DAY_INDEX_LOOKUP;
+  return DAY_INDEX_LOOKUP[shortName];
+}
+
+export function addISTDays(date: Date, days: number): Date {
+  return new Date(date.getTime() + days * 86_400_000);
+}
+
+export function startOfISTWeek(date: Date): Date {
+  const dayIndex = getISTDayIndex(date);
+  const deltaToMonday = (dayIndex + 6) % 7; // convert Sunday=0 to Monday=0 index
+  return addISTDays(date, -deltaToMonday);
 }
 
 export function parseTimeToMinutes(timeHHmm: string): number {
@@ -30,14 +80,10 @@ export function sortDateKeysAsc(keys: string[]): string[] {
 
 export function mealOrder(meal: MealKey): number {
   switch (meal) {
-    case "breakfast":
-      return 0;
     case "lunch":
-      return 1;
-    case "snacks":
-      return 2;
+      return 0;
     case "dinner":
-      return 3;
+      return 1;
   }
 }
 
@@ -52,7 +98,7 @@ export function findCurrentOrUpcomingMeal(
   const todayMinutes = getTimeOfDayMinutes(nowIST);
 
   const todayData = week.menu[todayKey];
-  const orderedMeals: MealKey[] = ["breakfast", "lunch", "snacks", "dinner"];
+  const orderedMeals: MealKey[] = ["lunch", "dinner"];
 
   if (todayData) {
     for (const mk of orderedMeals) {
@@ -92,7 +138,7 @@ export function pickHighlightMealForDay(
   dateKey: string,
   nowIST: Date = getISTNow()
 ): { mealKey: MealKey; isPrimaryUpcoming: boolean } | null {
-  const orderedMeals: MealKey[] = ["breakfast", "lunch", "snacks", "dinner"];
+  const orderedMeals: MealKey[] = ["lunch", "dinner"];
   const todayKey = formatDateKey(nowIST);
   const day = week.menu[dateKey];
   if (!day) return null;
@@ -136,5 +182,4 @@ export function pickHighlightMealForDay(
   }
   return null;
 }
-
 
