@@ -28,6 +28,83 @@ interface RawMenuData {
   };
 }
 
+function cloneExtras(extras: MenuExtras): MenuExtras {
+  return {
+    category: extras.category,
+    currency: extras.currency,
+    items: extras.items.map((item) => ({ ...item })),
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function resolveExtras(raw: unknown): MenuExtras {
+  const fallback = cloneExtras(MENU_EXTRAS);
+  if (!isRecord(raw)) {
+    return fallback;
+  }
+
+  const category =
+    typeof raw.category === "string" && raw.category.trim().length > 0
+      ? raw.category.trim()
+      : fallback.category;
+  const currency =
+    typeof raw.currency === "string" && raw.currency.trim().length > 0
+      ? raw.currency.trim()
+      : fallback.currency;
+
+  const items = Array.isArray(raw.items)
+    ? raw.items
+        .map((value) => {
+          if (!isRecord(value)) return undefined;
+          const name =
+            typeof value.name === "string" && value.name.trim().length > 0
+              ? value.name.trim()
+              : undefined;
+          if (!name) return undefined;
+          const priceValue = value.price;
+          const price =
+            typeof priceValue === "number"
+              ? priceValue
+              : typeof priceValue === "string"
+                ? Number(priceValue)
+                : Number.NaN;
+          if (!Number.isFinite(price)) return undefined;
+          return { name, price: Number(price) };
+        })
+        .filter((item): item is MenuExtras["items"][number] => Boolean(item))
+    : [];
+
+  if (items.length === 0) {
+    return {
+      category,
+      currency,
+      items: fallback.items,
+    };
+  }
+
+  return { category, currency, items };
+}
+
+function extractMenuAndExtras(source: unknown): { menu: RawMenuData; extras: MenuExtras } {
+  if (isRecord(source)) {
+    const extras = resolveExtras("extras" in source ? source.extras : undefined);
+    if ("menu" in source && isRecord(source.menu)) {
+      return { menu: source.menu as RawMenuData, extras };
+    }
+
+    const menuEntries = Object.entries(source).filter(
+      ([key]) => key !== "extras" && key !== "menu"
+    );
+    const menu = Object.fromEntries(menuEntries) as RawMenuData;
+    return { menu, extras };
+  }
+
+  return { menu: source as RawMenuData, extras: resolveExtras(undefined) };
+}
+
 interface RawMeal {
   specialVeg?: string;
   veg?: string[];
@@ -39,6 +116,7 @@ const MENU_EXTRAS: MenuExtras = {
   currency: "INR",
   items: [
     { name: "Butter Milk", price: 10 },
+    { name: "Dahi", price: 10 },
     { name: "Fruit Juice", price: 50 },
     { name: "Lassi", price: 35 },
     { name: "Boiled Eggs", price: 10 },
@@ -59,18 +137,20 @@ const SECTION_TITLES: Record<MealSectionKind, string> = {
 };
 
 async function loadFixedMenu(): Promise<WeekMenu> {
-  let raw: RawMenuData;
+  let rawMenu: RawMenuData;
+  let extrasData: MenuExtras;
 
   // During SSR/build time, read file from filesystem
   if (typeof window === 'undefined') {
     const filePath = path.join(process.cwd(), 'public', 'sindhi-menu.json');
     const fileContents = await fs.readFile(filePath, 'utf8');
-    raw = JSON.parse(fileContents);
+    ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(JSON.parse(fileContents)));
   } else {
     // Client-side, use fetch
     const res = await fetch('/sindhi-menu.json', { cache: 'force-cache' });
     if (!res.ok) throw new Error('Failed to load sindhi-menu.json');
-    raw = await res.json() as RawMenuData;
+    const parsed = (await res.json()) as unknown;
+    ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(parsed));
   }
 
   const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -127,7 +207,7 @@ async function loadFixedMenu(): Promise<WeekMenu> {
     const current = addISTDays(monday, i);
     const key = formatDateKey(current);
     const canonicalDay = daysOrder[i]!;
-    const rawDay = raw[canonicalDay];
+    const rawDay = rawMenu[canonicalDay];
 
     menu[key] = {
       day: formatISTDayName(current),
@@ -145,7 +225,7 @@ async function loadFixedMenu(): Promise<WeekMenu> {
     foodCourt: 'Sindhi Mess',
     week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • Fixed weekly menu`,
     menu,
-    extras: MENU_EXTRAS,
+    extras: extrasData,
   };
   return week;
 }

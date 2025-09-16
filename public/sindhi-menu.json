@@ -1,71 +1,85 @@
 {
-  "Monday": {
-    "lunch": {
-      "specialVeg": "Paneer masala",
-      "veg": ["Red chana", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Butter Chicken"]
+  "menu": {
+    "Monday": {
+      "lunch": {
+        "specialVeg": "Paneer masala",
+        "veg": ["Red chana", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Butter Chicken"]
+      },
+      "dinner": {
+        "specialVeg": "Paneer Tikka masala",
+        "veg": ["Rajma masala", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Chicken masala"]
+      }
     },
-    "dinner": {
-      "specialVeg": "Paneer Tikka masala",
-      "veg": ["Rajma masala", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Chicken masala"]
+    "Tuesday": {
+      "lunch": {
+        "specialVeg": "Paneer kaju masala",
+        "veg": ["Lobia", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Green Chicken masala"]
+      },
+      "dinner": {
+        "specialVeg": "Paneer Burji",
+        "veg": ["Chana masala", "Dal", "Puri", "Chapati", "Kheer", "Rice", "Papad"]
+      }
+    },
+    "Wednesday": {
+      "lunch": {
+        "specialVeg": "Soya/Gobi Manchurian",
+        "veg": ["Aloo Sabzi", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Chicken Gravy"]
+      },
+      "dinner": {
+        "specialVeg": "Paneer Tikka Kabab",
+        "veg": ["Veg gravy", "Soya Aloo Sabzi", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Chicken Kabab", "Chicken gravy"]
+      }
+    },
+    "Thursday": {
+      "lunch": {
+        "specialVeg": "Paneer chilli",
+        "veg": ["Dahi Kadhi", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Chicken chilli"]
+      },
+      "dinner": {
+        "specialVeg": "Matar Paneer masala",
+        "veg": ["Aloo matar", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Chicken Masala"]
+      }
+    },
+    "Friday": {
+      "lunch": {
+        "specialVeg": "Paneer bhurji",
+        "veg": ["Rajma masala", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Egg bhurji"]
+      },
+      "dinner": {
+        "specialVeg": "Paneer Kofta",
+        "veg": ["Black dal", "Dal", "Rice", "Chapati"],
+        "nonVeg": ["Chicken Gravy"]
+      }
+    },
+    "Saturday": {
+      "lunch": {
+        "specialVeg": "Channa masala",
+        "veg": ["Aloo Sabzi", "Puri/Chapati", "Rice", "Dal", "Papad", "Lime juice"]
+      },
+      "dinner": {
+        "specialVeg": "Aloo Paratha",
+        "veg": ["Sattu Paratha", "Chapathi", "Mix Sabzi", "Dal", "Rice"]
+      }
     }
   },
-  "Tuesday": {
-    "lunch": {
-      "specialVeg": "Paneer kaju masala",
-      "veg": ["Lobia", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Green Chicken masala"]
-    },
-    "dinner": {
-      "specialVeg": "Paneer Burji",
-      "veg": ["Chana masala" , "Dal", "Puri", "Chapati", "Kheer", "Rice", "Papad"]
-    }
-  },
-  "Wednesday": {
-    "lunch": {
-      "specialVeg": "Soya/Gobi Manchurian",
-      "veg": ["Aloo Sabzi", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Chicken Gravy"]
-    },
-    "dinner": {
-      "specialVeg": "Paneer Tikka Kabab",
-      "veg": ["Veg gravy", "Soya Aloo Sabzi", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Chicken Kabab", "Chicken gravy"]
-    }
-  },
-  "Thursday": {
-    "lunch": {
-      "specialVeg": "Paneer chilli",
-      "veg": ["Dahi Kadhi", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Chicken chilli"]
-    },
-    "dinner": {
-      "specialVeg": "Matar Paneer masala",
-      "veg": ["Aloo matar", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Chicken Masala"]
-    }
-  },
-  "Friday": {
-    "lunch": {
-      "specialVeg": "Paneer bhurji",
-      "veg": ["Rajma masala", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Egg bhurji"]
-    },
-    "dinner": {
-      "specialVeg": "Paneer Kofta",
-      "veg": ["Black dal", "Dal", "Rice", "Chapati"],
-      "nonVeg": ["Chicken Gravy"]
-    }
-  },
-  "Saturday": {
-    "lunch": {
-      "specialVeg": "Channa masala",
-      "veg": ["Aloo Sabzi", "Puri/Chapati", "Rice", "Dal", "Papad", "Lime juice"]
-    },
-    "dinner": {
-      "specialVeg": "Aloo Paratha",
-      "veg": ["Sattu Paratha", "Chapathi", "Mix Sabzi", "Dal", "Rice"]
-    }
+  "extras": {
+    "category": "Extras",
+    "currency": "INR",
+    "items": [
+      { "name": "Butter Milk", "price": 10 },
+      { "name": "Dahi", "price": 10 },
+      { "name": "Fruit Juice", "price": 50 },
+      { "name": "Lassi", "price": 35 },
+      { "name": "Boiled Eggs", "price": 10 },
+      { "name": "Lime", "price": 25 }
+    ]
   }
 }

@@ -12,7 +12,10 @@ export async function GET() {
       id: weekId,
       generatedAt: new Date().toISOString(),
       source: "/sindhi-menu.json",
-      ...week,
+      foodCourt: week.foodCourt,
+      week: week.week,
+      menu: week.menu,
+      extras: week.extras,
     });
   } catch (error) {
     return NextResponse.json(
