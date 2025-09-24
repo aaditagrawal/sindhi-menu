@@ -30,6 +30,11 @@ async function loadCurrentWeekMenu(): Promise<{ weekId: string; week: WeekMenu }
 
 // Process menu data (duplicated client-side logic from weeks/index.ts)
 async function processMenuData(rawData: unknown): Promise<{ weekId: string; week: WeekMenu }> {
+  type DayMenu = {
+    day: string;
+    displayDate: string;
+    meals: Record<string, unknown>;
+  };
   // Extract menu and extras from raw data
   const extractMenuAndExtras = (source: unknown) => {
     const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -85,6 +90,9 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
   const { menu: rawMenu, extras: extrasData } = extractMenuAndExtras(rawData);
 
   // Ensure rawMenu is a record
+  const isRecord = (value: unknown): value is Record<string, unknown> => {
+    return typeof value === "object" && value !== null;
+  };
   if (!isRecord(rawMenu)) {
     throw new Error('Invalid menu data structure');
   }
@@ -141,7 +149,7 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
 
   // Build the week menu
   const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const menu: Record<string, unknown> = {};
+  const menu: Record<string, DayMenu> = {};
 
   const now = getISTNow();
   const monday = startOfISTWeek(now);
@@ -209,8 +217,8 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
       day: formatISTDayName(current),
       displayDate: formatISTShortDate(current),
       meals: {
-        lunch: buildMeal(rawDay?.lunch, "lunch"),
-        dinner: buildMeal(rawDay?.dinner, "dinner"),
+        lunch: buildMeal(rawDay && isRecord(rawDay) ? rawDay.lunch as Record<string, unknown> | undefined : undefined, "lunch"),
+        dinner: buildMeal(rawDay && isRecord(rawDay) ? rawDay.dinner as Record<string, unknown> | undefined : undefined, "dinner"),
       },
     };
   }
