@@ -1,10 +1,8 @@
 import { getLatestWeekId, getWeekMenu } from "@/data/weeks";
 import { MenuViewer } from "@/components/MenuViewer";
 
-// Regenerate page every 7 days in the background (ISR)
-export const revalidate = 604800; // 7 days
-
 export default async function Home() {
+  // Use build-time data as fallback - MenuViewer will load current week on client side
   const weekId = await getLatestWeekId();
   const week = await getWeekMenu(weekId);
   return (

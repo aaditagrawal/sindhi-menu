@@ -136,7 +136,7 @@ const SECTION_TITLES: Record<MealSectionKind, string> = {
   note: "Note",
 };
 
-async function loadFixedMenu(): Promise<WeekMenu> {
+export async function loadFixedMenu(): Promise<WeekMenu> {
   let rawMenu: RawMenuData;
   let extrasData: MenuExtras;
 
@@ -230,7 +230,7 @@ async function loadFixedMenu(): Promise<WeekMenu> {
   return week;
 }
 
-function computeWeekIdFromMenu(week: WeekMenu): WeekId {
+export function computeWeekIdFromMenu(week: WeekMenu): WeekId {
   const keys = sortDateKeysAsc(Object.keys(week.menu));
   const start = keys[0];
   const end = keys[keys.length - 1];
