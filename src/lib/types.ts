@@ -1,6 +1,6 @@
 export type MealKey = "lunch" | "dinner";
 
-export type MealSectionKind = "specialVeg" | "veg" | "nonVeg" | "note";
+export type MealSectionKind = "specialVeg" | "veg" | "vegSides" | "nonVeg" | "note";
 
 export interface MealSection {
   kind: MealSectionKind;

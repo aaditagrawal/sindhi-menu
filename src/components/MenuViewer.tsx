@@ -9,18 +9,19 @@ import {
   parseDateKey,
   formatISTShortDate,
 } from "@/lib/date";
-
+import { getMenuNameForOverriddenWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { MealCarousel } from "@/components/MealCarousel";
 import { InlineSelect } from "@/components/InlineSelect";
+import { WeekSelector } from "@/components/WeekSelector";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Grid3X3 } from "lucide-react";
 
 // Client-side menu loading logic
-async function loadCurrentWeekMenu(): Promise<{ weekId: string; week: WeekMenu }> {
-  // Load the fixed menu data
-  const res = await fetch('/sindhi-menu.json', { cache: 'force-cache' });
-  if (!res.ok) throw new Error('Failed to load sindhi-menu.json');
+async function loadMenuForWeekNumber(weekNumber: number): Promise<{ weekId: string; week: WeekMenu }> {
+  const { menuName } = getMenuNameForOverriddenWeek(weekNumber);
+  const res = await fetch(`/${menuName}.json`, { cache: 'force-cache' });
+  if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
   const rawData = await res.json();
 
   // Process the menu data on the client side
@@ -162,6 +163,7 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
   const SECTION_TITLES = {
     specialVeg: "Special Veg",
     veg: "Veg",
+    vegSides: "Veg Sides",
     nonVeg: "Non-Veg",
     note: "Note",
   };
@@ -193,7 +195,10 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
 
     pushSection("specialVeg", src.specialVeg);
     pushSection("nonVeg", src.nonVeg);
+    
+    // Keep veg and vegSides as separate sections
     pushSection("veg", src.veg);
+    pushSection("vegSides", src.vegSides);
 
     if (sections.length === 0) return undefined;
 
@@ -227,7 +232,7 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
   const lastDay = addISTDays(monday, daysOrder.length - 1);
   const week = {
     foodCourt: 'Sindhi Mess',
-    week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • Fixed weekly menu`,
+    week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • Weekly menu`,
     menu,
     extras: extrasData,
   };
@@ -253,6 +258,8 @@ export function MenuViewer({
 }) {
   const [currentWeekId, setCurrentWeekId] = React.useState<string>(initialWeekId);
   const [currentWeek, setCurrentWeek] = React.useState<WeekMenu>(initialWeek);
+  const [weekOverride, setWeekOverride] = React.useState<number | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const sortedDayKeys = React.useMemo(
     () => sortDateKeysAsc(Object.keys(currentWeek.menu)),
@@ -267,16 +274,20 @@ export function MenuViewer({
   React.useEffect(() => {
     async function loadCurrentWeek() {
       try {
-        const { weekId, week } = await loadCurrentWeekMenu();
+        setIsLoading(true);
+        const weekNumber = weekOverride ?? getWeekNumberFromDate(new Date());
+        const { weekId, week } = await loadMenuForWeekNumber(weekNumber);
         setCurrentWeekId(weekId);
         setCurrentWeek(week);
       } catch (error) {
-        console.error('Failed to load current week menu:', error);
+        console.error('Failed to load week menu:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
     loadCurrentWeek();
-  }, []);
+  }, [weekOverride]);
 
   // Set initial dateKey to current/upcoming meal after week is loaded
   React.useEffect(() => {
@@ -347,57 +358,77 @@ export function MenuViewer({
 
   return (
     <div className="space-y-4">
-      <header className="mb-2">
+      <header className="mb-4">
         <div className="text-3xl sm:text-4xl font-semibold tracking-tight">
           {currentWeek.foodCourt}
         </div>
-        <p className="text-muted-foreground mt-2 text-lg">(the menu is the same every week)</p>
+        <p className="text-muted-foreground mt-2 text-lg">Weekly rotating menu (4-week cycle)</p>
+        <p className="text-muted-foreground/70 text-sm mt-1 italic">Sometimes, the Sindhi mess doesn&apos;t adhere to any menu.</p>
       </header>
-      <div className="flex flex-wrap items-center gap-3 text-base">
+      
+      <div className="flex flex-wrap items-center gap-4 text-base">
+        <WeekSelector
+          onWeekChange={(weekNum) => {
+            setWeekOverride(weekNum === -1 ? null : weekNum);
+          }}
+          currentOverride={weekOverride}
+        />
         <InlineSelect
           label="Day"
           value={effectiveDateKey}
           options={dayOptions}
           onChange={(v) => setDateKey(String(v))}
+          disabled={isLoading}
         />
       </div>
 
-      <MealCarousel
-        meals={meals}
-        highlightKey={highlightKey}
-        isPrimaryUpcoming={isPrimaryUpcoming}
-      />
+      {isLoading && (
+        <div className="flex items-center justify-center py-4">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <span className="ml-2 text-sm text-muted-foreground">Loading menu...</span>
+        </div>
+      )}
 
-      {extras ? (
-        <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/30 px-4 py-3 sm:px-5">
-          <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">{extras.data.category}</h2>
-          <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
-            Prices are listed in {extras.data.currency}.
-          </p>
-          <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2" aria-label={`${extras.data.category} add-ons`}>
-            {extras.data.items.map((item) => (
-              <li
-                key={item.name}
-                className="flex items-center justify-between rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm"
-              >
-                <span className="font-medium text-foreground/90">{item.name}</span>
-                <span className="font-semibold text-primary">
-                  {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      {!isLoading && (
+        <>
+          <MealCarousel
+            meals={meals}
+            highlightKey={highlightKey}
+            isPrimaryUpcoming={isPrimaryUpcoming}
+          />
 
-      <div className="flex flex-col items-center gap-2 mt-6">
-        <Button asChild variant="outline">
-          <Link href={`/week/${currentWeekId}/full`} title="View full week menu">
-            <Grid3X3 className="h-4 w-4 mr-2" />
-            View Full Week Menu
-          </Link>
-        </Button>
-      </div>
+          {extras ? (
+            <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/30 px-4 py-3 sm:px-5">
+              <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">{extras.data.category}</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
+                Prices are listed in {extras.data.currency}.
+              </p>
+              <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2" aria-label={`${extras.data.category} add-ons`}>
+                {extras.data.items.map((item) => (
+                  <li
+                    key={item.name}
+                    className="flex items-center justify-between rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm"
+                  >
+                    <span className="font-medium text-foreground/90">{item.name}</span>
+                    <span className="font-semibold text-primary">
+                      {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          <div className="flex flex-col items-center gap-2 mt-6">
+            <Button asChild variant="outline">
+              <Link href={`/week/${currentWeekId}/full`} title="View full week menu">
+                <Grid3X3 className="h-4 w-4 mr-2" />
+                View Full Week Menu
+              </Link>
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -16,6 +16,7 @@ import {
   sortDateKeysAsc,
   startOfISTWeek,
 } from "@/lib/date";
+import { getMenuNameForDate, type MenuName } from "@/lib/menuManager";
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -108,6 +109,7 @@ function extractMenuAndExtras(source: unknown): { menu: RawMenuData; extras: Men
 interface RawMeal {
   specialVeg?: string;
   veg?: string[];
+  vegSides?: string[];
   nonVeg?: string[];
 }
 
@@ -132,23 +134,35 @@ const MEAL_TIMINGS: Record<MealKey, { start: string; end: string }> = {
 const SECTION_TITLES: Record<MealSectionKind, string> = {
   specialVeg: "Special Veg",
   veg: "Veg",
+  vegSides: "Veg Sides",
   nonVeg: "Non-Veg",
   note: "Note",
 };
 
-export async function loadFixedMenu(): Promise<WeekMenu> {
+/**
+ * Load menu for a specific week, using the menu rotation system
+ */
+export async function loadMenuForDate(date: Date = getISTNow()): Promise<WeekMenu> {
+  const menuName = getMenuNameForDate(date);
+  return loadMenuByName(menuName);
+}
+
+/**
+ * Load a menu by its name (menu1, menu2, menu3, menu4)
+ */
+export async function loadMenuByName(menuName: MenuName): Promise<WeekMenu> {
   let rawMenu: RawMenuData;
   let extrasData: MenuExtras;
 
   // During SSR/build time, read file from filesystem
   if (typeof window === 'undefined') {
-    const filePath = path.join(process.cwd(), 'public', 'sindhi-menu.json');
+    const filePath = path.join(process.cwd(), 'public', `${menuName}.json`);
     const fileContents = await fs.readFile(filePath, 'utf8');
     ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(JSON.parse(fileContents)));
   } else {
     // Client-side, use fetch
-    const res = await fetch('/sindhi-menu.json', { cache: 'force-cache' });
-    if (!res.ok) throw new Error('Failed to load sindhi-menu.json');
+    const res = await fetch(`/${menuName}.json`, { cache: 'force-cache' });
+    if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
     const parsed = (await res.json()) as unknown;
     ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(parsed));
   }
@@ -189,7 +203,10 @@ export async function loadFixedMenu(): Promise<WeekMenu> {
 
     pushSection("specialVeg", src.specialVeg);
     pushSection("nonVeg", src.nonVeg);
+    
+    // Keep veg and vegSides as separate sections
     pushSection("veg", src.veg);
+    pushSection("vegSides", src.vegSides);
 
     if (sections.length === 0) return undefined;
 
@@ -223,11 +240,18 @@ export async function loadFixedMenu(): Promise<WeekMenu> {
   const lastDay = addISTDays(monday, daysOrder.length - 1);
   const week: WeekMenu = {
     foodCourt: 'Sindhi Mess',
-    week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • Fixed weekly menu`,
+    week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • ${menuName}`,
     menu,
     extras: extrasData,
   };
   return week;
+}
+
+/**
+ * Load the fixed menu (backward compatibility)
+ */
+export async function loadFixedMenu(): Promise<WeekMenu> {
+  return loadMenuForDate();
 }
 
 export function computeWeekIdFromMenu(week: WeekMenu): WeekId {

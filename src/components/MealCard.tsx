@@ -44,7 +44,8 @@ export function MealCard({
   const sectionTone: Record<MealSectionKind, string> = {
     specialVeg:
       "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
-    veg: "bg-foreground/5 border-foreground/10 text-foreground",
+    veg: "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
+    vegSides: "bg-foreground/5 border-foreground/10 text-foreground",
     nonVeg:
       "bg-rose-100 border-rose-200 text-rose-900 dark:bg-rose-500/10 dark:border-rose-400/30 dark:text-rose-100",
     note: "bg-muted/40 border-muted-foreground/20 text-muted-foreground",
@@ -52,11 +53,13 @@ export function MealCard({
 
   const sectionIcon: Partial<Record<MealSectionKind, typeof Leaf>> = {
     specialVeg: Leaf,
+    veg: Leaf,
     nonVeg: Beef,
   };
 
   const iconTone: Partial<Record<MealSectionKind, string>> = {
     specialVeg: "text-emerald-700 dark:text-emerald-300",
+    veg: "text-emerald-700 dark:text-emerald-300",
     nonVeg: "text-rose-700 dark:text-rose-300",
   };
 
@@ -79,13 +82,13 @@ export function MealCard({
       <CardContent>
         {filteredSections.length > 0 ? (
           <ul aria-label="Menu items" className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-base leading-relaxed">
-            {filteredSections.flatMap((section) =>
-              section.items.map((item, idx) => {
+            {filteredSections.flatMap((section, sectionIdx) =>
+              section.items.map((item, itemIdx) => {
                 const IconComponent = sectionIcon[section.kind];
                 const tone = sectionTone[section.kind] ?? sectionTone.note;
                 return (
                   <li
-                    key={`${section.kind}-${idx}`}
+                    key={`${section.kind}-${sectionIdx}-${itemIdx}`}
                     className={cn(
                       "rounded-lg px-3 py-2 flex items-center gap-3 border backdrop-blur-sm",
                       tone

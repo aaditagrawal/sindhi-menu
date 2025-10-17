@@ -30,7 +30,8 @@ const mealTitles = {
 const sectionTone: Record<MealSectionKind, string> = {
   specialVeg:
     "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
-  veg: "bg-foreground/5 border-border/30 text-foreground",
+  veg: "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
+  vegSides: "bg-foreground/5 border-border/30 text-foreground",
   nonVeg:
     "bg-rose-100 border-rose-200 text-rose-900 dark:bg-rose-500/10 dark:border-rose-400/30 dark:text-rose-100",
   note: "bg-muted/40 border-muted-foreground/20 text-muted-foreground",
@@ -229,10 +230,10 @@ const MealGridCard = React.memo(function MealGridCard({
           {filteredSections.length > 0
             ? (
                 <ul aria-label="Menu items" className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {filteredSections.flatMap((section) =>
+                  {filteredSections.flatMap((section, sectionIdx) =>
                     section.items.map((item, idx) => (
                       <li
-                        key={`${section.kind}-${idx}`}
+                        key={`${section.kind}-${sectionIdx}-${idx}`}
                         className={`rounded-md border px-2 py-1 ${sectionTone[section.kind] ?? sectionTone.note}`}
                       >
                         {item}
@@ -244,7 +245,7 @@ const MealGridCard = React.memo(function MealGridCard({
             : fallbackItems.length > 0
             ? fallbackItems.map((item, idx) => (
                 <div
-                  key={idx}
+                  key={`fallback-${idx}`}
                   className="rounded-md border border-border/30 bg-foreground/5 px-2 py-1"
                 >
                   {item}

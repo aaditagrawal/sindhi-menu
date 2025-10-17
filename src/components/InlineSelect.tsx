@@ -10,6 +10,7 @@ export function InlineSelect<T extends string | number>({
   onChange,
   className,
   menuClassName,
+  disabled = false,
 }: {
   label?: string;
   value: T;
@@ -17,6 +18,7 @@ export function InlineSelect<T extends string | number>({
   onChange: (v: T) => void;
   className?: string;
   menuClassName?: string;
+  disabled?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLDivElement | null>(null);
@@ -40,19 +42,21 @@ export function InlineSelect<T extends string | number>({
         className={cn(
           "underline decoration-dotted underline-offset-4 text-foreground/90 hover:text-foreground",
           "px-1.5 py-1 rounded focus:outline-none focus:ring-2 focus:ring-ring",
-          "text-base sm:text-lg font-semibold"
+          "text-base sm:text-lg font-semibold",
+          disabled && "opacity-50 cursor-not-allowed hover:text-foreground/90"
         )}
         onClick={(e) => {
           e.preventDefault();
-          setOpen((o) => !o);
+          if (!disabled) setOpen((o) => !o);
         }}
         aria-haspopup="listbox"
         aria-expanded={open}
+        disabled={disabled}
       >
         {label ? `${label}: ` : null}
         <span className="font-medium">{selected?.label ?? String(value)}</span>
       </button>
-      {open ? (
+      {open && !disabled ? (
         <div
           role="listbox"
           className={cn(
