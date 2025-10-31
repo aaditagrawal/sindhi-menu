@@ -8,6 +8,7 @@ import {
   sortDateKeysAsc,
   parseDateKey,
   formatISTShortDate,
+  formatDateKey,
 } from "@/lib/date";
 import { getMenuNameForOverriddenWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { MealCarousel } from "@/components/MealCarousel";
@@ -107,7 +108,9 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
   };
 
   const formatDateKey = (date: Date): string => {
-    return date.toISOString().split('T')[0];
+    return date.toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata"
+    });
   };
 
   const formatISTDayName = (date: Date): string => {
