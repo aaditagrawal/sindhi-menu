@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getLatestWeekId, getWeekMenu } from "@/data/weeks";
 
-export const revalidate = 3600; // cache API responses for an hour
+
 
 export async function GET() {
   try {

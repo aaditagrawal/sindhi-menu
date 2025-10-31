@@ -161,7 +161,7 @@ export async function loadMenuByName(menuName: MenuName): Promise<WeekMenu> {
     ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(JSON.parse(fileContents)));
   } else {
     // Client-side, use fetch
-    const res = await fetch(`/${menuName}.json`, { cache: 'force-cache' });
+    const res = await fetch(`/${menuName}.json`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
     const parsed = (await res.json()) as unknown;
     ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(parsed));

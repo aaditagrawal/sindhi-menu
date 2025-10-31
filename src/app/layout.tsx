@@ -24,9 +24,7 @@ export const metadata: Metadata = {
   },
   description:
     "A fast, friendly viewer for Sindhi Mess weekly menu with time-aware highlighting (IST).",
-  other: {
-    'cache-control': 'public, max-age=604800',
-  },
+
 };
 
 export default function RootLayout({

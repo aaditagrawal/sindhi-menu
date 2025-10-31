@@ -20,7 +20,7 @@ import { Grid3X3 } from "lucide-react";
 // Client-side menu loading logic
 async function loadMenuForWeekNumber(weekNumber: number): Promise<{ weekId: string; week: WeekMenu }> {
   const { menuName } = getMenuNameForOverriddenWeek(weekNumber);
-  const res = await fetch(`/${menuName}.json`, { cache: 'force-cache' });
+  const res = await fetch(`/${menuName}.json`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
   const rawData = await res.json();
 
@@ -258,7 +258,16 @@ export function MenuViewer({
 }) {
   const [currentWeekId, setCurrentWeekId] = React.useState<string>(initialWeekId);
   const [currentWeek, setCurrentWeek] = React.useState<WeekMenu>(initialWeek);
-  const [weekOverride, setWeekOverride] = React.useState<number | null>(null);
+  
+  // Load week override from localStorage on mount
+  const [weekOverride, setWeekOverride] = React.useState<number | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sindhi-menu-week-override');
+      return saved ? parseInt(saved, 10) : null;
+    }
+    return null;
+  });
+  
   const [isLoading, setIsLoading] = React.useState(false);
 
   const sortedDayKeys = React.useMemo(
@@ -267,8 +276,18 @@ export function MenuViewer({
   );
 
   const defaultKey = sortedDayKeys[0] ?? "";
-
   const [dateKey, setDateKey] = React.useState<string>(defaultKey);
+
+  // Save week override to localStorage when it changes
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (weekOverride !== null) {
+        localStorage.setItem('sindhi-menu-week-override', weekOverride.toString());
+      } else {
+        localStorage.removeItem('sindhi-menu-week-override');
+      }
+    }
+  }, [weekOverride]);
 
   // Load current week menu on client side
   React.useEffect(() => {
@@ -295,6 +314,22 @@ export function MenuViewer({
     if (ptr?.dateKey && currentWeek.menu[ptr.dateKey]) {
       setDateKey(ptr.dateKey);
     }
+  }, [currentWeek]);
+
+  // Update date key periodically for auto date adjustment
+  React.useEffect(() => {
+    const updateDate = () => {
+      const ptr = findCurrentOrUpcomingMeal(currentWeek);
+      if (ptr?.dateKey && currentWeek.menu[ptr.dateKey]) {
+        setDateKey(ptr.dateKey);
+      }
+    };
+
+    // Update immediately and then every minute
+    updateDate();
+    const interval = setInterval(updateDate, 60000); // Update every minute
+
+    return () => clearInterval(interval);
   }, [currentWeek]);
 
   // Ensure dateKey is valid for current week
