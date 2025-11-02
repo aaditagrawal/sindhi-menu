@@ -278,8 +278,13 @@ export function MenuViewer({
     [currentWeek.menu]
   );
 
-  const defaultKey = sortedDayKeys[0] ?? "";
-  const [dateKey, setDateKey] = React.useState<string>(defaultKey);
+  // Initialize with current/upcoming meal instead of first day of week
+  const getCurrentDayKey = () => {
+    const ptr = findCurrentOrUpcomingMeal(currentWeek);
+    return ptr?.dateKey && currentWeek.menu[ptr.dateKey] ? ptr.dateKey : (sortedDayKeys[0] ?? "");
+  };
+  
+  const [dateKey, setDateKey] = React.useState<string>(getCurrentDayKey);
 
   // Save week override to localStorage when it changes
   React.useEffect(() => {
