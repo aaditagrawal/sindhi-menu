@@ -8,7 +8,6 @@ import {
   sortDateKeysAsc,
   parseDateKey,
   formatISTShortDate,
-  formatDateKey,
 } from "@/lib/date";
 import { getMenuNameForOverriddenWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { MealCarousel } from "@/components/MealCarousel";
@@ -278,13 +277,8 @@ export function MenuViewer({
     [currentWeek.menu]
   );
 
-  // Initialize with current/upcoming meal instead of first day of week
-  const getCurrentDayKey = () => {
-    const ptr = findCurrentOrUpcomingMeal(currentWeek);
-    return ptr?.dateKey && currentWeek.menu[ptr.dateKey] ? ptr.dateKey : (sortedDayKeys[0] ?? "");
-  };
-  
-  const [dateKey, setDateKey] = React.useState<string>(getCurrentDayKey);
+  // Initialize with empty string, useEffect will set the correct current day
+  const [dateKey, setDateKey] = React.useState<string>("");
 
   // Save week override to localStorage when it changes
   React.useEffect(() => {
@@ -348,8 +342,8 @@ export function MenuViewer({
   }, [currentWeek, dateKey, sortedDayKeys]);
 
   const pointer = findCurrentOrUpcomingMeal(currentWeek);
-  const effectiveDateKey = dateKey || pointer?.dateKey || defaultKey;
-  const fallbackKey = defaultKey;
+  const effectiveDateKey = dateKey || pointer?.dateKey || (sortedDayKeys[0] ?? "");
+  const fallbackKey = sortedDayKeys[0] ?? "";
   const day = currentWeek.menu[effectiveDateKey] ?? currentWeek.menu[fallbackKey];
 
   const order: MealKey[] = ["lunch", "dinner"];
