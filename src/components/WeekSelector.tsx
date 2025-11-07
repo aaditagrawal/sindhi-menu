@@ -32,6 +32,12 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
     10
   );
 
+  // Always calculate from the actual current week (not the override)
+  const actualCurrentMenuNumber = React.useMemo(() => {
+    const metadata = getMenuNameForOverriddenWeek(null);
+    return parseInt(metadata.menuName.replace("menu", ""), 10);
+  }, []);
+
   const displayLabel = currentMetadata.isOverridden
     ? `${currentMetadata.menuName} (Override)`
     : `${currentMetadata.menuName} (Current)`;
@@ -48,8 +54,8 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
           onChange={(e) => {
             const selectedMenuNumber = parseInt(e.target.value, 10);
             
-            // Calculate the week offset needed to get to the target menu
-            let weekOffset = selectedMenuNumber - currentMenuNumber;
+            // Calculate the week offset from the actual current week (not the currently displayed menu)
+            let weekOffset = selectedMenuNumber - actualCurrentMenuNumber;
             if (weekOffset < -2) weekOffset += 4;
             if (weekOffset > 2) weekOffset -= 4;
             
