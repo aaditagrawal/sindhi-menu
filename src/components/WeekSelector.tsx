@@ -53,12 +53,12 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
           value={currentMenuNumber}
           onChange={(e) => {
             const selectedMenuNumber = parseInt(e.target.value, 10);
-            
+
             // Calculate the week offset from the actual current week (not the currently displayed menu)
             let weekOffset = selectedMenuNumber - actualCurrentMenuNumber;
             if (weekOffset < -2) weekOffset += 4;
             if (weekOffset > 2) weekOffset -= 4;
-            
+
             const targetWeek = currentWeekNumber + weekOffset;
             onWeekChange(targetWeek === currentWeekNumber ? -1 : targetWeek);
           }}
