@@ -315,8 +315,11 @@ export function MenuViewer({
     const ptr = findCurrentOrUpcomingMeal(currentWeek);
     if (ptr?.dateKey && currentWeek.menu[ptr.dateKey]) {
       setDateKey(ptr.dateKey);
+    } else if (sortedDayKeys.length > 0) {
+      // Fallback to first day only if no current/upcoming meal found
+      setDateKey(sortedDayKeys[0]);
     }
-  }, [currentWeek]);
+  }, [currentWeek, sortedDayKeys]);
 
   // Update date key periodically for auto date adjustment
   React.useEffect(() => {
@@ -333,13 +336,6 @@ export function MenuViewer({
 
     return () => clearInterval(interval);
   }, [currentWeek]);
-
-  // Ensure dateKey is valid for current week
-  React.useEffect(() => {
-    if (!currentWeek.menu[dateKey]) {
-      setDateKey(sortedDayKeys[0] ?? "");
-    }
-  }, [currentWeek, dateKey, sortedDayKeys]);
 
   const pointer = findCurrentOrUpcomingMeal(currentWeek);
   const effectiveDateKey = dateKey || pointer?.dateKey || (sortedDayKeys[0] ?? "");
