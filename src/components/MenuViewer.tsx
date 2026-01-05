@@ -9,7 +9,7 @@ import {
   parseDateKey,
   formatISTShortDate,
 } from "@/lib/date";
-import { getMenuNameForOverriddenWeek, getWeekNumberFromDate } from "@/lib/menuManager";
+import { getMenuNameForOverriddenWeek, getMenuNumberForWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { MealCarousel } from "@/components/MealCarousel";
 import { InlineSelect } from "@/components/InlineSelect";
 import { WeekSelector } from "@/components/WeekSelector";
@@ -252,16 +252,15 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
 }
 
 export function MenuViewer({
-  initialWeekId,
   initialWeek,
+  initialWeekOverride,
 }: {
-  initialWeekId: string;
   initialWeek: WeekMenu;
+  initialWeekOverride?: number;
 }) {
-  const [currentWeekId, setCurrentWeekId] = React.useState<string>(initialWeekId);
   const [currentWeek, setCurrentWeek] = React.useState<WeekMenu>(initialWeek);
   
-  // Load week override from localStorage on mount
+  // Load week override from localStorage on mount, or use initialWeekOverride prop
   const [weekOverride, setWeekOverride] = React.useState<number | null>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('sindhi-menu-week-override');
@@ -269,6 +268,13 @@ export function MenuViewer({
     }
     return null;
   });
+  
+  // Apply initialWeekOverride from props after mount
+  React.useEffect(() => {
+    if (initialWeekOverride !== undefined) {
+      setWeekOverride(initialWeekOverride);
+    }
+  }, [initialWeekOverride]);
   
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -297,8 +303,7 @@ export function MenuViewer({
       try {
         setIsLoading(true);
         const weekNumber = weekOverride ?? getWeekNumberFromDate(new Date());
-        const { weekId, week } = await loadMenuForWeekNumber(weekNumber);
-        setCurrentWeekId(weekId);
+        const { week } = await loadMenuForWeekNumber(weekNumber);
         setCurrentWeek(week);
       } catch (error) {
         console.error('Failed to load week menu:', error);
@@ -452,14 +457,14 @@ export function MenuViewer({
             </section>
           ) : null}
 
-          <div className="flex flex-col items-center gap-2 mt-6">
-            <Button asChild variant="outline">
-              <Link href={`/week/${currentWeekId}/full`} title="View full week menu">
-                <Grid3X3 className="h-4 w-4 mr-2" />
-                View Full Week Menu
-              </Link>
-            </Button>
-          </div>
+           <div className="flex flex-col items-center gap-2 mt-6">
+             <Button asChild variant="outline">
+               <Link href={`/week/${getMenuNumberForWeek(weekOverride ?? getWeekNumberFromDate(new Date()))}/full`} title="View full week menu">
+                 <Grid3X3 className="h-4 w-4 mr-2" />
+                 View Full Week Menu
+               </Link>
+             </Button>
+           </div>
         </>
       )}
     </div>
