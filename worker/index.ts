@@ -1,5 +1,7 @@
+import type { Request, ExecutionContext } from "@cloudflare/workers-types";
+
 export default {
-  async fetch(request, env, ctx): Promise<Response> {
+  async fetch(request: Request, env: unknown, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/menu" && request.method === "GET") {
