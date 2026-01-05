@@ -1,7 +1,9 @@
 {
-  "name": "campus-directory",
+  "name": "fc2-menus",
   "compatibility_date": "2025-01-14",
   "assets": {
-    "directory": "./out"
-  }
+    "directory": "./out",
+    "binding": "ASSETS"
+  },
+  "main": "worker/index.ts"
 }
