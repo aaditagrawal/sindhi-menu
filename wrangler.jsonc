@@ -3,7 +3,7 @@
   "compatibility_date": "2025-01-14",
   "assets": {
     "directory": "./out",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
-  "main": "worker/index.ts"
+  "main": "worker/index.ts",
 }

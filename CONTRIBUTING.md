@@ -7,6 +7,7 @@ Thanks for your interest in improving Sindhi Menu! The project is intentionally 
 - Enhancing tooling, performance, or developer ergonomics
 
 ### Code of Conduct
+
 Be kind and respectful. Assume positive intent, keep feedback actionable, and focus conversations on solving the problem at hand.
 
 ---
@@ -14,6 +15,7 @@ Be kind and respectful. Assume positive intent, keep feedback actionable, and fo
 ## Quick Start
 
 **Prerequisites**
+
 - Node.js 18+
 - [Bun](https://bun.sh)
 
@@ -27,6 +29,7 @@ bun run dev
 The app serves from http://localhost:3000. Each reload rebuilds the synthetic week from `public/sindhi-menu.json` using IST timers.
 
 ### Build & Lint
+
 ```bash
 bun run build
 bun run lint
@@ -46,6 +49,7 @@ Run these before opening a PR.
 - **Accessibility** – Keep ARIA labels when removing headings, ensure interactive elements have discernible text, and test keyboard navigation where applicable.
 
 ### Updating the Menu JSON
+
 1. Edit `public/sindhi-menu.json` with the latest banner details.
 2. Maintain the `specialVeg`, `veg`, and `nonVeg` keys. Arrays are preferred; single strings are allowed.
 3. Run `bun run dev` and check that each meal renders all options (Tuesday dinner is a useful smoke test).
