@@ -17,8 +17,8 @@ import {
   startOfISTWeek,
 } from "@/lib/date";
 import { getMenuNameForDate, type MenuName } from "@/lib/menuManager";
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from "fs";
+import path from "path";
 
 export type WeekId = string;
 
@@ -97,7 +97,7 @@ function extractMenuAndExtras(source: unknown): { menu: RawMenuData; extras: Men
     }
 
     const menuEntries = Object.entries(source).filter(
-      ([key]) => key !== "extras" && key !== "menu"
+      ([key]) => key !== "extras" && key !== "menu",
     );
     const menu = Object.fromEntries(menuEntries) as RawMenuData;
     return { menu, extras };
@@ -155,13 +155,13 @@ export async function loadMenuByName(menuName: MenuName): Promise<WeekMenu> {
   let extrasData: MenuExtras;
 
   // During SSR/build time, read file from filesystem
-  if (typeof window === 'undefined') {
-    const filePath = path.join(process.cwd(), 'public', `${menuName}.json`);
-    const fileContents = await fs.readFile(filePath, 'utf8');
+  if (typeof window === "undefined") {
+    const filePath = path.join(process.cwd(), "public", `${menuName}.json`);
+    const fileContents = await fs.readFile(filePath, "utf8");
     ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(JSON.parse(fileContents)));
   } else {
     // Client-side, use fetch
-    const res = await fetch(`/${menuName}.json`, { cache: 'no-store' });
+    const res = await fetch(`/${menuName}.json`, { cache: "no-store" });
     if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
     const parsed = (await res.json()) as unknown;
     ({ menu: rawMenu, extras: extrasData } = extractMenuAndExtras(parsed));
@@ -173,10 +173,7 @@ export async function loadMenuByName(menuName: MenuName): Promise<WeekMenu> {
   const now = getISTNow();
   const monday = startOfISTWeek(now);
 
-  const buildMeal = (
-    src: RawMeal | undefined,
-    mealName: MealKey
-  ): Meal | undefined => {
+  const buildMeal = (src: RawMeal | undefined, mealName: MealKey): Meal | undefined => {
     if (!src) return undefined;
 
     const sections: MealSection[] = [];
@@ -189,7 +186,7 @@ export async function loadMenuByName(menuName: MenuName): Promise<WeekMenu> {
         .flatMap((item) =>
           String(item)
             .split(/(?:\r?\n|,|;|•)/g)
-            .map((part) => part.trim())
+            .map((part) => part.trim()),
         )
         .map((item) => item.replace(/\s+/g, " "))
         .filter(Boolean);
@@ -203,7 +200,7 @@ export async function loadMenuByName(menuName: MenuName): Promise<WeekMenu> {
 
     pushSection("specialVeg", src.specialVeg);
     pushSection("nonVeg", src.nonVeg);
-    
+
     // Keep veg and vegSides as separate sections
     pushSection("veg", src.veg);
     pushSection("vegSides", src.vegSides);
@@ -239,7 +236,7 @@ export async function loadMenuByName(menuName: MenuName): Promise<WeekMenu> {
   const firstDay = addISTDays(monday, 0);
   const lastDay = addISTDays(monday, daysOrder.length - 1);
   const week: WeekMenu = {
-    foodCourt: 'Sindhi Mess',
+    foodCourt: "Sindhi Mess",
     week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • ${menuName}`,
     menu,
     extras: extrasData,
@@ -271,7 +268,7 @@ export async function getLatestWeekId(): Promise<WeekId> {
   return computeWeekIdFromMenu(latestWeek);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 export async function getWeekMenu(_id: WeekId): Promise<WeekMenu> {
   // For fixed menu, ignore id and return the same constructed week for current dates
   return loadFixedMenu();

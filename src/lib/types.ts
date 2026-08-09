@@ -11,7 +11,7 @@ export interface MealSection {
 export interface Meal {
   name: string;
   startTime: string; // HH:mm in IST
-  endTime: string;   // HH:mm in IST
+  endTime: string; // HH:mm in IST
   items: string[];
   sections: MealSection[];
 }

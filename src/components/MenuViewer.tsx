@@ -9,7 +9,11 @@ import {
   parseDateKey,
   formatISTShortDate,
 } from "@/lib/date";
-import { getMenuNameForOverriddenWeek, getMenuNumberForWeek, getWeekNumberFromDate } from "@/lib/menuManager";
+import {
+  getMenuNameForOverriddenWeek,
+  getMenuNumberForWeek,
+  getWeekNumberFromDate,
+} from "@/lib/menuManager";
 import { MealCarousel } from "@/components/MealCarousel";
 import { InlineSelect } from "@/components/InlineSelect";
 import { WeekSelector } from "@/components/WeekSelector";
@@ -18,9 +22,11 @@ import { Button } from "@/components/ui/button";
 import { Grid3X3 } from "lucide-react";
 
 // Client-side menu loading logic
-async function loadMenuForWeekNumber(weekNumber: number): Promise<{ weekId: string; week: WeekMenu }> {
+async function loadMenuForWeekNumber(
+  weekNumber: number,
+): Promise<{ weekId: string; week: WeekMenu }> {
   const { menuName } = getMenuNameForOverriddenWeek(weekNumber);
-  const res = await fetch(`/${menuName}.json`, { cache: 'no-store' });
+  const res = await fetch(`/${menuName}.json`, { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
   const rawData = await res.json();
 
@@ -46,24 +52,31 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
       const fallback = { category: "Extras", currency: "INR", items: [] };
       if (!isRecord(raw)) return fallback;
 
-      const category = typeof raw.category === "string" && raw.category.trim().length > 0
-        ? raw.category.trim() : fallback.category;
-      const currency = typeof raw.currency === "string" && raw.currency.trim().length > 0
-        ? raw.currency.trim() : fallback.currency;
+      const category =
+        typeof raw.category === "string" && raw.category.trim().length > 0
+          ? raw.category.trim()
+          : fallback.category;
+      const currency =
+        typeof raw.currency === "string" && raw.currency.trim().length > 0
+          ? raw.currency.trim()
+          : fallback.currency;
 
       const items = Array.isArray(raw.items)
         ? raw.items
             .map((value) => {
               if (!isRecord(value)) return undefined;
-              const name = typeof value.name === "string" && value.name.trim().length > 0
-                ? value.name.trim() : undefined;
+              const name =
+                typeof value.name === "string" && value.name.trim().length > 0
+                  ? value.name.trim()
+                  : undefined;
               if (!name) return undefined;
               const priceValue = value.price;
-              const price = typeof priceValue === "number"
-                ? priceValue
-                : typeof priceValue === "string"
-                  ? Number(priceValue)
-                  : Number.NaN;
+              const price =
+                typeof priceValue === "number"
+                  ? priceValue
+                  : typeof priceValue === "string"
+                    ? Number(priceValue)
+                    : Number.NaN;
               if (!Number.isFinite(price)) return undefined;
               return { name, price: Number(price) };
             })
@@ -81,7 +94,9 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
       if ("menu" in source && isRecord(source.menu)) {
         return { menu: source.menu, extras };
       }
-      const menuEntries = Object.entries(source).filter(([key]) => key !== "extras" && key !== "menu");
+      const menuEntries = Object.entries(source).filter(
+        ([key]) => key !== "extras" && key !== "menu",
+      );
       const menu = Object.fromEntries(menuEntries);
       return { menu, extras };
     }
@@ -95,7 +110,7 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
     return typeof value === "object" && value !== null;
   };
   if (!isRecord(rawMenu)) {
-    throw new Error('Invalid menu data structure');
+    throw new Error("Invalid menu data structure");
   }
 
   // Date utility functions (duplicated)
@@ -108,14 +123,14 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
 
   const formatDateKey = (date: Date): string => {
     return date.toLocaleDateString("en-CA", {
-      timeZone: "Asia/Kolkata"
+      timeZone: "Asia/Kolkata",
     });
   };
 
   const formatISTDayName = (date: Date): string => {
     return date.toLocaleDateString("en-US", {
       weekday: "long",
-      timeZone: "Asia/Kolkata"
+      timeZone: "Asia/Kolkata",
     });
   };
 
@@ -123,7 +138,7 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      timeZone: "Asia/Kolkata"
+      timeZone: "Asia/Kolkata",
     });
   };
 
@@ -134,9 +149,17 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
   const getISTDayIndex = (date: Date): number => {
     const shortName = date.toLocaleDateString("en-US", {
       weekday: "short",
-      timeZone: "Asia/Kolkata"
+      timeZone: "Asia/Kolkata",
     });
-    const DAY_INDEX_LOOKUP: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const DAY_INDEX_LOOKUP: Record<string, number> = {
+      Sun: 0,
+      Mon: 1,
+      Tue: 2,
+      Wed: 3,
+      Thu: 4,
+      Fri: 5,
+      Sat: 6,
+    };
     return DAY_INDEX_LOOKUP[shortName] ?? 0;
   };
 
@@ -183,12 +206,16 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
         .flatMap((item: unknown) =>
           String(item)
             .split(/(?:\r?\n|,|;|•)/g)
-            .map((part: string) => part.trim())
+            .map((part: string) => part.trim()),
         )
         .map((item: string) => item.replace(/\s+/g, " "))
         .filter(Boolean);
       if (cleaned.length === 0) return;
-      sections.push({ kind, title: SECTION_TITLES[kind as keyof typeof SECTION_TITLES], items: cleaned });
+      sections.push({
+        kind,
+        title: SECTION_TITLES[kind as keyof typeof SECTION_TITLES],
+        items: cleaned,
+      });
 
       for (const value of cleaned) {
         items.push(value);
@@ -197,7 +224,7 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
 
     pushSection("specialVeg", src.specialVeg);
     pushSection("nonVeg", src.nonVeg);
-    
+
     // Keep veg and vegSides as separate sections
     pushSection("veg", src.veg);
     pushSection("vegSides", src.vegSides);
@@ -224,8 +251,18 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
       day: formatISTDayName(current),
       displayDate: formatISTShortDate(current),
       meals: {
-        lunch: buildMeal(rawDay && isRecord(rawDay) ? rawDay.lunch as Record<string, unknown> | undefined : undefined, "lunch"),
-        dinner: buildMeal(rawDay && isRecord(rawDay) ? rawDay.dinner as Record<string, unknown> | undefined : undefined, "dinner"),
+        lunch: buildMeal(
+          rawDay && isRecord(rawDay)
+            ? (rawDay.lunch as Record<string, unknown> | undefined)
+            : undefined,
+          "lunch",
+        ),
+        dinner: buildMeal(
+          rawDay && isRecord(rawDay)
+            ? (rawDay.dinner as Record<string, unknown> | undefined)
+            : undefined,
+          "dinner",
+        ),
       },
     };
   }
@@ -233,7 +270,7 @@ async function processMenuData(rawData: unknown): Promise<{ weekId: string; week
   const firstDay = addISTDays(monday, 0);
   const lastDay = addISTDays(monday, daysOrder.length - 1);
   const week = {
-    foodCourt: 'Sindhi Mess',
+    foodCourt: "Sindhi Mess",
     week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • Weekly menu`,
     menu,
     extras: extrasData,
@@ -259,28 +296,28 @@ export function MenuViewer({
   initialWeekOverride?: number;
 }) {
   const [currentWeek, setCurrentWeek] = React.useState<WeekMenu>(initialWeek);
-  
+
   // Load week override from localStorage on mount, or use initialWeekOverride prop
   const [weekOverride, setWeekOverride] = React.useState<number | null>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('sindhi-menu-week-override');
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("sindhi-menu-week-override");
       return saved ? parseInt(saved, 10) : null;
     }
     return null;
   });
-  
+
   // Apply initialWeekOverride from props after mount
   React.useEffect(() => {
     if (initialWeekOverride !== undefined) {
       setWeekOverride(initialWeekOverride);
     }
   }, [initialWeekOverride]);
-  
+
   const [isLoading, setIsLoading] = React.useState(false);
 
   const sortedDayKeys = React.useMemo(
     () => sortDateKeysAsc(Object.keys(currentWeek.menu)),
-    [currentWeek.menu]
+    [currentWeek.menu],
   );
 
   // Initialize with empty string, useEffect will set the correct current day
@@ -288,11 +325,11 @@ export function MenuViewer({
 
   // Save week override to localStorage when it changes
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       if (weekOverride !== null) {
-        localStorage.setItem('sindhi-menu-week-override', weekOverride.toString());
+        localStorage.setItem("sindhi-menu-week-override", weekOverride.toString());
       } else {
-        localStorage.removeItem('sindhi-menu-week-override');
+        localStorage.removeItem("sindhi-menu-week-override");
       }
     }
   }, [weekOverride]);
@@ -306,7 +343,7 @@ export function MenuViewer({
         const { week } = await loadMenuForWeekNumber(weekNumber);
         setCurrentWeek(week);
       } catch (error) {
-        console.error('Failed to load week menu:', error);
+        console.error("Failed to load week menu:", error);
       } finally {
         setIsLoading(false);
       }
@@ -377,19 +414,21 @@ export function MenuViewer({
   }, [currentWeek.extras]);
 
   const picked = pickHighlightMealForDay(currentWeek, effectiveDateKey);
-  const highlightKey = (picked?.mealKey ?? (meals[0]?.key ?? "breakfast")) as MealKey;
+  const highlightKey = (picked?.mealKey ?? meals[0]?.key ?? "breakfast") as MealKey;
   const isPrimaryUpcoming = Boolean(picked?.isPrimaryUpcoming);
 
   const dayOptions = sortedDayKeys.map((key) => {
     const entry = currentWeek.menu[key];
     const parsed = parseDateKey(key);
     const isValidDate = !Number.isNaN(parsed.getTime());
-    const dayLabel = entry?.day ?? (isValidDate
-      ? parsed.toLocaleDateString(undefined, {
-          weekday: 'long',
-          timeZone: 'Asia/Kolkata',
-        })
-      : key);
+    const dayLabel =
+      entry?.day ??
+      (isValidDate
+        ? parsed.toLocaleDateString(undefined, {
+            weekday: "long",
+            timeZone: "Asia/Kolkata",
+          })
+        : key);
     const dateLabel = entry?.displayDate ?? (isValidDate ? formatISTShortDate(parsed) : key);
     return { label: `${dayLabel} • ${dateLabel}`, value: key };
   });
@@ -401,9 +440,11 @@ export function MenuViewer({
           {currentWeek.foodCourt}
         </div>
         <p className="text-muted-foreground mt-2 text-lg">Weekly rotating menu (4-week cycle)</p>
-        <p className="text-muted-foreground/70 text-sm mt-1 italic">Sometimes, the Sindhi mess doesn&apos;t adhere to any menu.</p>
+        <p className="text-muted-foreground/70 text-sm mt-1 italic">
+          Sometimes, the Sindhi mess doesn&apos;t adhere to any menu.
+        </p>
       </header>
-      
+
       <div className="flex flex-wrap items-center gap-4 text-base">
         <WeekSelector
           onWeekChange={(weekNum) => {
@@ -437,11 +478,16 @@ export function MenuViewer({
 
           {extras ? (
             <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/30 px-4 py-3 sm:px-5">
-              <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">{extras.data.category}</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">
+                {extras.data.category}
+              </h2>
               <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
                 Prices are listed in {extras.data.currency}.
               </p>
-              <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2" aria-label={`${extras.data.category} add-ons`}>
+              <ul
+                className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2"
+                aria-label={`${extras.data.category} add-ons`}
+              >
                 {extras.data.items.map((item) => (
                   <li
                     key={item.name}
@@ -449,7 +495,8 @@ export function MenuViewer({
                   >
                     <span className="font-medium text-foreground/90">{item.name}</span>
                     <span className="font-semibold text-primary">
-                      {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
+                      {extras.formatter?.format(item.price) ??
+                        `${extras.data.currency} ${item.price}`}
                     </span>
                   </li>
                 ))}
@@ -457,14 +504,17 @@ export function MenuViewer({
             </section>
           ) : null}
 
-           <div className="flex flex-col items-center gap-2 mt-6">
-             <Button asChild variant="outline">
-               <Link href={`/week/${getMenuNumberForWeek(weekOverride ?? getWeekNumberFromDate(new Date()))}/full`} title="View full week menu">
-                 <Grid3X3 className="h-4 w-4 mr-2" />
-                 View Full Week Menu
-               </Link>
-             </Button>
-           </div>
+          <div className="flex flex-col items-center gap-2 mt-6">
+            <Button asChild variant="outline">
+              <Link
+                href={`/week/${getMenuNumberForWeek(weekOverride ?? getWeekNumberFromDate(new Date()))}/full`}
+                title="View full week menu"
+              >
+                <Grid3X3 className="h-4 w-4 mr-2" />
+                View Full Week Menu
+              </Link>
+            </Button>
+          </div>
         </>
       )}
     </div>

@@ -10,28 +10,34 @@ export default {
         const today = new Date();
         const { weekId, weekLabel } = getWeekInfo(today);
 
-        return new Response(JSON.stringify({
-          id: weekId,
-          generatedAt: new Date().toISOString(),
-          source: "/sindhi-menu.json",
-          foodCourt: menuData.foodCourt,
-          week: weekLabel,
-          menu: menuData.menu,
-          extras: menuData.extras
-        }), {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+        return new Response(
+          JSON.stringify({
+            id: weekId,
+            generatedAt: new Date().toISOString(),
+            source: "/sindhi-menu.json",
+            foodCourt: menuData.foodCourt,
+            week: weekLabel,
+            menu: menuData.menu,
+            extras: menuData.extras,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
           },
-        });
+        );
       } catch (error: any) {
-        return new Response(JSON.stringify({
-          error: "Failed to load menu",
-          details: error.message,
-        }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({
+            error: "Failed to load menu",
+            details: error.message,
+          }),
+          {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       }
     }
 
@@ -54,8 +60,8 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer masala"] },
             { kind: "veg", title: "Veg", items: ["Red chana", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Butter Chicken"] }
-          ]
+            { kind: "nonVeg", title: "Non Veg", items: ["Butter Chicken"] },
+          ],
         },
         dinner: {
           name: "Dinner",
@@ -65,10 +71,10 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer Tikka masala"] },
             { kind: "veg", title: "Veg", items: ["Rajma masala", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Chicken masala"] }
-          ]
-        }
-      }
+            { kind: "nonVeg", title: "Non Veg", items: ["Chicken masala"] },
+          ],
+        },
+      },
     },
     Tuesday: {
       day: "Tuesday",
@@ -82,8 +88,8 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer kaju masala"] },
             { kind: "veg", title: "Veg", items: ["Lobia", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Green Chicken masala"] }
-          ]
+            { kind: "nonVeg", title: "Non Veg", items: ["Green Chicken masala"] },
+          ],
         },
         dinner: {
           name: "Dinner",
@@ -92,10 +98,14 @@ const MENU_DATA = {
           items: [],
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer Burji"] },
-            { kind: "veg", title: "Veg", items: ["Chana masala", "Dal", "Puri", "Chapati", "Kheer", "Rice", "Papad"] }
-          ]
-        }
-      }
+            {
+              kind: "veg",
+              title: "Veg",
+              items: ["Chana masala", "Dal", "Puri", "Chapati", "Kheer", "Rice", "Papad"],
+            },
+          ],
+        },
+      },
     },
     Wednesday: {
       day: "Wednesday",
@@ -109,8 +119,8 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Soya/Gobi Manchurian"] },
             { kind: "veg", title: "Veg", items: ["Aloo Sabzi", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Gravy"] }
-          ]
+            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Gravy"] },
+          ],
         },
         dinner: {
           name: "Dinner",
@@ -119,11 +129,15 @@ const MENU_DATA = {
           items: [],
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer Tikka Kabab"] },
-            { kind: "veg", title: "Veg", items: ["Veg gravy", "Soya Aloo Sabzi", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Kabab", "Chicken gravy"] }
-          ]
-        }
-      }
+            {
+              kind: "veg",
+              title: "Veg",
+              items: ["Veg gravy", "Soya Aloo Sabzi", "Dal", "Rice", "Chapati"],
+            },
+            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Kabab", "Chicken gravy"] },
+          ],
+        },
+      },
     },
     Thursday: {
       day: "Thursday",
@@ -137,8 +151,8 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer chilli"] },
             { kind: "veg", title: "Veg", items: ["Dahi Kadhi", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Chicken chilli"] }
-          ]
+            { kind: "nonVeg", title: "Non Veg", items: ["Chicken chilli"] },
+          ],
         },
         dinner: {
           name: "Dinner",
@@ -148,10 +162,10 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Matar Paneer masala"] },
             { kind: "veg", title: "Veg", items: ["Aloo matar", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Masala"] }
-          ]
-        }
-      }
+            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Masala"] },
+          ],
+        },
+      },
     },
     Friday: {
       day: "Friday",
@@ -165,8 +179,8 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer bhurji"] },
             { kind: "veg", title: "Veg", items: ["Rajma masala", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Egg bhurji"] }
-          ]
+            { kind: "nonVeg", title: "Non Veg", items: ["Egg bhurji"] },
+          ],
         },
         dinner: {
           name: "Dinner",
@@ -176,10 +190,10 @@ const MENU_DATA = {
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Paneer Kofta"] },
             { kind: "veg", title: "Veg", items: ["Black dal", "Dal", "Rice", "Chapati"] },
-            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Gravy"] }
-          ]
-        }
-      }
+            { kind: "nonVeg", title: "Non Veg", items: ["Chicken Gravy"] },
+          ],
+        },
+      },
     },
     Saturday: {
       day: "Saturday",
@@ -192,8 +206,12 @@ const MENU_DATA = {
           items: [],
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Channa masala"] },
-            { kind: "veg", title: "Veg", items: ["Aloo Sabzi", "Puri/Chapati", "Rice", "Dal", "Papad", "Lime juice"] }
-          ]
+            {
+              kind: "veg",
+              title: "Veg",
+              items: ["Aloo Sabzi", "Puri/Chapati", "Rice", "Dal", "Papad", "Lime juice"],
+            },
+          ],
         },
         dinner: {
           name: "Dinner",
@@ -202,11 +220,15 @@ const MENU_DATA = {
           items: [],
           sections: [
             { kind: "specialVeg", title: "Special Veg", items: ["Aloo Paratha"] },
-            { kind: "veg", title: "Veg", items: ["Sattu Paratha", "Chapathi", "Mix Sabzi", "Dal", "Rice"] }
-          ]
-        }
-      }
-    }
+            {
+              kind: "veg",
+              title: "Veg",
+              items: ["Sattu Paratha", "Chapathi", "Mix Sabzi", "Dal", "Rice"],
+            },
+          ],
+        },
+      },
+    },
   },
   extras: {
     category: "Extras",
@@ -217,14 +239,16 @@ const MENU_DATA = {
       { name: "Fruit Juice", price: 50 },
       { name: "Lassi", price: 35 },
       { name: "Boiled Eggs", price: 10 },
-      { name: "Lime", price: 25 }
-    ]
-  }
+      { name: "Lime", price: 25 },
+    ],
+  },
 };
 
 function getWeekInfo(date: Date): { weekId: string; weekLabel: string } {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const daysSinceStart = Math.floor((date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+  const daysSinceStart = Math.floor(
+    (date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24),
+  );
   const weekNum = Math.floor(daysSinceStart / 7) + 1;
 
   const weekStart = new Date(date);
@@ -233,9 +257,9 @@ function getWeekInfo(date: Date): { weekId: string; weekLabel: string } {
   weekEnd.setDate(weekStart.getDate() + 6);
 
   const formatDate = (d: Date) => {
-    const month = d.toLocaleString('en-US', { month: 'short' });
+    const month = d.toLocaleString("en-US", { month: "short" });
     const day = d.getDate();
-    return `${month} ${day.toString().padStart(2, '0')}`;
+    return `${month} ${day.toString().padStart(2, "0")}`;
   };
 
   const weekId = `${formatDate(weekStart)}_to_${formatDate(weekEnd)}`;

@@ -12,7 +12,9 @@ export default function WeeksPage() {
           {[1, 2, 3, 4].map((weekNum) => (
             <li key={weekNum} className="flex items-center justify-between p-3 rounded-lg border">
               <div>
-                <Link href={`/week/${weekNum}`} className="underline font-medium">Week {weekNum}</Link>
+                <Link href={`/week/${weekNum}`} className="underline font-medium">
+                  Week {weekNum}
+                </Link>
               </div>
               <div className="flex gap-2">
                 <Button asChild variant="outline" size="sm">
@@ -35,5 +37,3 @@ export default function WeeksPage() {
     </div>
   );
 }
-
-

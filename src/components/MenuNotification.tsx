@@ -20,12 +20,9 @@ export function MenuNotification() {
       console.log("Attempting to show toast...");
 
       // Try different toast methods
-      toast(
-        "Data as put on the Sindhi Mess banner.",
-        {
-          duration: 1500,
-        },
-      );
+      toast("Data as put on the Sindhi Mess banner.", {
+        duration: 1500,
+      });
     }, 1000);
 
     return () => clearTimeout(timer);

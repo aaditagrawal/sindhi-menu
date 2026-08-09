@@ -18,7 +18,10 @@ export function MealCarousel({
   const itemRefs = React.useRef<Array<HTMLDivElement | null>>([]);
   const [tilt, setTilt] = React.useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [centerIndex, setCenterIndex] = React.useState<number>(() =>
-    Math.max(0, meals.findIndex((m) => m.key === highlightKey))
+    Math.max(
+      0,
+      meals.findIndex((m) => m.key === highlightKey),
+    ),
   );
 
   // Keep centered item in sync with highlighted meal
@@ -41,7 +44,7 @@ export function MealCarousel({
       const y = (e.gamma ?? 0) / 45; // -45..45
       setTilt({ x, y });
     }
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       window.addEventListener("deviceorientation", handler);
       return () => window.removeEventListener("deviceorientation", handler);
     }
@@ -86,7 +89,7 @@ export function MealCarousel({
               }}
               className={cn(
                 "min-w-[92%] sm:min-w-[55%] md:min-w-[48%] lg:min-w-[36%] snap-center transition overflow-visible px-1",
-                isActive ? "opacity-100 scale-100" : "opacity-60 scale-[0.98]"
+                isActive ? "opacity-100 scale-100" : "opacity-60 scale-[0.98]",
               )}
             >
               <MealCard

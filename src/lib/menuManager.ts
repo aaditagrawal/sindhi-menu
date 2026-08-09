@@ -1,6 +1,6 @@
 /**
  * Menu Manager: Handles rotation of 4 menus in a cyclical pattern (1 -> 2 -> 3 -> 4 -> 1)
- * 
+ *
  * Reference Point: As of Oct 16, 2025, Sindhi Mess is on Week 2.
  * This means:
  * - Week 1 would use menu2
@@ -48,7 +48,7 @@ export function getWeekNumberFromDate(date: Date): number {
 export function getMenuNumberForWeek(weekNumber: number): number {
   // Week 1 -> menu1, Week 2 -> menu2, Week 3 -> menu3, Week 4 -> menu4, Week 5 -> menu1...
   // Formula: ((weekNumber - 1) % 4) + 1
-  const offset = ((weekNumber - 1) % 4 + 4) % 4;
+  const offset = (((weekNumber - 1) % 4) + 4) % 4;
   return offset + 1;
 }
 
@@ -89,7 +89,7 @@ export function getMenuMetadata(date: Date = new Date()) {
  */
 export function getMenuNameForOverriddenWeek(
   userOverrideWeekNumber: number | null,
-  currentDate: Date = new Date()
+  currentDate: Date = new Date(),
 ): { menuName: MenuName; weekNumber: number; isOverridden: boolean } {
   if (userOverrideWeekNumber !== null) {
     return {

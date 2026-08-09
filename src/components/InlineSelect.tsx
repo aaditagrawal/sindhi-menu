@@ -28,7 +28,7 @@ export function InlineSelect<T extends string | number>({
       if (!ref.current) return;
       if (!ref.current.contains(e.target as Node)) setOpen(false);
     }
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       document.addEventListener("click", onDocClick);
       return () => document.removeEventListener("click", onDocClick);
     }
@@ -43,7 +43,7 @@ export function InlineSelect<T extends string | number>({
           "underline decoration-dotted underline-offset-4 text-foreground/90 hover:text-foreground",
           "px-1.5 py-1 rounded focus:outline-none focus:ring-2 focus:ring-ring",
           "text-base sm:text-lg font-semibold",
-          disabled && "opacity-50 cursor-not-allowed hover:text-foreground/90"
+          disabled && "opacity-50 cursor-not-allowed hover:text-foreground/90",
         )}
         onClick={(e) => {
           e.preventDefault();
@@ -61,7 +61,7 @@ export function InlineSelect<T extends string | number>({
           role="listbox"
           className={cn(
             "absolute z-50 mt-2 min-w-[220px] rounded-lg border bg-popover p-1 shadow-lg",
-            menuClassName
+            menuClassName,
           )}
         >
           {options.map((opt) => (
@@ -71,7 +71,7 @@ export function InlineSelect<T extends string | number>({
               aria-selected={opt.value === value}
               className={cn(
                 "block w-full text-left px-3 py-2 rounded-md text-base",
-                opt.value === value ? "bg-muted" : "hover:bg-muted"
+                opt.value === value ? "bg-muted" : "hover:bg-muted",
               )}
               onClick={() => {
                 onChange(opt.value);
@@ -86,4 +86,3 @@ export function InlineSelect<T extends string | number>({
     </div>
   );
 }
-

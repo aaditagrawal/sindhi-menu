@@ -27,7 +27,9 @@ export function MealCard({
   const Icon = mealKey === "lunch" ? UtensilsCrossed : Moon;
   const glow = highlight
     ? {
-        transform: tilt ? `translateY(${tilt.x * -2}px) rotateX(${tilt.x * 1.8}deg) rotateY(${tilt.y * 1.8}deg)` : undefined,
+        transform: tilt
+          ? `translateY(${tilt.x * -2}px) rotateX(${tilt.x * 1.8}deg) rotateY(${tilt.y * 1.8}deg)`
+          : undefined,
       }
     : undefined;
 
@@ -63,11 +65,18 @@ export function MealCard({
     nonVeg: "text-rose-700 dark:text-rose-300",
   };
 
-  const primaryGradient = "linear-gradient(135deg, rgba(255, 191, 132, 0.9), rgba(255, 156, 170, 0.88))";
-  const secondaryGradient = "linear-gradient(135deg, rgba(130, 196, 255, 0.78), rgba(187, 174, 255, 0.78))";
+  const primaryGradient =
+    "linear-gradient(135deg, rgba(255, 191, 132, 0.9), rgba(255, 156, 170, 0.88))";
+  const secondaryGradient =
+    "linear-gradient(135deg, rgba(130, 196, 255, 0.78), rgba(187, 174, 255, 0.78))";
 
   const card = (
-    <Card className={cn("transition-transform", highlight ? "border-primary ring-1 ring-primary/30" : "")}> 
+    <Card
+      className={cn(
+        "transition-transform",
+        highlight ? "border-primary ring-1 ring-primary/30" : "",
+      )}
+    >
       <CardHeader>
         <CardTitle className="flex items-center justify-between gap-4 text-xl">
           <span className="flex items-center gap-2">
@@ -81,7 +90,10 @@ export function MealCard({
       </CardHeader>
       <CardContent>
         {filteredSections.length > 0 ? (
-          <ul aria-label="Menu items" className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-base leading-relaxed">
+          <ul
+            aria-label="Menu items"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-base leading-relaxed"
+          >
             {filteredSections.flatMap((section, sectionIdx) =>
               section.items.map((item, itemIdx) => {
                 const IconComponent = sectionIcon[section.kind];
@@ -91,7 +103,7 @@ export function MealCard({
                     key={`${section.kind}-${sectionIdx}-${itemIdx}`}
                     className={cn(
                       "rounded-lg px-3 py-2 flex items-center gap-3 border backdrop-blur-sm",
-                      tone
+                      tone,
                     )}
                   >
                     {IconComponent ? (
@@ -100,7 +112,7 @@ export function MealCard({
                     <span className="font-medium">{item}</span>
                   </li>
                 );
-              })
+              }),
             )}
           </ul>
         ) : (

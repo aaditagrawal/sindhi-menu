@@ -75,7 +75,7 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
           <div
             className="grid gap-3 min-w-max pb-4 items-start"
             style={{
-              gridTemplateColumns: `200px repeat(${dayCount}, minmax(280px, 1fr))`
+              gridTemplateColumns: `200px repeat(${dayCount}, minmax(280px, 1fr))`,
             }}
           >
             {/* Header row with days */}
@@ -85,7 +85,10 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
             {sortedDays.map((dateKey) => {
               const day = week.menu[dateKey];
               return (
-                <div key={dateKey} className="sticky top-0 bg-background z-10 p-3 text-center border-l border-border/50">
+                <div
+                  key={dateKey}
+                  className="sticky top-0 bg-background z-10 p-3 text-center border-l border-border/50"
+                >
                   <h3 className="font-semibold text-lg">{day.day}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{day.displayDate}</p>
                 </div>
@@ -100,7 +103,7 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
                   <div className="flex items-center gap-2">
                     <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/15">
                       {React.createElement(mealIcons[mealKey], {
-                        className: "h-4 w-4 text-primary"
+                        className: "h-4 w-4 text-primary",
                       })}
                     </span>
                     <div>
@@ -115,7 +118,10 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
                   const meal = day.meals[mealKey];
 
                   return (
-                    <div key={`${mealKey}-${dateKey}`} className="p-3 border-t border-l border-border/50">
+                    <div
+                      key={`${mealKey}-${dateKey}`}
+                      className="p-3 border-t border-l border-border/50"
+                    >
                       {meal ? (
                         <MealGridCard
                           meal={meal}
@@ -138,11 +144,16 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
 
       {extras ? (
         <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/40 px-4 py-3 sm:px-5">
-          <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">{extras.data.category}</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">
+            {extras.data.category}
+          </h2>
           <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
             Add-ons available for any meal. Prices listed in {extras.data.currency}.
           </p>
-          <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2" aria-label={`${extras.data.category} add-ons`}>
+          <ul
+            className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2"
+            aria-label={`${extras.data.category} add-ons`}
+          >
             {extras.data.items.map((item) => (
               <li
                 key={item.name}
@@ -227,35 +238,31 @@ const MealGridCard = React.memo(function MealGridCard({
       </CardHeader>
       <CardContent className="pt-0">
         <div className="space-y-2 text-sm">
-          {filteredSections.length > 0
-            ? (
-                <ul aria-label="Menu items" className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {filteredSections.flatMap((section, sectionIdx) =>
-                    section.items.map((item, idx) => (
-                      <li
-                        key={`${section.kind}-${sectionIdx}-${idx}`}
-                        className={`rounded-md border px-2 py-1 ${sectionTone[section.kind] ?? sectionTone.note}`}
-                      >
-                        {item}
-                      </li>
-                    ))
-                  )}
-                </ul>
-              )
-            : fallbackItems.length > 0
-            ? fallbackItems.map((item, idx) => (
-                <div
-                  key={`fallback-${idx}`}
-                  className="rounded-md border border-border/30 bg-foreground/5 px-2 py-1"
-                >
-                  {item}
-                </div>
-              ))
-            : (
-                <div className="text-xs text-muted-foreground italic py-2">
-                  No items available
-                </div>
+          {filteredSections.length > 0 ? (
+            <ul aria-label="Menu items" className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {filteredSections.flatMap((section, sectionIdx) =>
+                section.items.map((item, idx) => (
+                  <li
+                    key={`${section.kind}-${sectionIdx}-${idx}`}
+                    className={`rounded-md border px-2 py-1 ${sectionTone[section.kind] ?? sectionTone.note}`}
+                  >
+                    {item}
+                  </li>
+                )),
               )}
+            </ul>
+          ) : fallbackItems.length > 0 ? (
+            fallbackItems.map((item, idx) => (
+              <div
+                key={`fallback-${idx}`}
+                className="rounded-md border border-border/30 bg-foreground/5 px-2 py-1"
+              >
+                {item}
+              </div>
+            ))
+          ) : (
+            <div className="text-xs text-muted-foreground italic py-2">No items available</div>
+          )}
         </div>
       </CardContent>
     </Card>

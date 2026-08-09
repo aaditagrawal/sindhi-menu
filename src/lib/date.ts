@@ -3,10 +3,9 @@ import { type MealKey, type WeekMenu, type CurrentMealPointer } from "./types";
 const IST_OFFSET_MINUTES = 5 * 60 + 30; // +05:30
 const IST_TIME_ZONE = "Asia/Kolkata";
 const DAY_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-const DAY_INDEX_LOOKUP = Object.fromEntries(DAY_ORDER.map((name, index) => [name, index])) as Record<
-  (typeof DAY_ORDER)[number],
-  number
->;
+const DAY_INDEX_LOOKUP = Object.fromEntries(
+  DAY_ORDER.map((name, index) => [name, index]),
+) as Record<(typeof DAY_ORDER)[number], number>;
 
 const dateKeyFormatter = new Intl.DateTimeFormat("en-CA", {
   timeZone: IST_TIME_ZONE,
@@ -89,7 +88,7 @@ export function mealOrder(meal: MealKey): number {
 
 export function findCurrentOrUpcomingMeal(
   week: WeekMenu,
-  nowIST: Date = getISTNow()
+  nowIST: Date = getISTNow(),
 ): CurrentMealPointer | null {
   const dateKeys = sortDateKeysAsc(Object.keys(week.menu));
   if (dateKeys.length === 0) return null;
@@ -136,7 +135,7 @@ export function findCurrentOrUpcomingMeal(
 export function pickHighlightMealForDay(
   week: WeekMenu,
   dateKey: string,
-  nowIST: Date = getISTNow()
+  nowIST: Date = getISTNow(),
 ): { mealKey: MealKey; isPrimaryUpcoming: boolean } | null {
   const orderedMeals: MealKey[] = ["lunch", "dinner"];
   const todayKey = formatDateKey(nowIST);
@@ -182,4 +181,3 @@ export function pickHighlightMealForDay(
   }
   return null;
 }
-

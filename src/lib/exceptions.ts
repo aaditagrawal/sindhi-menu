@@ -17,8 +17,8 @@ export const MENU_ITEM_EXCEPTIONS = [
  * Performs a case-insensitive exact match comparison.
  */
 export function shouldFilterMenuItem(item: string): boolean {
-  return MENU_ITEM_EXCEPTIONS.some(exception =>
-    item.trim().toLowerCase() === exception.toLowerCase()
+  return MENU_ITEM_EXCEPTIONS.some(
+    (exception) => item.trim().toLowerCase() === exception.toLowerCase(),
   );
 }
 
@@ -26,5 +26,5 @@ export function shouldFilterMenuItem(item: string): boolean {
  * Filter menu items to exclude exception strings.
  */
 export function filterMenuItems(items: string[]): string[] {
-  return items.filter(item => !shouldFilterMenuItem(item));
+  return items.filter((item) => !shouldFilterMenuItem(item));
 }

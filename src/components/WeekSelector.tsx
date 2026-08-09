@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
-import {
-  getWeekNumberFromDate,
-  getMenuNameForOverriddenWeek,
-} from "@/lib/menuManager";
+import { getWeekNumberFromDate, getMenuNameForOverriddenWeek } from "@/lib/menuManager";
 
 interface WeekSelectorProps {
   onWeekChange: (weekNumber: number) => void;
@@ -27,10 +24,7 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
   }, []);
 
   const currentMetadata = getMenuNameForOverriddenWeek(currentOverride);
-  const currentMenuNumber = parseInt(
-    currentMetadata.menuName.replace("menu", ""),
-    10
-  );
+  const currentMenuNumber = parseInt(currentMetadata.menuName.replace("menu", ""), 10);
 
   // Always calculate from the actual current week (not the override)
   const actualCurrentMenuNumber = React.useMemo(() => {

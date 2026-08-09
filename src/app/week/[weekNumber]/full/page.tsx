@@ -8,15 +8,14 @@ import Link from "next/link";
 export const revalidate = 604800;
 
 export async function generateStaticParams() {
-  return [
-    { weekNumber: "1" },
-    { weekNumber: "2" },
-    { weekNumber: "3" },
-    { weekNumber: "4" },
-  ];
+  return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
 
-export default async function WeekNumberFullPage({ params }: { params: Promise<{ weekNumber: string }> }) {
+export default async function WeekNumberFullPage({
+  params,
+}: {
+  params: Promise<{ weekNumber: string }>;
+}) {
   const { weekNumber } = await params;
   const weekNum = parseInt(weekNumber, 10);
   if (weekNum < 1 || weekNum > 4) return notFound();
@@ -31,7 +30,9 @@ export default async function WeekNumberFullPage({ params }: { params: Promise<{
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-semibold">Full Week Menu</h1>
-              <p className="text-muted-foreground">Week {weekNum} • {week.foodCourt}</p>
+              <p className="text-muted-foreground">
+                Week {weekNum} • {week.foodCourt}
+              </p>
             </div>
             <Button asChild variant="outline" className="self-start sm:self-auto">
               <Link href={`/week/${weekNumber}`} title="Back to daily view">
