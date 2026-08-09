@@ -7,6 +7,7 @@ Successfully implemented a complete menu rotation system for Sindhi Mess that cy
 ## What Was Implemented
 
 ### 1. Core Menu Manager (`src/lib/menuManager.ts`)
+
 The heart of the rotation system with the following key functions:
 
 - **`getWeekNumberFromDate(date: Date): number`**
@@ -30,6 +31,7 @@ The heart of the rotation system with the following key functions:
   - Returns whether the current selection is overridden
 
 ### 2. Updated Data Loading (`src/data/weeks/index.ts`)
+
 Extended the menu loading system:
 
 - **New `loadMenuForDate(date: Date): Promise<WeekMenu>`**
@@ -45,15 +47,18 @@ Extended the menu loading system:
   - Backward compatible with existing `veg`, `specialVeg`, `nonVeg`
 
 ### 3. WeekSelector Component (`src/components/WeekSelector.tsx`)
+
 Beautiful UI for week selection:
 
 **Features:**
+
 - Dropdown showing ±12 weeks around current week
 - Each week option displays week number, menu name, and "(Current)" indicator
 - "Override" badge when user selects a non-current week
 - "Reset" button to return to current week at a glance
 
 **Usage:**
+
 ```tsx
 <WeekSelector
   onWeekChange={(weekNum) => {
@@ -64,9 +69,11 @@ Beautiful UI for week selection:
 ```
 
 ### 4. Enhanced MenuViewer Component (`src/components/MenuViewer.tsx`)
+
 Major updates for dynamic menu loading:
 
 **New Features:**
+
 - Integrates WeekSelector component
 - Dynamic menu loading based on user selection or current date
 - Loading spinner while fetching menu
@@ -74,10 +81,12 @@ Major updates for dynamic menu loading:
 - Support for both original and new menu JSON formats
 
 **State Management:**
+
 - `weekOverride: number | null` - Tracks user's week override
 - `isLoading: boolean` - Tracks menu loading state
 
 ### 5. Updated InlineSelect Component (`src/components/InlineSelect.tsx`)
+
 Enhanced with disable support:
 
 - Added `disabled?: boolean` prop
@@ -104,11 +113,14 @@ Enhanced with disable support:
 ### For Developers
 
 #### Adding New Menus
+
 When the cycle advances:
+
 1. Update the JSON files in `/public/`
 2. No code changes needed - the system automatically handles menu rotation
 
 #### Testing Menu Logic
+
 ```typescript
 import { getMenuNameForDate, getWeekNumberFromDate } from "@/lib/menuManager";
 
@@ -124,6 +136,7 @@ getWeekNumberFromDate(new Date("2025-11-03")); // 5
 ## File Structure
 
 ### New Files
+
 ```
 src/lib/menuManager.ts
 src/components/WeekSelector.tsx
@@ -132,6 +145,7 @@ IMPLEMENTATION_GUIDE.md (this file)
 ```
 
 ### Modified Files
+
 ```
 src/data/weeks/index.ts          // Added menu loading functions
 src/components/MenuViewer.tsx     // Integrated WeekSelector and menu manager
@@ -139,6 +153,7 @@ src/components/InlineSelect.tsx   // Added disabled prop
 ```
 
 ### Menu Files (in public/)
+
 ```
 public/menu1.json    // Rotation slot 1
 public/menu2.json    // Rotation slot 2 (current as of Oct 16, 2025)
@@ -148,28 +163,31 @@ public/menu4.json    // Rotation slot 4
 
 ## Reference Dates & Week Mapping
 
-| Date Range | Week | Menu |
-|------------|------|------|
-| Oct 13-19, 2025 | 2 | menu2 |
-| Oct 20-26, 2025 | 3 | menu3 |
-| Oct 27-Nov 2, 2025 | 4 | menu4 |
-| Nov 3-9, 2025 | 5 | menu1 |
-| Nov 10-16, 2025 | 6 | menu2 |
-| Nov 17-23, 2025 | 7 | menu3 |
+| Date Range         | Week | Menu  |
+| ------------------ | ---- | ----- |
+| Oct 13-19, 2025    | 2    | menu2 |
+| Oct 20-26, 2025    | 3    | menu3 |
+| Oct 27-Nov 2, 2025 | 4    | menu4 |
+| Nov 3-9, 2025      | 5    | menu1 |
+| Nov 10-16, 2025    | 6    | menu2 |
+| Nov 17-23, 2025    | 7    | menu3 |
 
 ## Technical Details
 
 ### Week Calculation
+
 - Based on Monday of each week in IST (Indian Standard Time)
 - Reference point: Oct 13, 2025 (Monday of Week 2)
 - Formula: `weekNumber = 2 + ((date - refDate) / 7 days)`
 
 ### Menu Rotation
+
 - Cycles through menus 1, 2, 3, 4, then repeats
 - Formula: `menuNumber = ((weekNumber - 1) % 4) + 1`
 - Starting point: Week 2 uses menu2
 
 ### Timezone Handling
+
 - All date calculations respect IST timezone
 - Uses Intl API for proper timezone-aware date formatting
 - Client-side menu loading works across timezones
