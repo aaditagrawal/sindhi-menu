@@ -27,7 +27,7 @@ const mealTitles = {
   dinner: "Dinner",
 };
 
-const sectionTone: Record<MealSectionKind, string> = {
+const sectionTone = {
   specialVeg:
     "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
   veg: "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
@@ -35,7 +35,7 @@ const sectionTone: Record<MealSectionKind, string> = {
   nonVeg:
     "bg-rose-100 border-rose-200 text-rose-900 dark:bg-rose-500/10 dark:border-rose-400/30 dark:text-rose-100",
   note: "bg-muted/40 border-muted-foreground/20 text-muted-foreground",
-};
+} satisfies Record<MealSectionKind, string>;
 
 export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
   // Sort days chronologically

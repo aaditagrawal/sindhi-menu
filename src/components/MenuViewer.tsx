@@ -14,6 +14,7 @@ import {
   getMenuNumberForWeek,
   getWeekNumberFromDate,
 } from "@/lib/menuManager";
+import { buildWeekMenu, type MenuFile } from "@/lib/menuFile";
 import { MealCarousel } from "@/components/MealCarousel";
 import { InlineSelect } from "@/components/InlineSelect";
 import { WeekSelector } from "@/components/WeekSelector";
@@ -21,271 +22,26 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Grid3X3 } from "lucide-react";
 
-// Client-side menu loading logic
-async function loadMenuForWeekNumber(
-  weekNumber: number,
-): Promise<{ weekId: string; week: WeekMenu }> {
+const WEEK_OVERRIDE_STORAGE_KEY = "sindhi-menu-week-override";
+
+/** Fetch the menu document for a rotation week and project it onto the current IST week. */
+async function loadMenuForWeekNumber(weekNumber: number): Promise<WeekMenu> {
   const { menuName } = getMenuNameForOverriddenWeek(weekNumber);
   const res = await fetch(`/${menuName}.json`, { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
-  const rawData = await res.json();
-
-  // Process the menu data on the client side
-  const processedData = await processMenuData(rawData);
-  return processedData;
+  // SAFETY: this is the same `public/menu*.json` document the server reads in `@/data/weeks`;
+  // it is served from this app's own origin and authored against `MenuFile`, whose fields are all
+  // optional, so `buildWeekMenu` normalises any drift instead of trusting the payload's shape.
+  const file = (await res.json()) as MenuFile;
+  return buildWeekMenu(file, "Weekly menu");
 }
 
-// Process menu data (duplicated client-side logic from weeks/index.ts)
-async function processMenuData(rawData: unknown): Promise<{ weekId: string; week: WeekMenu }> {
-  type DayMenu = {
-    day: string;
-    displayDate: string;
-    meals: Record<string, unknown>;
-  };
-  // Extract menu and extras from raw data
-  const extractMenuAndExtras = (source: unknown) => {
-    const isRecord = (value: unknown): value is Record<string, unknown> => {
-      return typeof value === "object" && value !== null;
-    };
-
-    const resolveExtras = (raw: unknown) => {
-      const fallback = { category: "Extras", currency: "INR", items: [] };
-      if (!isRecord(raw)) return fallback;
-
-      const category =
-        typeof raw.category === "string" && raw.category.trim().length > 0
-          ? raw.category.trim()
-          : fallback.category;
-      const currency =
-        typeof raw.currency === "string" && raw.currency.trim().length > 0
-          ? raw.currency.trim()
-          : fallback.currency;
-
-      const items = Array.isArray(raw.items)
-        ? raw.items
-            .map((value) => {
-              if (!isRecord(value)) return undefined;
-              const name =
-                typeof value.name === "string" && value.name.trim().length > 0
-                  ? value.name.trim()
-                  : undefined;
-              if (!name) return undefined;
-              const priceValue = value.price;
-              const price =
-                typeof priceValue === "number"
-                  ? priceValue
-                  : typeof priceValue === "string"
-                    ? Number(priceValue)
-                    : Number.NaN;
-              if (!Number.isFinite(price)) return undefined;
-              return { name, price: Number(price) };
-            })
-            .filter((item): item is { name: string; price: number } => Boolean(item))
-        : [];
-
-      if (items.length === 0) {
-        return { category, currency, items: fallback.items };
-      }
-      return { category, currency, items };
-    };
-
-    if (isRecord(source)) {
-      const extras = resolveExtras("extras" in source ? source.extras : undefined);
-      if ("menu" in source && isRecord(source.menu)) {
-        return { menu: source.menu, extras };
-      }
-      const menuEntries = Object.entries(source).filter(
-        ([key]) => key !== "extras" && key !== "menu",
-      );
-      const menu = Object.fromEntries(menuEntries);
-      return { menu, extras };
-    }
-    return { menu: source, extras: resolveExtras(undefined) };
-  };
-
-  const { menu: rawMenu, extras: extrasData } = extractMenuAndExtras(rawData);
-
-  // Ensure rawMenu is a record
-  const isRecord = (value: unknown): value is Record<string, unknown> => {
-    return typeof value === "object" && value !== null;
-  };
-  if (!isRecord(rawMenu)) {
-    throw new Error("Invalid menu data structure");
-  }
-
-  // Date utility functions (duplicated)
-  const IST_OFFSET_MINUTES = 5 * 60 + 30;
-  const getISTNow = (): Date => {
-    const now = new Date();
-    const utcMs = now.getTime() + now.getTimezoneOffset() * 60_000;
-    return new Date(utcMs + IST_OFFSET_MINUTES * 60_000);
-  };
-
-  const formatDateKey = (date: Date): string => {
-    return date.toLocaleDateString("en-CA", {
-      timeZone: "Asia/Kolkata",
-    });
-  };
-
-  const formatISTDayName = (date: Date): string => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      timeZone: "Asia/Kolkata",
-    });
-  };
-
-  const formatISTShortDate = (date: Date): string => {
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      timeZone: "Asia/Kolkata",
-    });
-  };
-
-  const addISTDays = (date: Date, days: number): Date => {
-    return new Date(date.getTime() + days * 86_400_000);
-  };
-
-  const getISTDayIndex = (date: Date): number => {
-    const shortName = date.toLocaleDateString("en-US", {
-      weekday: "short",
-      timeZone: "Asia/Kolkata",
-    });
-    const DAY_INDEX_LOOKUP: Record<string, number> = {
-      Sun: 0,
-      Mon: 1,
-      Tue: 2,
-      Wed: 3,
-      Thu: 4,
-      Fri: 5,
-      Sat: 6,
-    };
-    return DAY_INDEX_LOOKUP[shortName] ?? 0;
-  };
-
-  const startOfISTWeek = (date: Date): Date => {
-    const dayIndex = getISTDayIndex(date);
-    const deltaToMonday = (dayIndex + 6) % 7;
-    return addISTDays(date, -deltaToMonday);
-  };
-
-  const sortDateKeysAsc = (keys: string[]): string[] => {
-    return [...keys].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
-  };
-
-  // Build the week menu
-  const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const menu: Record<string, DayMenu> = {};
-
-  const now = getISTNow();
-  const monday = startOfISTWeek(now);
-
-  const MEAL_TIMINGS = {
-    lunch: { start: "11:30", end: "14:15" },
-    dinner: { start: "19:00", end: "21:30" },
-  };
-
-  const SECTION_TITLES = {
-    specialVeg: "Special Veg",
-    veg: "Veg",
-    vegSides: "Veg Sides",
-    nonVeg: "Non-Veg",
-    note: "Note",
-  };
-
-  const buildMeal = (src: Record<string, unknown> | undefined, mealName: string) => {
-    if (!src) return undefined;
-
-    const sections: Array<{ kind: string; title: string; items: string[] }> = [];
-    const items: string[] = [];
-
-    const pushSection = (kind: string, rawItems: unknown) => {
-      if (!rawItems) return;
-      const arr = Array.isArray(rawItems) ? rawItems : [rawItems];
-      const cleaned = arr
-        .flatMap((item: unknown) =>
-          String(item)
-            .split(/(?:\r?\n|,|;|•)/g)
-            .map((part: string) => part.trim()),
-        )
-        .map((item: string) => item.replace(/\s+/g, " "))
-        .filter(Boolean);
-      if (cleaned.length === 0) return;
-      sections.push({
-        kind,
-        title: SECTION_TITLES[kind as keyof typeof SECTION_TITLES],
-        items: cleaned,
-      });
-
-      for (const value of cleaned) {
-        items.push(value);
-      }
-    };
-
-    pushSection("specialVeg", src.specialVeg);
-    pushSection("nonVeg", src.nonVeg);
-
-    // Keep veg and vegSides as separate sections
-    pushSection("veg", src.veg);
-    pushSection("vegSides", src.vegSides);
-
-    if (sections.length === 0) return undefined;
-
-    const { start, end } = MEAL_TIMINGS[mealName as keyof typeof MEAL_TIMINGS];
-    return {
-      name: mealName,
-      startTime: start,
-      endTime: end,
-      items,
-      sections,
-    };
-  };
-
-  for (let i = 0; i < daysOrder.length; i++) {
-    const current = addISTDays(monday, i);
-    const key = formatDateKey(current);
-    const canonicalDay = daysOrder[i]!;
-    const rawDay = rawMenu[canonicalDay];
-
-    menu[key] = {
-      day: formatISTDayName(current),
-      displayDate: formatISTShortDate(current),
-      meals: {
-        lunch: buildMeal(
-          rawDay && isRecord(rawDay)
-            ? (rawDay.lunch as Record<string, unknown> | undefined)
-            : undefined,
-          "lunch",
-        ),
-        dinner: buildMeal(
-          rawDay && isRecord(rawDay)
-            ? (rawDay.dinner as Record<string, unknown> | undefined)
-            : undefined,
-          "dinner",
-        ),
-      },
-    };
-  }
-
-  const firstDay = addISTDays(monday, 0);
-  const lastDay = addISTDays(monday, daysOrder.length - 1);
-  const week = {
-    foodCourt: "Sindhi Mess",
-    week: `${formatISTShortDate(firstDay)} – ${formatISTShortDate(lastDay)} • Weekly menu`,
-    menu,
-    extras: extrasData,
-  };
-
-  const computeWeekIdFromMenu = (week: WeekMenu): string => {
-    const keys = sortDateKeysAsc(Object.keys(week.menu));
-    const start = keys[0];
-    const end = keys[keys.length - 1];
-    return `${start}_to_${end}`;
-  };
-
-  const weekId = computeWeekIdFromMenu(week);
-
-  return { weekId, week };
+/** Read a previously chosen rotation week; ignores anything the user hand-edited into storage. */
+function readStoredWeekOverride(): number | null {
+  const saved = window.localStorage.getItem(WEEK_OVERRIDE_STORAGE_KEY);
+  if (saved === null) return null;
+  const weekNumber = Number.parseInt(saved, 10);
+  return Number.isFinite(weekNumber) ? weekNumber : null;
 }
 
 export function MenuViewer({
@@ -297,14 +53,13 @@ export function MenuViewer({
 }) {
   const [currentWeek, setCurrentWeek] = React.useState<WeekMenu>(initialWeek);
 
-  // Load week override from localStorage on mount, or use initialWeekOverride prop
-  const [weekOverride, setWeekOverride] = React.useState<number | null>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("sindhi-menu-week-override");
-      return saved ? parseInt(saved, 10) : null;
-    }
-    return null;
-  });
+  const [weekOverride, setWeekOverride] = React.useState<number | null>(null);
+
+  // Restore the saved override once mounted; localStorage does not exist during server rendering,
+  // and reading it in the initializer would desync the first client render from the server HTML.
+  React.useEffect(() => {
+    setWeekOverride(readStoredWeekOverride());
+  }, []);
 
   // Apply initialWeekOverride from props after mount
   React.useEffect(() => {
@@ -325,12 +80,10 @@ export function MenuViewer({
 
   // Save week override to localStorage when it changes
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (weekOverride !== null) {
-        localStorage.setItem("sindhi-menu-week-override", weekOverride.toString());
-      } else {
-        localStorage.removeItem("sindhi-menu-week-override");
-      }
+    if (weekOverride !== null) {
+      window.localStorage.setItem(WEEK_OVERRIDE_STORAGE_KEY, weekOverride.toString());
+    } else {
+      window.localStorage.removeItem(WEEK_OVERRIDE_STORAGE_KEY);
     }
   }, [weekOverride]);
 
@@ -340,7 +93,7 @@ export function MenuViewer({
       try {
         setIsLoading(true);
         const weekNumber = weekOverride ?? getWeekNumberFromDate(new Date());
-        const { week } = await loadMenuForWeekNumber(weekNumber);
+        const week = await loadMenuForWeekNumber(weekNumber);
         setCurrentWeek(week);
       } catch (error) {
         console.error("Failed to load week menu:", error);
@@ -414,7 +167,7 @@ export function MenuViewer({
   }, [currentWeek.extras]);
 
   const picked = pickHighlightMealForDay(currentWeek, effectiveDateKey);
-  const highlightKey = (picked?.mealKey ?? meals[0]?.key ?? "breakfast") as MealKey;
+  const highlightKey: MealKey = picked?.mealKey ?? meals[0]?.key ?? "lunch";
   const isPrimaryUpcoming = Boolean(picked?.isPrimaryUpcoming);
 
   const dayOptions = sortedDayKeys.map((key) => {

@@ -26,12 +26,13 @@ export function InlineSelect<T extends string | number>({
   React.useEffect(() => {
     function onDocClick(e: MouseEvent) {
       if (!ref.current) return;
-      if (!ref.current.contains(e.target as Node)) setOpen(false);
+      // SAFETY: this listener is bound to `document`, and a DOM `click` dispatched there always
+      // carries the clicked element as its target, so `e.target` is a `Node`.
+      const target = e.target as Node;
+      if (!ref.current.contains(target)) setOpen(false);
     }
-    if (typeof window !== "undefined") {
-      document.addEventListener("click", onDocClick);
-      return () => document.removeEventListener("click", onDocClick);
-    }
+    document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
   }, []);
 
   const selected = options.find((o) => o.value === value);
