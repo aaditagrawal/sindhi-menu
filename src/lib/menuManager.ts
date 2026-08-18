@@ -11,7 +11,16 @@
  * - And the cycle repeats...
  */
 
-export type MenuName = "menu1" | "menu2" | "menu3" | "menu4";
+/** The rotation, in order. `MENU_NAMES[n - 1]` is the document backing menu number `n`. */
+const MENU_NAMES = ["menu1", "menu2", "menu3", "menu4"] as const;
+
+export type MenuName = (typeof MENU_NAMES)[number];
+
+export interface MenuSelection {
+  menuName: MenuName;
+  weekNumber: number;
+  isOverridden: boolean;
+}
 
 // October 16, 2025 is the reference point for Week 2
 const REFERENCE_DATE = new Date("2025-10-13"); // Monday of Week 2
@@ -56,8 +65,7 @@ export function getMenuNumberForWeek(weekNumber: number): number {
  * Get the menu name for a given week number
  */
 export function getMenuNameForWeek(weekNumber: number): MenuName {
-  const menuNumber = getMenuNumberForWeek(weekNumber);
-  return `menu${menuNumber}` as MenuName;
+  return MENU_NAMES[getMenuNumberForWeek(weekNumber) - 1];
 }
 
 /**
@@ -90,7 +98,7 @@ export function getMenuMetadata(date: Date = new Date()) {
 export function getMenuNameForOverriddenWeek(
   userOverrideWeekNumber: number | null,
   currentDate: Date = new Date(),
-): { menuName: MenuName; weekNumber: number; isOverridden: boolean } {
+): MenuSelection {
   if (userOverrideWeekNumber !== null) {
     return {
       menuName: getMenuNameForWeek(userOverrideWeekNumber),

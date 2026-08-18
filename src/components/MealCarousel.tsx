@@ -44,10 +44,8 @@ export function MealCarousel({
       const y = (e.gamma ?? 0) / 45; // -45..45
       setTilt({ x, y });
     }
-    if (typeof window !== "undefined") {
-      window.addEventListener("deviceorientation", handler);
-      return () => window.removeEventListener("deviceorientation", handler);
-    }
+    window.addEventListener("deviceorientation", handler);
+    return () => window.removeEventListener("deviceorientation", handler);
   }, []);
 
   const goPrev = () => setCenterIndex((i) => Math.max(0, i - 1));

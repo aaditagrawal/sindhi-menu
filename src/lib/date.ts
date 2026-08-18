@@ -2,10 +2,15 @@ import { type MealKey, type WeekMenu, type CurrentMealPointer } from "./types";
 
 const IST_OFFSET_MINUTES = 5 * 60 + 30; // +05:30
 const IST_TIME_ZONE = "Asia/Kolkata";
-const DAY_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-const DAY_INDEX_LOOKUP = Object.fromEntries(
-  DAY_ORDER.map((name, index) => [name, index]),
-) as Record<(typeof DAY_ORDER)[number], number>;
+const DAY_INDEX_LOOKUP = new Map([
+  ["Sun", 0],
+  ["Mon", 1],
+  ["Tue", 2],
+  ["Wed", 3],
+  ["Thu", 4],
+  ["Fri", 5],
+  ["Sat", 6],
+]);
 
 const dateKeyFormatter = new Intl.DateTimeFormat("en-CA", {
   timeZone: IST_TIME_ZONE,
@@ -50,8 +55,8 @@ export function formatISTDayName(date: Date): string {
 }
 
 export function getISTDayIndex(date: Date): number {
-  const shortName = shortDayNameFormatter.format(date) as keyof typeof DAY_INDEX_LOOKUP;
-  return DAY_INDEX_LOOKUP[shortName];
+  // `en-US` short weekday names are exactly the seven keys above; fall back to Sunday regardless.
+  return DAY_INDEX_LOOKUP.get(shortDayNameFormatter.format(date)) ?? 0;
 }
 
 export function addISTDays(date: Date, days: number): Date {
