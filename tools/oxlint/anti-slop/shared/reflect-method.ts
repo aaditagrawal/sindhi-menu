@@ -1,17 +1,7 @@
-import type { ESTree, Scope, SourceCode, Variable } from "@oxlint/plugins";
+import { defineRule } from "@oxlint/plugins";
+import { resolveVariable } from "./scope.ts";
 
-function resolveVariable(
-  sourceCode: SourceCode,
-  identifier: ESTree.IdentifierReference,
-): Variable | null {
-  let scope: Scope | null = sourceCode.getScope(identifier);
-  while (scope !== null) {
-    const variable = scope.set.get(identifier.name);
-    if (variable !== undefined) return variable;
-    scope = scope.upper;
-  }
-  return null;
-}
+import type { ESTree, SourceCode } from "@oxlint/plugins";
 
 function isGlobalReflect(sourceCode: SourceCode, expression: ESTree.Expression): boolean {
   if (expression.type !== "Identifier" || expression.name !== "Reflect") return false;
@@ -32,4 +22,29 @@ export function isGlobalReflectMethodCall(
   return callee.computed
     ? property.type === "Literal" && property.value === methodName
     : property.type === "Identifier" && property.name === methodName;
+}
+
+export function createNoReflectMethodRule(options: {
+  readonly method: string;
+  readonly messageId: string;
+  readonly message: string;
+  readonly description: string;
+}) {
+  return defineRule({
+    meta: {
+      type: "problem",
+      docs: { description: options.description },
+      messages: { [options.messageId]: options.message },
+    },
+    createOnce(context) {
+      return {
+        CallExpression(node) {
+          if (node.callee.type === "Super" || node.callee.type === "V8IntrinsicExpression") return;
+          if (isGlobalReflectMethodCall(context.sourceCode, node.callee, options.method)) {
+            context.report({ node, messageId: options.messageId });
+          }
+        },
+      };
+    },
+  });
 }

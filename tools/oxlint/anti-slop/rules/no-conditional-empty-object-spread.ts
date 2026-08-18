@@ -1,4 +1,5 @@
 import { defineRule } from "@oxlint/plugins";
+import { isEmptyObjectExpression } from "../shared/expressions.ts";
 import type { ESTree } from "@oxlint/plugins";
 
 function unwrapParentheses(node: ESTree.Expression): ESTree.Expression {
@@ -9,16 +10,12 @@ function unwrapParentheses(node: ESTree.Expression): ESTree.Expression {
   return current;
 }
 
-function isEmptyObjectExpression(node: ESTree.Expression): boolean {
-  return node.type === "ObjectExpression" && node.properties.length === 0;
-}
-
 function isConditionalEmptyObjectSpread(node: ESTree.Expression): boolean {
   const conditional = unwrapParentheses(node);
   return (
     conditional.type === "ConditionalExpression" &&
-    (isEmptyObjectExpression(conditional.consequent) ||
-      isEmptyObjectExpression(conditional.alternate))
+    (isEmptyObjectExpression(unwrapParentheses(conditional.consequent)) ||
+      isEmptyObjectExpression(unwrapParentheses(conditional.alternate)))
   );
 }
 

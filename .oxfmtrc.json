@@ -13,7 +13,6 @@
     "out/**",
     "package-lock.json",
     "public/**",
-    "src/data/**",
-    "tools/oxlint/anti-slop/**"
+    "src/data/**"
   ]
 }

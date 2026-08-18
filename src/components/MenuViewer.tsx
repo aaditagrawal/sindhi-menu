@@ -25,9 +25,9 @@ import { Grid3X3 } from "lucide-react";
 const WEEK_OVERRIDE_STORAGE_KEY = "sindhi-menu-week-override";
 
 /** Fetch the menu document for a rotation week and project it onto the current IST week. */
-async function loadMenuForWeekNumber(weekNumber: number): Promise<WeekMenu> {
+async function loadMenuForWeekNumber(weekNumber: number, signal?: AbortSignal): Promise<WeekMenu> {
   const { menuName } = getMenuNameForOverriddenWeek(weekNumber);
-  const res = await fetch(`/${menuName}.json`, { cache: "no-store" });
+  const res = await fetch(`/${menuName}.json`, { cache: "no-store", signal });
   if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
   // SAFETY: this is the same `public/menu*.json` document the server reads in `@/data/weeks`;
   // it is served from this app's own origin and authored against `MenuFile`, whose fields are all
@@ -54,11 +54,13 @@ export function MenuViewer({
   const [currentWeek, setCurrentWeek] = React.useState<WeekMenu>(initialWeek);
 
   const [weekOverride, setWeekOverride] = React.useState<number | null>(null);
+  const [hasRestoredOverride, setHasRestoredOverride] = React.useState(false);
 
   // Restore the saved override once mounted; localStorage does not exist during server rendering,
   // and reading it in the initializer would desync the first client render from the server HTML.
   React.useEffect(() => {
     setWeekOverride(readStoredWeekOverride());
+    setHasRestoredOverride(true);
   }, []);
 
   // Apply initialWeekOverride from props after mount
@@ -80,29 +82,34 @@ export function MenuViewer({
 
   // Save week override to localStorage when it changes
   React.useEffect(() => {
+    if (!hasRestoredOverride) return;
     if (weekOverride !== null) {
       window.localStorage.setItem(WEEK_OVERRIDE_STORAGE_KEY, weekOverride.toString());
     } else {
       window.localStorage.removeItem(WEEK_OVERRIDE_STORAGE_KEY);
     }
-  }, [weekOverride]);
+  }, [hasRestoredOverride, weekOverride]);
 
   // Load current week menu on client side
   React.useEffect(() => {
+    const controller = new AbortController();
+
     async function loadCurrentWeek() {
       try {
         setIsLoading(true);
         const weekNumber = weekOverride ?? getWeekNumberFromDate(new Date());
-        const week = await loadMenuForWeekNumber(weekNumber);
+        const week = await loadMenuForWeekNumber(weekNumber, controller.signal);
         setCurrentWeek(week);
       } catch (error) {
+        if (controller.signal.aborted) return;
         console.error("Failed to load week menu:", error);
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
 
     loadCurrentWeek();
+    return () => controller.abort();
   }, [weekOverride]);
 
   // Set initial dateKey to current/upcoming meal after week is loaded

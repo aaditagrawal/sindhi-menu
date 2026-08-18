@@ -114,7 +114,8 @@ export function readExtras(extras: MenuFileExtras | undefined): MenuExtras {
 
   const items = rawItems.flatMap((item) => {
     const name = String(item?.name ?? "").trim();
-    const price = Number(item?.price ?? Number.NaN);
+    const rawPrice = typeof item?.price === "string" ? item.price.trim() : item?.price;
+    const price = Number(rawPrice === "" || rawPrice === undefined ? Number.NaN : rawPrice);
     return name.length > 0 && Number.isFinite(price) ? [{ name, price }] : [];
   });
 

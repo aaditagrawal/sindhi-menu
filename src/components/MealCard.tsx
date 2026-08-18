@@ -7,6 +7,33 @@ import { cn } from "@/lib/utils";
 import { UtensilsCrossed, Moon, Leaf, Beef } from "lucide-react";
 import { filterMenuItems } from "@/lib/exceptions";
 
+const sectionTone = {
+  specialVeg:
+    "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
+  veg: "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
+  vegSides: "bg-foreground/5 border-foreground/10 text-foreground",
+  nonVeg:
+    "bg-rose-100 border-rose-200 text-rose-900 dark:bg-rose-500/10 dark:border-rose-400/30 dark:text-rose-100",
+  note: "bg-muted/40 border-muted-foreground/20 text-muted-foreground",
+} satisfies Record<MealSectionKind, string>;
+
+// Listed exhaustively so adding a section kind is a type error rather than a silent blank cell.
+const sectionIcon = {
+  specialVeg: Leaf,
+  veg: Leaf,
+  vegSides: undefined,
+  nonVeg: Beef,
+  note: undefined,
+} satisfies Record<MealSectionKind, typeof Leaf | undefined>;
+
+const iconTone = {
+  specialVeg: "text-emerald-700 dark:text-emerald-300",
+  veg: "text-emerald-700 dark:text-emerald-300",
+  vegSides: undefined,
+  nonVeg: "text-rose-700 dark:text-rose-300",
+  note: undefined,
+} satisfies Record<MealSectionKind, string | undefined>;
+
 export function MealCard({
   title,
   timeRange,
@@ -42,33 +69,6 @@ export function MealCard({
       }))
       .filter((section) => section.items.length > 0);
   }, [meal.sections]);
-
-  const sectionTone = {
-    specialVeg:
-      "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
-    veg: "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
-    vegSides: "bg-foreground/5 border-foreground/10 text-foreground",
-    nonVeg:
-      "bg-rose-100 border-rose-200 text-rose-900 dark:bg-rose-500/10 dark:border-rose-400/30 dark:text-rose-100",
-    note: "bg-muted/40 border-muted-foreground/20 text-muted-foreground",
-  } satisfies Record<MealSectionKind, string>;
-
-  // Listed exhaustively so adding a section kind is a type error rather than a silent blank cell.
-  const sectionIcon = {
-    specialVeg: Leaf,
-    veg: Leaf,
-    vegSides: undefined,
-    nonVeg: Beef,
-    note: undefined,
-  } satisfies Record<MealSectionKind, typeof Leaf | undefined>;
-
-  const iconTone = {
-    specialVeg: "text-emerald-700 dark:text-emerald-300",
-    veg: "text-emerald-700 dark:text-emerald-300",
-    vegSides: undefined,
-    nonVeg: "text-rose-700 dark:text-rose-300",
-    note: undefined,
-  } satisfies Record<MealSectionKind, string | undefined>;
 
   const primaryGradient =
     "linear-gradient(135deg, rgba(255, 191, 132, 0.9), rgba(255, 156, 170, 0.88))";
