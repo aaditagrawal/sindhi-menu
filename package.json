@@ -41,5 +41,6 @@
   "trustedDependencies": [
     "@tailwindcss/oxide",
     "unrs-resolver"
-  ]
+  ],
+  "packageManager": "bun@1.4.2"
 }
