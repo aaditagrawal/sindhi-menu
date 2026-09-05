@@ -1,5 +1,8 @@
 "use client";
 
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
+
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
 import { getWeekNumberFromDate, getMenuNameForOverriddenWeek } from "@/lib/menuManager";
@@ -37,11 +40,11 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
     : `${currentMetadata.menuName} (Current)`;
 
   return (
-    <div className="flex items-center gap-2">
-      <label htmlFor="menu-selector" className="text-sm font-medium text-foreground">
+    <div {...stylex.props(styles.weekSelector)}>
+      <label htmlFor="menu-selector" {...stylex.props(styles.weekSelectorLabel)}>
         Menu:
       </label>
-      <div className="relative">
+      <div {...stylex.props(styles.weekSelectWrapper)}>
         <select
           id="menu-selector"
           value={currentMenuNumber}
@@ -56,7 +59,7 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
             const targetWeek = currentWeekNumber + weekOffset;
             onWeekChange(targetWeek === currentWeekNumber ? -1 : targetWeek);
           }}
-          className="appearance-none rounded-lg border border-input bg-background px-3 py-2 pr-8 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-input/80 hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          {...stylex.props(styles.weekSelect)}
           title="Select menu (1-4 in rotation)"
         >
           {menuOptions.map((option) => (
@@ -65,18 +68,18 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <ChevronDown {...stylex.props(styles.weekSelectChevron)} />
       </div>
       {currentMetadata.isOverridden && (
         <button
           onClick={() => onWeekChange(-1)}
-          className="ml-2 rounded-md bg-secondary/50 px-2 py-1 text-xs font-medium text-secondary-foreground hover:bg-secondary transition-colors"
+          {...stylex.props(styles.weekReset)}
           title="Reset to current week"
         >
           Reset
         </button>
       )}
-      <span className="text-xs text-muted-foreground ml-2">{displayLabel}</span>
+      <span {...stylex.props(styles.weekStatus)}>{displayLabel}</span>
     </div>
   );
 }

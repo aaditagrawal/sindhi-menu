@@ -1,35 +1,77 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
 
-export type CardProps = React.HTMLAttributes<HTMLDivElement>;
+type StyledProps<T> = React.HTMLAttributes<T> & {
+  xstyle?: stylex.StyleXStyles<Record<string, string | number | null>>;
+};
+export type CardProps = StyledProps<HTMLDivElement>;
 
-export function Card({ className, ...props }: CardProps) {
+export function Card({ className, xstyle, ...props }: CardProps) {
   return (
-    <div className={cn("rounded-xl border bg-card text-card-foreground", className)} {...props} />
+    <div
+      className={[stylex.props(styles.Card, xstyle).className, className].filter(Boolean).join(" ")}
+      {...props}
+    />
   );
 }
 
-export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />;
+export function CardHeader({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
+  return (
+    <div
+      className={[stylex.props(styles.CardHeader, xstyle).className, className]
+        .filter(Boolean)
+        .join(" ")}
+      data-stack="1.5"
+      {...props}
+    />
+  );
 }
 
-export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+export function CardTitle({ className, xstyle, ...props }: StyledProps<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("text-xl font-semibold leading-none tracking-tight", className)} {...props} />
+    <h3
+      className={[stylex.props(styles.CardTitle, xstyle).className, className]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    />
   );
 }
 
 export function CardDescription({
   className,
+  xstyle,
   ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("text-sm text-muted-foreground", className)} {...props} />;
+}: StyledProps<HTMLParagraphElement>) {
+  return (
+    <p
+      className={[stylex.props(styles.CardDescription, xstyle).className, className]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    />
+  );
 }
 
-export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-6 pt-0", className)} {...props} />;
+export function CardContent({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
+  return (
+    <div
+      className={[stylex.props(styles.CardContent, xstyle).className, className]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    />
+  );
 }
 
-export function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex items-center p-6 pt-0", className)} {...props} />;
+export function CardFooter({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
+  return (
+    <div
+      className={[stylex.props(styles.CardFooter, xstyle).className, className]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    />
+  );
 }

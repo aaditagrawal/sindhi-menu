@@ -1,5 +1,8 @@
 "use client";
 
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
+
 import * as React from "react";
 import type { WeekMenu, MealKey, DayMenu, Meal, MealSectionKind } from "@/lib/types";
 import { MealCard } from "@/components/MealCard";
@@ -28,14 +31,12 @@ const mealTitles = {
 };
 
 const sectionTone = {
-  specialVeg:
-    "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
-  veg: "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-100",
-  vegSides: "bg-foreground/5 border-border/30 text-foreground",
-  nonVeg:
-    "bg-rose-100 border-rose-200 text-rose-900 dark:bg-rose-500/10 dark:border-rose-400/30 dark:text-rose-100",
-  note: "bg-muted/40 border-muted-foreground/20 text-muted-foreground",
-} satisfies Record<MealSectionKind, string>;
+  specialVeg: styles.gridToneSpecialVeg,
+  veg: styles.gridToneVeg,
+  vegSides: styles.gridToneVegSides,
+  nonVeg: styles.gridToneNonVeg,
+  note: styles.gridToneNote,
+} satisfies Record<MealSectionKind, stylex.StyleXStyles<Record<string, string | number | null>>>;
 
 export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
   // Sort days chronologically
@@ -60,9 +61,9 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
   }, [week.extras]);
 
   return (
-    <div className="space-y-8">
+    <div {...stylex.props(styles.weekView)} data-stack="8">
       {/* Mobile/Tablet View - Days stacked vertically */}
-      <div className="block lg:hidden space-y-6">
+      <div {...stylex.props(styles.mobileWeek)} data-stack="6">
         {sortedDays.map((dateKey) => {
           const day = week.menu[dateKey];
           return <DaySection key={dateKey} day={day} />;
@@ -70,27 +71,24 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
       </div>
 
       {/* Desktop View - Transposed grid: Meals as rows, Days as columns */}
-      <div className="hidden lg:block">
-        <div className="overflow-x-auto">
+      <div {...stylex.props(styles.desktopWeek)}>
+        <div {...stylex.props(styles.weekScroll)}>
           <div
-            className="grid gap-3 min-w-max pb-4 items-start"
+            {...stylex.props(styles.weekGrid)}
             style={{
               gridTemplateColumns: `200px repeat(${dayCount}, minmax(280px, 1fr))`,
             }}
           >
             {/* Header row with days */}
-            <div className="sticky top-0 bg-background z-10 p-3">
-              <h3 className="font-semibold text-lg">Meals</h3>
+            <div {...stylex.props(styles.mealColumnHeading)}>
+              <h3 {...stylex.props(styles.mealColumnTitle)}>Meals</h3>
             </div>
             {sortedDays.map((dateKey) => {
               const day = week.menu[dateKey];
               return (
-                <div
-                  key={dateKey}
-                  className="sticky top-0 bg-background z-10 p-3 text-center border-l border-border/50"
-                >
-                  <h3 className="font-semibold text-lg">{day.day}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{day.displayDate}</p>
+                <div key={dateKey} {...stylex.props(styles.dayColumnHeading)}>
+                  <h3 {...stylex.props(styles.dayColumnTitle)}>{day.day}</h3>
+                  <p {...stylex.props(styles.dayDate)}>{day.displayDate}</p>
                 </div>
               );
             })}
@@ -99,15 +97,15 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
             {mealOrder.map((mealKey) => (
               <React.Fragment key={mealKey}>
                 {/* Meal type header */}
-                <div className="p-3 border-t border-border/50">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/15">
+                <div {...stylex.props(styles.mealRowHeading)}>
+                  <div {...stylex.props(styles.mealRowLabel)}>
+                    <span {...stylex.props(styles.mealRowBadge)}>
                       {React.createElement(mealIcons[mealKey], {
-                        className: "h-4 w-4 text-primary",
+                        ...stylex.props(styles.mealRowIcon),
                       })}
                     </span>
                     <div>
-                      <span className="font-medium">{mealTitles[mealKey]}</span>
+                      <span {...stylex.props(styles.mealRowTitle)}>{mealTitles[mealKey]}</span>
                     </div>
                   </div>
                 </div>
@@ -118,10 +116,7 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
                   const meal = day.meals[mealKey];
 
                   return (
-                    <div
-                      key={`${mealKey}-${dateKey}`}
-                      className="p-3 border-t border-l border-border/50"
-                    >
+                    <div key={`${mealKey}-${dateKey}`} {...stylex.props(styles.mealCell)}>
                       {meal ? (
                         <MealGridCard
                           meal={meal}
@@ -129,8 +124,8 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
                           timeRange={`${meal.startTime} – ${meal.endTime} IST`}
                         />
                       ) : (
-                        <div className="p-4 rounded-lg border-2 border-dashed border-muted-foreground/20 flex items-center justify-center min-h-32">
-                          <span className="text-sm text-muted-foreground">No meal</span>
+                        <div {...stylex.props(styles.missingMeal)}>
+                          <span {...stylex.props(styles.missingMealText)}>No meal</span>
                         </div>
                       )}
                     </div>
@@ -143,24 +138,19 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
       </div>
 
       {extras ? (
-        <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/40 px-4 py-3 sm:px-5">
-          <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">
-            {extras.data.category}
-          </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
+        <section {...stylex.props(styles.weekExtras)}>
+          <h2 {...stylex.props(styles.weekExtrasTitle)}>{extras.data.category}</h2>
+          <p {...stylex.props(styles.weekExtrasDescription)}>
             Add-ons available for any meal. Prices listed in {extras.data.currency}.
           </p>
           <ul
-            className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2"
+            {...stylex.props(styles.weekExtrasGrid)}
             aria-label={`${extras.data.category} add-ons`}
           >
             {extras.data.items.map((item) => (
-              <li
-                key={item.name}
-                className="flex items-center justify-between rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm"
-              >
-                <span className="font-medium text-foreground/90">{item.name}</span>
-                <span className="font-semibold text-primary">
+              <li key={item.name} {...stylex.props(styles.weekExtra)}>
+                <span {...stylex.props(styles.weekExtraName)}>{item.name}</span>
+                <span {...stylex.props(styles.weekExtraPrice)}>
                   {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
                 </span>
               </li>
@@ -176,13 +166,13 @@ function DaySection({ day }: { day: DayMenu }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle xstyle={styles.dayTitle}>
           <span>{day.day}</span>
-          <span className="text-sm font-normal text-muted-foreground">{day.displayDate}</span>
+          <span {...stylex.props(styles.dayDisplayDate)}>{day.displayDate}</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div {...stylex.props(styles.dayMeals)}>
           {mealOrder.map((mealKey) => {
             const meal = day.meals[mealKey];
             if (!meal) return null;
@@ -226,25 +216,25 @@ const MealGridCard = React.memo(function MealGridCard({
   const fallbackItems = React.useMemo(() => filterMenuItems(meal.items), [meal.items]);
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center justify-between gap-2 text-sm">
-          <span className="flex items-center gap-1">
-            <Icon className="h-3 w-3 text-primary" />
-            <span className="font-medium">{mealTitles[mealKey]}</span>
+    <Card xstyle={styles.gridCard}>
+      <CardHeader xstyle={styles.gridCardHeader}>
+        <CardTitle xstyle={styles.gridCardTitle}>
+          <span {...stylex.props(styles.gridMealLabel)}>
+            <Icon {...stylex.props(styles.gridMealIcon)} />
+            <span {...stylex.props(styles.gridMealName)}>{mealTitles[mealKey]}</span>
           </span>
-          <span className="text-xs text-muted-foreground font-normal">{timeRange}</span>
+          <span {...stylex.props(styles.gridMealTime)}>{timeRange}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="space-y-2 text-sm">
+      <CardContent xstyle={styles.gridCardContent}>
+        <div {...stylex.props(styles.gridMealSections)} data-stack="2">
           {filteredSections.length > 0 ? (
-            <ul aria-label="Menu items" className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <ul aria-label="Menu items" {...stylex.props(styles.gridMealItems)}>
               {filteredSections.flatMap((section, sectionIdx) =>
                 section.items.map((item, idx) => (
                   <li
                     key={`${section.kind}-${sectionIdx}-${idx}`}
-                    className={`rounded-md border px-2 py-1 ${sectionTone[section.kind] ?? sectionTone.note}`}
+                    {...stylex.props(sectionTone[section.kind] ?? sectionTone.note)}
                   >
                     {item}
                   </li>
@@ -253,15 +243,12 @@ const MealGridCard = React.memo(function MealGridCard({
             </ul>
           ) : fallbackItems.length > 0 ? (
             fallbackItems.map((item, idx) => (
-              <div
-                key={`fallback-${idx}`}
-                className="rounded-md border border-border/30 bg-foreground/5 px-2 py-1"
-              >
+              <div key={`fallback-${idx}`} {...stylex.props(styles.gridFallbackItem)}>
                 {item}
               </div>
             ))
           ) : (
-            <div className="text-xs text-muted-foreground italic py-2">No items available</div>
+            <div {...stylex.props(styles.gridNoItems)}>No items available</div>
           )}
         </div>
       </CardContent>
