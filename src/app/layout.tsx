@@ -1,3 +1,5 @@
+import * as stylex from "@stylexjs/stylex";
+import { styles, themeMarker } from "@/styles/site.stylex";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
@@ -26,15 +28,16 @@ export const metadata: Metadata = {
     "A fast, friendly viewer for Sindhi Mess weekly menu with time-aware highlighting (IST).",
 };
 
+/** Provide the existing theme, notification, and shared page shell. */
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning {...stylex.props(themeMarker)}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} ${stylex.props(styles.body).className}`}
       >
         <ThemeProvider
           attribute="class"
@@ -42,20 +45,20 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="fixed top-4 right-4 z-50">
+          <div {...stylex.props(styles.themeControl)}>
             <ThemeSwitcher />
           </div>
           <MenuNotification />
-          <main className="flex-1">{children}</main>
-          <footer className="border-t bg-secondary/40">
-            <div className="mx-auto max-w-4xl px-4 py-3 space-y-2">
-              <p className="text-sm text-foreground text-center">
+          <main {...stylex.props(styles.main)}>{children}</main>
+          <footer {...stylex.props(styles.footer)}>
+            <div {...stylex.props(styles.footerContent)} data-stack="2">
+              <p {...stylex.props(styles.footerText)}>
                 Made by{" "}
                 <a
                   href="https://aadit.cc"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  {...stylex.props(styles.authorLink)}
                 >
                   Aadit (aadit.cc)
                 </a>
@@ -67,7 +70,7 @@ export default function RootLayout({
                   href="https://github.com/aaditagrawal/sindhi-menu"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  {...stylex.props(styles.sourceLink)}
                 >
                   open source on GitHub
                 </a>
@@ -76,7 +79,7 @@ export default function RootLayout({
                   href="/openapi.json"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  {...stylex.props(styles.apiLink)}
                 >
                   API docs (OpenAPI JSON)
                 </a>

@@ -1,11 +1,14 @@
 "use client";
 
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
+
 import * as React from "react";
 import type { Meal, MealKey } from "@/lib/types";
 import { MealCard } from "@/components/MealCard";
-import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+/** Position the daily meal cards and preserve previous/next navigation. */
 export function MealCarousel({
   meals,
   highlightKey,
@@ -52,31 +55,31 @@ export function MealCarousel({
   const goNext = () => setCenterIndex((i) => Math.min(meals.length - 1, i + 1));
 
   return (
-    <div className="relative overflow-visible">
+    <div {...stylex.props(styles.carousel)}>
       {/* Arrows */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-1 sm:px-4">
+      <div {...stylex.props(styles.carouselControls)}>
         <button
           type="button"
           aria-label="Previous"
           onClick={goPrev}
-          className="pointer-events-auto inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border-2 border-primary/20 bg-background/95 backdrop-blur shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-200 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100"
+          {...stylex.props(styles.carouselPrevious)}
           disabled={centerIndex === 0}
         >
-          <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+          <ChevronLeft {...stylex.props(styles.carouselPreviousIcon)} />
         </button>
         <button
           type="button"
           aria-label="Next"
           onClick={goNext}
-          className="pointer-events-auto inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border-2 border-primary/20 bg-background/95 backdrop-blur shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-200 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100"
+          {...stylex.props(styles.carouselNext)}
           disabled={centerIndex === meals.length - 1}
         >
-          <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+          <ChevronRight {...stylex.props(styles.carouselNextIcon)} />
         </button>
       </div>
 
       {/* Track */}
-      <div className="flex gap-4 overflow-x-auto py-2 px-3 sm:px-0 snap-x snap-mandatory overflow-visible">
+      <div {...stylex.props(styles.carouselTrack)}>
         {meals.map(({ key, meal, timeRange, title }, idx) => {
           const isActive = key === highlightKey;
           return (
@@ -85,10 +88,7 @@ export function MealCarousel({
               ref={(el) => {
                 itemRefs.current[idx] = el;
               }}
-              className={cn(
-                "min-w-[92%] sm:min-w-[55%] md:min-w-[48%] lg:min-w-[36%] snap-center transition overflow-visible px-1",
-                isActive ? "opacity-100 scale-100" : "opacity-60 scale-[0.98]",
-              )}
+              {...stylex.props(isActive ? styles.carouselActive : styles.carouselInactive)}
             >
               <MealCard
                 title={title}

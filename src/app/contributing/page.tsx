@@ -1,9 +1,12 @@
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
 export const dynamic = "force-static";
 
+/** Render contribution instructions with the preserved prose typography. */
 export default function ContributingPage() {
   return (
-    <div className="min-h-screen px-4 py-8 sm:px-6 md:px-8">
-      <div className="mx-auto max-w-3xl prose prose-zinc dark:prose-invert">
+    <div {...stylex.props(styles.contributingPage)}>
+      <div {...stylex.props(styles.contributingContent)} data-prose="">
         <h1>Contributing</h1>
         <p className="lead">
           Thanks for your interest in improving this menu viewer! The app now reads from a static

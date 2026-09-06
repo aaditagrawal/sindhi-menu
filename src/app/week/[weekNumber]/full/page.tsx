@@ -1,3 +1,5 @@
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
 import { notFound } from "next/navigation";
 import { getWeekMenu } from "@/data/weeks";
 import { ComprehensiveWeekView } from "@/components/ComprehensiveWeekView";
@@ -11,6 +13,7 @@ export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
 
+/** Load the selected rotation menu for the complete week layout. */
 export default async function WeekNumberFullPage({
   params,
 }: {
@@ -24,19 +27,19 @@ export default async function WeekNumberFullPage({
   const week = await getWeekMenu(weekId);
 
   return (
-    <div className="px-4 py-8 sm:px-6 md:px-8">
-      <div className="mx-auto max-w-full space-y-6">
-        <div className="space-y-2">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div {...stylex.props(styles.fullPage)}>
+      <div {...stylex.props(styles.fullContent)} data-stack="6">
+        <div {...stylex.props(styles.fullHeader)} data-stack="2">
+          <div {...stylex.props(styles.fullTitle)}>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-semibold">Full Week Menu</h1>
-              <p className="text-muted-foreground">
+              <h1 {...stylex.props(styles.fullDescription)}>Full Week Menu</h1>
+              <p {...stylex.props(styles.fullActions)}>
                 Week {weekNum} • {week.foodCourt}
               </p>
             </div>
-            <Button asChild variant="outline" className="self-start sm:self-auto">
+            <Button asChild variant="outline" {...stylex.props(styles.dailyIcon)}>
               <Link href={`/week/${weekNumber}`} title="Back to daily view">
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                <ArrowLeft {...stylex.props(styles.homeIcon)} />
                 Daily View
               </Link>
             </Button>

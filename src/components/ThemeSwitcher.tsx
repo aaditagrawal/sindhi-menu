@@ -1,11 +1,15 @@
 "use client";
 
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
+
 import * as React from "react";
 import { Moon, Sun, Monitor } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 
+/** Cycle theme preference while keeping its label available to assistive technology. */
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
@@ -17,8 +21,8 @@ export function ThemeSwitcher() {
   if (!mounted) {
     return (
       <Button variant="outline" size="icon" disabled>
-        <Sun className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Toggle theme</span>
+        <Sun {...stylex.props(styles.themePlaceholderIcon)} />
+        <span {...stylex.props(styles.themePlaceholderLabel)}>Toggle theme</span>
       </Button>
     );
   }
@@ -36,11 +40,11 @@ export function ThemeSwitcher() {
   const getIcon = () => {
     switch (theme) {
       case "light":
-        return <Sun className="h-[1.2rem] w-[1.2rem]" />;
+        return <Sun {...stylex.props(styles.themeSun)} />;
       case "dark":
-        return <Moon className="h-[1.2rem] w-[1.2rem]" />;
+        return <Moon {...stylex.props(styles.themeMoon)} />;
       default:
-        return <Monitor className="h-[1.2rem] w-[1.2rem]" />;
+        return <Monitor {...stylex.props(styles.themeSystem)} />;
     }
   };
 
@@ -58,7 +62,7 @@ export function ThemeSwitcher() {
   return (
     <Button variant="outline" size="icon" onClick={cycleTheme}>
       {getIcon()}
-      <span className="sr-only">{getLabel()}</span>
+      <span {...stylex.props(styles.themeLabel)}>{getLabel()}</span>
     </Button>
   );
 }

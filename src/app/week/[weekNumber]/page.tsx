@@ -1,3 +1,5 @@
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
 import { notFound } from "next/navigation";
 import { getWeekMenu } from "@/data/weeks";
 import { MenuViewer } from "@/components/MenuViewer";
@@ -8,6 +10,7 @@ export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
 
+/** Load the selected rotation menu into the daily viewer. */
 export default async function WeekNumberPage({
   params,
 }: {
@@ -21,8 +24,8 @@ export default async function WeekNumberPage({
   const week = await getWeekMenu(weekId);
 
   return (
-    <div className="px-4 py-8 sm:px-6 md:px-8">
-      <div className="mx-auto max-w-4xl space-y-6">
+    <div {...stylex.props(styles.rotationPage)}>
+      <div {...stylex.props(styles.rotationContent)} data-stack="6">
         <MenuViewer initialWeek={week} initialWeekOverride={weekNum} />
       </div>
     </div>

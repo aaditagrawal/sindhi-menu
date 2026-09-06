@@ -1,5 +1,8 @@
 "use client";
 
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
+
 import * as React from "react";
 import type { MealKey, WeekMenu } from "@/lib/types";
 import {
@@ -44,6 +47,7 @@ function readStoredWeekOverride(): number | null {
   return Number.isFinite(weekNumber) ? weekNumber : null;
 }
 
+/** Coordinate rotation overrides, day selection, and the current meal view. */
 export function MenuViewer({
   initialWeek,
   initialWeekOverride,
@@ -194,18 +198,16 @@ export function MenuViewer({
   });
 
   return (
-    <div className="space-y-4">
-      <header className="mb-4">
-        <div className="text-3xl sm:text-4xl font-semibold tracking-tight">
-          {currentWeek.foodCourt}
-        </div>
-        <p className="text-muted-foreground mt-2 text-lg">Weekly rotating menu (4-week cycle)</p>
-        <p className="text-muted-foreground/70 text-sm mt-1 italic">
+    <div {...stylex.props(styles.viewer)} data-stack="4">
+      <header {...stylex.props(styles.viewerHeader)}>
+        <div {...stylex.props(styles.viewerTitle)}>{currentWeek.foodCourt}</div>
+        <p {...stylex.props(styles.viewerDescription)}>Weekly rotating menu (4-week cycle)</p>
+        <p {...stylex.props(styles.viewerNote)}>
           Sometimes, the Sindhi mess doesn&apos;t adhere to any menu.
         </p>
       </header>
 
-      <div className="flex flex-wrap items-center gap-4 text-base">
+      <div {...stylex.props(styles.viewerControls)}>
         <WeekSelector
           onWeekChange={(weekNum) => {
             setWeekOverride(weekNum === -1 ? null : weekNum);
@@ -222,9 +224,9 @@ export function MenuViewer({
       </div>
 
       {isLoading && (
-        <div className="flex items-center justify-center py-4">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span className="ml-2 text-sm text-muted-foreground">Loading menu...</span>
+        <div {...stylex.props(styles.loading)}>
+          <div {...stylex.props(styles.loadingSpinner)} />
+          <span {...stylex.props(styles.loadingText)}>Loading menu...</span>
         </div>
       )}
 
@@ -237,24 +239,19 @@ export function MenuViewer({
           />
 
           {extras ? (
-            <section className="rounded-xl border border-dashed border-muted-foreground/40 bg-muted/30 px-4 py-3 sm:px-5">
-              <h2 className="text-base sm:text-lg font-semibold text-muted-foreground">
-                {extras.data.category}
-              </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1">
+            <section {...stylex.props(styles.extras)}>
+              <h2 {...stylex.props(styles.extrasTitle)}>{extras.data.category}</h2>
+              <p {...stylex.props(styles.extrasDescription)}>
                 Prices are listed in {extras.data.currency}.
               </p>
               <ul
-                className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2"
+                {...stylex.props(styles.extrasGrid)}
                 aria-label={`${extras.data.category} add-ons`}
               >
                 {extras.data.items.map((item) => (
-                  <li
-                    key={item.name}
-                    className="flex items-center justify-between rounded-lg border border-border/40 bg-card/80 px-3 py-2 text-sm"
-                  >
-                    <span className="font-medium text-foreground/90">{item.name}</span>
-                    <span className="font-semibold text-primary">
+                  <li key={item.name} {...stylex.props(styles.extra)}>
+                    <span {...stylex.props(styles.extraName)}>{item.name}</span>
+                    <span {...stylex.props(styles.extraPrice)}>
                       {extras.formatter?.format(item.price) ??
                         `${extras.data.currency} ${item.price}`}
                     </span>
@@ -264,13 +261,13 @@ export function MenuViewer({
             </section>
           ) : null}
 
-          <div className="flex flex-col items-center gap-2 mt-6">
+          <div {...stylex.props(styles.viewerActions)}>
             <Button asChild variant="outline">
               <Link
                 href={`/week/${getMenuNumberForWeek(weekOverride ?? getWeekNumberFromDate(new Date()))}/full`}
                 title="View full week menu"
               >
-                <Grid3X3 className="h-4 w-4 mr-2" />
+                <Grid3X3 {...stylex.props(styles.fullWeekIcon)} />
                 View Full Week Menu
               </Link>
             </Button>

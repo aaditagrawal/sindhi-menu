@@ -1,8 +1,11 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/styles/site.stylex";
 
+import * as React from "react";
+
+/** Select a typed option from the inline listbox and close on outside clicks. */
 export function InlineSelect<T extends string | number>({
   label,
   value,
@@ -38,14 +41,14 @@ export function InlineSelect<T extends string | number>({
   const selected = options.find((o) => o.value === value);
 
   return (
-    <div ref={ref} className={cn("relative inline-block", className)}>
+    <div
+      ref={ref}
+      className={[stylex.props(styles.selectWrapper).className, className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <button
-        className={cn(
-          "underline decoration-dotted underline-offset-4 text-foreground/90 hover:text-foreground",
-          "px-1.5 py-1 rounded focus:outline-none focus:ring-2 focus:ring-ring",
-          "text-base sm:text-lg font-semibold",
-          disabled && "opacity-50 cursor-not-allowed hover:text-foreground/90",
-        )}
+        {...stylex.props(disabled ? styles.selectDisabled : styles.selectEnabled)}
         onClick={(e) => {
           e.preventDefault();
           if (!disabled) setOpen((o) => !o);
@@ -55,25 +58,21 @@ export function InlineSelect<T extends string | number>({
         disabled={disabled}
       >
         {label ? `${label}: ` : null}
-        <span className="font-medium">{selected?.label ?? String(value)}</span>
+        <span {...stylex.props(styles.selectValue)}>{selected?.label ?? String(value)}</span>
       </button>
       {open && !disabled ? (
         <div
           role="listbox"
-          className={cn(
-            "absolute z-50 mt-2 min-w-[220px] rounded-lg border bg-popover p-1 shadow-lg",
-            menuClassName,
-          )}
+          className={[stylex.props(styles.selectMenu).className, menuClassName]
+            .filter(Boolean)
+            .join(" ")}
         >
           {options.map((opt) => (
             <button
               key={String(opt.value)}
               role="option"
               aria-selected={opt.value === value}
-              className={cn(
-                "block w-full text-left px-3 py-2 rounded-md text-base",
-                opt.value === value ? "bg-muted" : "hover:bg-muted",
-              )}
+              {...stylex.props(opt.value === value ? styles.selectSelected : styles.selectOption)}
               onClick={() => {
                 onChange(opt.value);
                 setOpen(false);
