@@ -13,6 +13,7 @@ export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
 
+/** Load the selected rotation menu for the complete week layout. */
 export default async function WeekNumberFullPage({
   params,
 }: {

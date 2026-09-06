@@ -12,6 +12,7 @@ interface WeekSelectorProps {
   currentOverride: number | null;
 }
 
+/** Translate a selected menu rotation into the existing week override. */
 export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProps) {
   const now = new Date();
   const currentWeekNumber = getWeekNumberFromDate(now);

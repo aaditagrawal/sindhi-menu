@@ -5,6 +5,7 @@ import { styles } from "@/styles/site.stylex";
 
 import * as React from "react";
 
+/** Select a typed option from the inline listbox and close on outside clicks. */
 export function InlineSelect<T extends string | number>({
   label,
   value,

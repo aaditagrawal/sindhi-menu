@@ -1571,6 +1571,7 @@ export const styles = stylex.create({
     height: "1.2rem",
     width: "1.2rem",
   },
+  // Exact sr-only declarations; the theme label remains visually hidden.
   themeLabel: {
     clipPath: "inset(50%)",
     whiteSpace: "nowrap",

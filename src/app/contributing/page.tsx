@@ -2,6 +2,7 @@ import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/styles/site.stylex";
 export const dynamic = "force-static";
 
+/** Render contribution instructions with the preserved prose typography. */
 export default function ContributingPage() {
   return (
     <div {...stylex.props(styles.contributingPage)}>

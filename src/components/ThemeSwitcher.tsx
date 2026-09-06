@@ -9,6 +9,7 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 
+/** Cycle theme preference while keeping its label available to assistive technology. */
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);

@@ -47,6 +47,7 @@ function readStoredWeekOverride(): number | null {
   return Number.isFinite(weekNumber) ? weekNumber : null;
 }
 
+/** Coordinate rotation overrides, day selection, and the current meal view. */
 export function MenuViewer({
   initialWeek,
   initialWeekOverride,

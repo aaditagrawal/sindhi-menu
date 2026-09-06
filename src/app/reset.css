@@ -1203,6 +1203,8 @@
   padding-left: 2rem;
   position: relative;
 }
+/* Preserve the source CSS verbatim: these oklch(hex-token) fallbacks are invalid
+ * in the original too. Correcting them would add visible contribution markers. */
 [data-prose]:before {
   content: "";
   background-color: oklch(var(--border));

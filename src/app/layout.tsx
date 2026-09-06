@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     "A fast, friendly viewer for Sindhi Mess weekly menu with time-aware highlighting (IST).",
 };
 
+/** Provide the existing theme, notification, and shared page shell. */
 export default function RootLayout({
   children,
 }: Readonly<{

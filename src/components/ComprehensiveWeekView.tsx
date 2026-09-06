@@ -38,6 +38,7 @@ const sectionTone = {
   note: styles.gridToneNote,
 } satisfies Record<MealSectionKind, stylex.StyleXStyles<Record<string, string | number | null>>>;
 
+/** Present the same week as stacked days or a transposed desktop grid. */
 export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
   // Sort days chronologically
   const sortedDays = React.useMemo(() => Object.keys(week.menu).sort(), [week.menu]);
@@ -162,6 +163,7 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
   );
 }
 
+/** Group one day’s meal cards under its date heading. */
 function DaySection({ day }: { day: DayMenu }) {
   return (
     <Card>
@@ -193,6 +195,7 @@ function DaySection({ day }: { day: DayMenu }) {
   );
 }
 
+/** Keep a compact meal cell stable while surrounding week sections render. */
 const MealGridCard = React.memo(function MealGridCard({
   meal,
   mealKey,

@@ -8,6 +8,7 @@ import type { Meal, MealKey } from "@/lib/types";
 import { MealCard } from "@/components/MealCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+/** Position the daily meal cards and preserve previous/next navigation. */
 export function MealCarousel({
   meals,
   highlightKey,

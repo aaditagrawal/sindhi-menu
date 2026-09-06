@@ -10,6 +10,7 @@ export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
 
+/** Load the selected rotation menu into the daily viewer. */
 export default async function WeekNumberPage({
   params,
 }: {

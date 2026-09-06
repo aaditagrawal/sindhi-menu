@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Grid3X3, Calendar } from "lucide-react";
 
+/** Link each rotation week to its daily and full-week views. */
 export default function WeeksPage() {
   return (
     <div {...stylex.props(styles.weeksPage)}>

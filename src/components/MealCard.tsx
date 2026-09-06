@@ -37,6 +37,7 @@ const iconTone = {
   stylex.StyleXStyles<Record<string, string | number | null>> | undefined
 >;
 
+/** Display filtered meal sections and the optional upcoming-meal highlight. */
 export function MealCard({
   title,
   timeRange,

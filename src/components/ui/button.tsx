@@ -20,6 +20,7 @@ const sizes = {
 type Variant = keyof typeof variants;
 type Size = keyof typeof sizes;
 
+/** Compose button appearance and size classes while retaining the public helper. */
 export function buttonVariants({
   variant = "default",
   size = "default",

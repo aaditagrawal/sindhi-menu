@@ -7,6 +7,7 @@ type StyledProps<T> = React.HTMLAttributes<T> & {
 };
 export type CardProps = StyledProps<HTMLDivElement>;
 
+/** Apply card defaults and an optional atomic style override to the root. */
 export function Card({ className, xstyle, ...props }: CardProps) {
   return (
     <div
@@ -16,6 +17,7 @@ export function Card({ className, xstyle, ...props }: CardProps) {
   );
 }
 
+/** Preserve header padding and spacing between its direct children. */
 export function CardHeader({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
   return (
     <div
@@ -28,6 +30,7 @@ export function CardHeader({ className, xstyle, ...props }: StyledProps<HTMLDivE
   );
 }
 
+/** Apply the card heading defaults before caller style overrides. */
 export function CardTitle({ className, xstyle, ...props }: StyledProps<HTMLHeadingElement>) {
   return (
     <h3
@@ -39,6 +42,7 @@ export function CardTitle({ className, xstyle, ...props }: StyledProps<HTMLHeadi
   );
 }
 
+/** Apply muted description styling while forwarding paragraph attributes. */
 export function CardDescription({
   className,
   xstyle,
@@ -54,6 +58,7 @@ export function CardDescription({
   );
 }
 
+/** Preserve the content inset and forward root attributes. */
 export function CardContent({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
   return (
     <div
@@ -65,6 +70,7 @@ export function CardContent({ className, xstyle, ...props }: StyledProps<HTMLDiv
   );
 }
 
+/** Align footer content with the card’s existing content inset. */
 export function CardFooter({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
   return (
     <div

@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: { "*.stylex.js": { loaders: [stylexLoader], as: "*.js" } },
   },
+  // Keep explicit webpack builds supported alongside the verified Turbopack scripts.
   webpack(config) {
     config.module.rules.push({ test: /\.stylex\.js$/, use: [stylexLoader] });
     return config;
