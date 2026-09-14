@@ -56,12 +56,8 @@ export function MealCard({
   tilt?: { x: number; y: number };
 }) {
   const Icon = mealKey === "lunch" ? UtensilsCrossed : Moon;
-  const glow = highlight
-    ? {
-        transform: tilt
-          ? `translateY(${tilt.x * -2}px) rotateX(${tilt.x * 1.8}deg) rotateY(${tilt.y * 1.8}deg)`
-          : undefined,
-      }
+  const tiltTransform = tilt
+    ? `translateY(${tilt.x * -2}px) rotateX(${tilt.x * 1.8}deg) rotateY(${tilt.y * 1.8}deg)`
     : undefined;
 
   const filteredSections = React.useMemo(() => {
@@ -73,11 +69,6 @@ export function MealCard({
       }))
       .filter((section) => section.items.length > 0);
   }, [meal.sections]);
-
-  const primaryGradient =
-    "linear-gradient(135deg, rgba(255, 191, 132, 0.9), rgba(255, 156, 170, 0.88))";
-  const secondaryGradient =
-    "linear-gradient(135deg, rgba(130, 196, 255, 0.78), rgba(187, 174, 255, 0.78))";
 
   const card = (
     <Card xstyle={highlight ? styles.mealCardHighlight : styles.mealCard}>
@@ -120,11 +111,13 @@ export function MealCard({
   if (!highlight) return card;
   return (
     <div
-      {...stylex.props(styles.mealHighlightFrame)}
-      style={{
-        background: primaryUpcoming ? primaryGradient : secondaryGradient,
-        ...glow,
-      }}
+      {...stylex.props(
+        styles.mealHighlightFrame,
+        primaryUpcoming ? styles.mealHighlightWarm : styles.mealHighlightCool,
+      )}
+      // SAFETY: `--meal-card-tilt` is a CSS custom property; React.CSSProperties does not
+      // type custom-property keys, so the assertion only widens the key to the allowed name.
+      style={{ "--meal-card-tilt": tiltTransform } as React.CSSProperties}
     >
       {card}
     </div>

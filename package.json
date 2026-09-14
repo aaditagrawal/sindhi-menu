@@ -26,7 +26,8 @@
   "devDependencies": {
     "@babel/core": "^7",
     "@cloudflare/workers-types": "^5.20260809.1",
-    "@oxlint/plugins": "1.78.0",
+    "@oxlint/plugins": "1.83.0",
+    "@shadcn/lint": "^0.1.0",
     "@stylexjs/babel-plugin": "0.19.0",
     "@stylexjs/postcss-plugin": "0.19.0",
     "@types/node": "^26",
@@ -34,7 +35,7 @@
     "@types/react-dom": "^19",
     "babel-loader": "^10.1.1",
     "oxfmt": "^0.62.0",
-    "oxlint": "1.78.0",
+    "oxlint": "1.83.0",
     "typescript": "^7"
   },
   "packageManager": "bun@1.4.2",

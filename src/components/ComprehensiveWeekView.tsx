@@ -76,9 +76,13 @@ export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
         <div {...stylex.props(styles.weekScroll)}>
           <div
             {...stylex.props(styles.weekGrid)}
-            style={{
-              gridTemplateColumns: `200px repeat(${dayCount}, minmax(280px, 1fr))`,
-            }}
+            style={
+              // SAFETY: `--week-day-cols` is a CSS custom property; React.CSSProperties does
+              // not type custom-property keys, so the assertion only widens the key.
+              {
+                "--week-day-cols": `200px repeat(${dayCount}, minmax(280px, 1fr))`,
+              } as React.CSSProperties
+            }
           >
             {/* Header row with days */}
             <div {...stylex.props(styles.mealColumnHeading)}>

@@ -1,7 +1,10 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "jsPlugins": [
+    "@shadcn/lint",
+    { "name": "anti-slop", "specifier": "./tools/oxlint/anti-slop/index.ts" }
+  ],
   "plugins": ["typescript", "react", "nextjs", "jsx-a11y", "import"],
-  "jsPlugins": [{ "name": "anti-slop", "specifier": "./tools/oxlint/anti-slop/index.ts" }],
   "categories": {
     "correctness": "error",
     "suspicious": "warn",
@@ -35,6 +38,7 @@
     "jsx-a11y/img-redundant-alt": "warn",
     "import/no-unassigned-import": "off",
     "react/no-array-index-key": "warn",
+    "react/set-state-in-effect": "warn",
     "anti-slop/no-chained-type-assertions": "error",
     "anti-slop/no-conditional-empty-object-spread": "error",
     "anti-slop/no-known-value-widening": "error",
@@ -49,7 +53,13 @@
     "anti-slop/no-unknown-type-aliases": "error",
     "anti-slop/no-unsafe-dictionary-type": "error",
     "anti-slop/no-widen-then-assert": "error",
-    "anti-slop/require-safety-comment-for-type-assertion": "error"
+    "anti-slop/require-safety-comment-for-type-assertion": "error",
+    "shadcn/no-restyle": ["error", { "allow": ["layout"] }],
+    "shadcn/no-raw-colors": "error",
+    "shadcn/no-arbitrary-values": "error",
+    "shadcn/no-inline-styles": "error",
+    "shadcn/no-unknown-classes": ["error", { "allow": ["lead"] }],
+    "shadcn/require-static-classes": "error"
   },
   "overrides": [
     {
@@ -68,7 +78,10 @@
         "jsx-a11y/anchor-is-valid": "off",
         "jsx-a11y/click-events-have-key-events": "off",
         "jsx-a11y/interactive-supports-focus": "off",
-        "react-hooks/exhaustive-deps": "off"
+        "react-hooks/exhaustive-deps": "off",
+        "shadcn/no-restyle": "off",
+        "shadcn/no-arbitrary-values": "off",
+        "shadcn/require-static-classes": "off"
       }
     },
     {

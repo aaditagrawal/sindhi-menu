@@ -279,6 +279,7 @@ export const styles = stylex.create({
     alignItems: "flex-start",
     gap: "calc(var(--spacing) * 3)",
     paddingBottom: "calc(var(--spacing) * 4)",
+    gridTemplateColumns: "var(--week-day-cols, none)",
   },
   mealColumnHeading: {
     position: "sticky",
@@ -900,6 +901,14 @@ export const styles = stylex.create({
   mealHighlightFrame: {
     borderRadius: "var(--radius-2xl)",
     padding: "6px",
+    transform: "var(--meal-card-tilt, none)",
+  },
+  mealHighlightWarm: {
+    backgroundImage: "linear-gradient(135deg, rgba(255, 191, 132, 0.9), rgba(255, 156, 170, 0.88))",
+  },
+  mealHighlightCool: {
+    backgroundImage:
+      "linear-gradient(135deg, rgba(130, 196, 255, 0.78), rgba(187, 174, 255, 0.78))",
   },
   mealToneSpecialVeg: {
     display: "flex",
