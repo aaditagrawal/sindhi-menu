@@ -12,6 +12,7 @@
     "nursery": "off"
   },
   "rules": {
+    "react/set-state-in-effect": "warn",
     "eqeqeq": "error",
     "no-debugger": "error",
     "no-console": "warn",
