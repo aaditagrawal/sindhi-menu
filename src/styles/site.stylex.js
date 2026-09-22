@@ -1113,6 +1113,7 @@ export const styles = stylex.create({
     overflow: "visible",
   },
   carouselControls: {
+    zIndex: 1,
     pointerEvents: "none",
     position: "absolute",
     insetBlock: "0",
