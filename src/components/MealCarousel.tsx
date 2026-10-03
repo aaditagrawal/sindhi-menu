@@ -11,6 +11,11 @@ const styles = stylex.create({
   root: {
     position: "relative",
     overflow: "visible",
+    // On phones the carousel bleeds into the page gutter so the next card peeks in from the edge.
+    marginInline: {
+      default: "-1rem",
+      "@media (min-width: 640px)": "0",
+    },
   },
   scroller: {
     display: "flex",
@@ -19,7 +24,7 @@ const styles = stylex.create({
     overflowX: "auto",
     paddingBlock: "1rem",
     paddingInline: {
-      default: "0.75rem",
+      default: "1rem",
       "@media (min-width: 640px)": "0",
     },
     scrollSnapType: "x mandatory",
@@ -36,11 +41,11 @@ const styles = stylex.create({
   },
   item: {
     scrollSnapAlign: "center",
+    // From tablet up, lunch and dinner share the row as a pair.
     width: {
-      default: "85%",
-      "@media (min-width: 640px)": "60%",
-      "@media (min-width: 768px)": "50%",
-      "@media (min-width: 1024px)": "38%",
+      default: "84%",
+      "@media (min-width: 640px)": "68%",
+      "@media (min-width: 768px)": "calc(50% - 0.5rem)",
     },
     flexShrink: 0,
     paddingInline: "0.25rem",
@@ -57,12 +62,16 @@ const styles = stylex.create({
     },
   },
   scrim: {
+    display: {
+      default: "block",
+      "@media (min-width: 768px)": "none",
+    },
     pointerEvents: "none",
     position: "absolute",
     insetBlock: 0,
     width: {
-      default: "1.5rem",
-      "@media (min-width: 640px)": "3rem",
+      default: "1rem",
+      "@media (min-width: 640px)": "2rem",
     },
   },
   scrimLeft: {

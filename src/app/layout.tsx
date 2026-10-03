@@ -22,23 +22,35 @@ const styles = stylex.create({
     flexBasis: "0%",
   },
   footer: {
-    paddingBlock: "1.5rem",
+    paddingBlock: {
+      default: "1.5rem",
+      "@media (min-width: 1024px)": "2.5rem",
+    },
     paddingInline: "1rem",
     display: "flex",
     justifyContent: "center",
   },
   footerPill: {
     display: "inline-flex",
-    paddingInline: "1.5rem",
+    paddingInline: {
+      default: "1.25rem",
+      "@media (min-width: 640px)": "1.5rem",
+    },
     paddingBlock: "0.75rem",
-    borderRadius: "9999px",
+    borderRadius: {
+      default: "1.25rem",
+      "@media (min-width: 1024px)": "9999px",
+    },
     backgroundColor: "color-mix(in oklab, var(--secondary) 40%, transparent)",
     borderWidth: "1px",
-    maxWidth: "100%",
+    maxWidth: "min(100%, 52rem)",
   },
   footerText: {
-    fontSize: "0.75rem",
-    lineHeight: "calc(1 / 0.75)",
+    fontSize: {
+      default: "0.75rem",
+      "@media (min-width: 1024px)": "0.8125rem",
+    },
+    lineHeight: 1.6,
     color: "var(--muted-foreground)",
     textAlign: "center",
   },

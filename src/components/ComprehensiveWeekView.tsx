@@ -39,7 +39,10 @@ const styles = stylex.create({
       "@media (min-width: 1024px)": "none",
     },
     flexDirection: "column",
-    rowGap: "1.5rem",
+    rowGap: {
+      default: "1rem",
+      "@media (min-width: 640px)": "1.5rem",
+    },
   },
   desktopWrap: {
     display: {
@@ -51,16 +54,17 @@ const styles = stylex.create({
     overflowX: "auto",
     scrollBehavior: "auto",
     overscrollBehaviorX: "contain",
+    paddingBottom: "0.5rem",
+    scrollbarWidth: "auto",
+    scrollbarColor: "color-mix(in oklab, var(--muted-foreground) 45%, transparent) transparent",
   },
   desktopGrid: {
     display: "grid",
     rowGap: "0.75rem",
     columnGap: "0.75rem",
-    minWidth: "max-content",
-    paddingBottom: "1rem",
+    width: "max-content",
+    paddingBottom: "0.5rem",
     alignItems: "flex-start",
-    scrollSnapType: "x mandatory",
-    scrollPadding: "1rem",
   },
   gridCols: (cols: string) => ({
     gridTemplateColumns: cols,
@@ -81,25 +85,32 @@ const styles = stylex.create({
     rowGap: "0.75rem",
     columnGap: "0.75rem",
     alignItems: "flex-start",
-    paddingInline: "1rem",
     paddingBlock: "0.75rem",
   },
   mealsHeading: {
+    paddingInline: "0.75rem",
     fontWeight: 600,
-    fontSize: "1.125rem",
-    lineHeight: "calc(1.75 / 1.125)",
+    fontSize: "0.8125rem",
+    lineHeight: 1.5,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
+    color: "var(--muted-foreground)",
   },
+  // Line the day name up with the dish text: cell padding + card border + card padding.
   dayHeaderCell: {
-    textAlign: "center",
+    paddingInline: "calc(0.75rem + 1px + 1.125rem)",
   },
-  semibold: {
+  dayName: {
     fontWeight: 600,
+    fontSize: "1.0625rem",
+    lineHeight: 1.3,
+    letterSpacing: "-0.01em",
   },
   dayHeaderDate: {
-    fontSize: "0.875rem",
-    lineHeight: "calc(1.25 / 0.875)",
+    fontSize: "0.8125rem",
+    lineHeight: 1.4,
     color: "var(--muted-foreground)",
-    marginTop: "0.25rem",
+    marginTop: "0.125rem",
   },
   mealRowGrid: {
     display: "grid",
@@ -109,6 +120,14 @@ const styles = stylex.create({
     borderTopWidth: "1px",
     borderTopColor: "color-mix(in oklab, var(--border) 50%, transparent)",
     gridColumn: "1 / -1",
+  },
+  // The label column stays pinned while the day columns scroll under it.
+  stickyLabel: {
+    position: "sticky",
+    left: 0,
+    zIndex: 1,
+    alignSelf: "stretch",
+    backgroundColor: "var(--background)",
   },
   mealTypeHeader: {
     paddingBlock: "0.75rem",
@@ -122,28 +141,34 @@ const styles = stylex.create({
   },
   mealTypeIconCircle: {
     display: "inline-flex",
-    height: "2rem",
-    width: "2rem",
+    flexShrink: 0,
+    height: "2.25rem",
+    width: "2.25rem",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: "9999px",
     backgroundColor: "color-mix(in oklab, var(--primary) 15%, transparent)",
   },
   icon16: {
-    height: "1rem",
-    width: "1rem",
-    color: "var(--primary)",
+    height: "1.125rem",
+    width: "1.125rem",
+    color: "var(--meal-type-icon)",
   },
-  medium: {
-    fontWeight: 500,
+  mealTypeLabel: {
+    fontWeight: 600,
+    fontSize: "1.0625rem",
+    letterSpacing: "-0.01em",
   },
   dayCell: {
     paddingBlock: "0.75rem",
     paddingInline: "0.75rem",
-    scrollSnapAlign: "start",
     contentVisibility: "auto",
-    containIntrinsicSize: "auto 280px 24rem",
   },
+  // Offscreen cells skip rendering, so give each one a height estimate from its dish count;
+  // otherwise one placeholder size inflates short rows. `auto` keeps the real size once seen.
+  dayCellSize: (height: number) => ({
+    containIntrinsicSize: `auto 320px auto ${height}px`,
+  }),
   noMealCell: {
     paddingBlock: "1rem",
     paddingInline: "1rem",
@@ -216,13 +241,22 @@ function verticalWheelPixels(event: WheelEvent, el: HTMLElement) {
   return event.deltaY;
 }
 
+/** Rough rendered height of a desktop grid cell, used only as the offscreen placeholder. */
+function estimateCellHeight(meal: Meal | undefined) {
+  if (!meal) return 160;
+  const sectionItems = meal.sections?.reduce((count, section) => count + section.items.length, 0);
+  const items = sectionItems || meal.items.length || 1;
+  return 88 + items * 36;
+}
+
 /** Present the same week as stacked days or a transposed desktop grid. */
 export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekViewProps) {
   const week = initialWeek;
 
   const sortedDays = React.useMemo(() => Object.keys(week.menu).sort(), [week.menu]);
   const dayCount = sortedDays.length;
-  const desktopCols = `200px repeat(${dayCount}, minmax(280px, 1fr))`;
+  // Fixed tracks: a `1fr` track would grow to its content as offscreen cells render, shifting the scrollbar.
+  const desktopCols = `clamp(140px, 12vw, 176px) repeat(${dayCount}, clamp(300px, 30vw, 440px))`;
 
   const scrollerRef = React.useRef<HTMLDivElement>(null);
   useMountEffect(() => {
@@ -318,7 +352,7 @@ export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekVi
           <div {...sxc("scroll-grid", styles.desktopGrid, styles.gridCols(desktopCols))}>
             <div {...stylex.props(styles.stickyHeaderRow)}>
               <div {...stylex.props(styles.headerGrid, styles.gridCols(desktopCols))}>
-                <div>
+                <div {...stylex.props(styles.stickyLabel)}>
                   <h3 {...stylex.props(styles.mealsHeading)}>Meals</h3>
                 </div>
                 {sortedDays.map((dateKey) => {
@@ -326,7 +360,7 @@ export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekVi
                   if (!day) return null;
                   return (
                     <div key={`header-${dateKey}`} {...stylex.props(styles.dayHeaderCell)}>
-                      <h3 {...stylex.props(styles.semibold)}>{day.day}</h3>
+                      <h3 {...stylex.props(styles.dayName)}>{day.day}</h3>
                       <p {...stylex.props(styles.dayHeaderDate)}>{day.displayDate}</p>
                     </div>
                   );
@@ -339,7 +373,7 @@ export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekVi
                 key={mealKey}
                 {...stylex.props(styles.mealRowGrid, styles.gridCols(desktopCols))}
               >
-                <div {...stylex.props(styles.mealTypeHeader)}>
+                <div {...stylex.props(styles.stickyLabel, styles.mealTypeHeader)}>
                   <div {...stylex.props(styles.mealTypeRow)}>
                     <span {...stylex.props(styles.mealTypeIconCircle)}>
                       {React.createElement(mealIcons[mealKey], {
@@ -347,7 +381,7 @@ export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekVi
                       })}
                     </span>
                     <div>
-                      <span {...stylex.props(styles.medium)}>{mealTitles[mealKey]}</span>
+                      <span {...stylex.props(styles.mealTypeLabel)}>{mealTitles[mealKey]}</span>
                     </div>
                   </div>
                 </div>
@@ -357,7 +391,13 @@ export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekVi
                   const meal = day?.meals[mealKey];
 
                   return (
-                    <div key={`${mealKey}-${dateKey}`} {...stylex.props(styles.dayCell)}>
+                    <div
+                      key={`${mealKey}-${dateKey}`}
+                      {...stylex.props(
+                        styles.dayCell,
+                        styles.dayCellSize(estimateCellHeight(meal)),
+                      )}
+                    >
                       {meal ? (
                         <MealGridCard
                           meal={meal}
@@ -401,6 +441,27 @@ export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekVi
 }
 
 const dayStyles = stylex.create({
+  header: {
+    paddingInline: {
+      default: "1rem",
+      "@media (min-width: 640px)": "1.5rem",
+    },
+    paddingTop: {
+      default: "1.25rem",
+      "@media (min-width: 640px)": "1.5rem",
+    },
+    paddingBottom: "1rem",
+  },
+  content: {
+    paddingInline: {
+      default: "0.75rem",
+      "@media (min-width: 640px)": "1.5rem",
+    },
+    paddingBottom: {
+      default: "0.75rem",
+      "@media (min-width: 640px)": "1.5rem",
+    },
+  },
   titleRow: {
     display: "flex",
     alignItems: "center",
@@ -419,7 +480,7 @@ const dayStyles = stylex.create({
       default: "repeat(1, minmax(0, 1fr))",
       "@media (min-width: 640px)": "repeat(2, minmax(0, 1fr))",
     },
-    rowGap: "1rem",
+    rowGap: "0.75rem",
     columnGap: "1rem",
   },
 });
@@ -427,13 +488,13 @@ const dayStyles = stylex.create({
 function DaySection({ day }: { day: DayMenu }) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader style={dayStyles.header}>
         <CardTitle style={dayStyles.titleRow}>
           <span>{day.day}</span>
           <span {...stylex.props(dayStyles.dateLabel)}>{day.displayDate}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent style={dayStyles.content}>
         <div {...stylex.props(dayStyles.mealsGrid)}>
           {mealOrder.map((mealKey) => {
             const meal = day.meals[mealKey];
@@ -466,7 +527,8 @@ const gridCardStyles = stylex.create({
     transitionTimingFunction: easing.spring,
   },
   headerPad: {
-    paddingBottom: "0.5rem",
+    padding: "1.125rem",
+    paddingBottom: "0.75rem",
   },
   title: {
     display: "flex",
@@ -474,42 +536,45 @@ const gridCardStyles = stylex.create({
     justifyContent: "space-between",
     rowGap: "0.5rem",
     columnGap: "0.5rem",
-    fontSize: "0.875rem",
+    fontSize: "0.9375rem",
+    letterSpacing: "-0.01em",
   },
   titleLeft: {
     display: "flex",
     alignItems: "center",
-    rowGap: "0.25rem",
-    columnGap: "0.25rem",
+    rowGap: "0.375rem",
+    columnGap: "0.375rem",
   },
   icon12: {
-    height: "0.75rem",
-    width: "0.75rem",
-    color: "var(--primary)",
+    height: "0.875rem",
+    width: "0.875rem",
+    color: "var(--meal-type-icon)",
   },
   medium: {
-    fontWeight: 500,
+    fontWeight: 600,
   },
   timeLabel: {
     fontSize: "0.75rem",
-    lineHeight: "calc(1 / 0.75)",
+    lineHeight: 1.4,
     color: "var(--muted-foreground)",
     fontWeight: 400,
+    letterSpacing: 0,
   },
   contentPad: {
+    padding: "1.125rem",
     paddingTop: 0,
   },
   items: {
     display: "flex",
     flexDirection: "column",
-    rowGap: "0.25rem",
+    rowGap: "0.375rem",
   },
   item: {
-    fontSize: "0.75rem",
+    fontSize: "0.8125rem",
     borderRadius: "calc(var(--radius) - 2px)",
-    paddingInline: "0.5rem",
-    paddingBlock: "0.25rem",
-    lineHeight: 1.25,
+    paddingInline: "0.625rem",
+    paddingBlock: "0.3125rem",
+    lineHeight: 1.4,
     borderWidth: "1px",
   },
   badgeGreen: {
@@ -538,12 +603,12 @@ const gridCardStyles = stylex.create({
     color: "var(--foreground)",
   },
   fallbackItem: {
-    fontSize: "0.75rem",
+    fontSize: "0.8125rem",
     borderRadius: "calc(var(--radius) - 2px)",
     backgroundColor: "color-mix(in oklab, var(--muted) 50%, transparent)",
-    paddingInline: "0.5rem",
-    paddingBlock: "0.25rem",
-    lineHeight: 1.25,
+    paddingInline: "0.625rem",
+    paddingBlock: "0.3125rem",
+    lineHeight: 1.4,
     borderWidth: "1px",
     borderColor: "color-mix(in oklab, var(--border) 20%, transparent)",
   },

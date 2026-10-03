@@ -25,9 +25,15 @@ const styles = stylex.create({
     borderRadius: "calc(var(--radius) - 2px)",
     borderWidth: "1px",
     paddingInline: "0.75rem",
-    paddingBlock: "0.5rem",
-    fontSize: "0.875rem",
-    lineHeight: "calc(1.25 / 0.875)",
+    paddingBlock: {
+      default: "0.5rem",
+      "@media (min-width: 1024px)": "0.625rem",
+    },
+    fontSize: {
+      default: "0.875rem",
+      "@media (min-width: 1024px)": "0.9375rem",
+    },
+    lineHeight: 1.4,
     overflowWrap: "break-word",
   },
   itemBackdrop: {
@@ -68,7 +74,10 @@ const styles = stylex.create({
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    marginBottom: "1.25rem",
+    marginBottom: {
+      default: "1rem",
+      "@media (min-width: 1024px)": "1.25rem",
+    },
   },
   headerLeft: {
     display: "flex",
@@ -78,8 +87,15 @@ const styles = stylex.create({
   },
   iconCircle: {
     display: "inline-flex",
-    height: "2.25rem",
-    width: "2.25rem",
+    flexShrink: 0,
+    height: {
+      default: "2.25rem",
+      "@media (min-width: 1024px)": "2.5rem",
+    },
+    width: {
+      default: "2.25rem",
+      "@media (min-width: 1024px)": "2.5rem",
+    },
     alignItems: "center",
     justifyContent: "center",
     borderRadius: "9999px",
@@ -92,23 +108,38 @@ const styles = stylex.create({
     boxShadow: "0 0 0 1px color-mix(in oklab, #fff 20%, transparent)",
   },
   icon: {
-    height: "18px",
-    width: "18px",
+    height: {
+      default: "18px",
+      "@media (min-width: 1024px)": "20px",
+    },
+    width: {
+      default: "18px",
+      "@media (min-width: 1024px)": "20px",
+    },
     color: "var(--meal-type-icon)",
   },
   titleBlock: {
     display: "flex",
     flexDirection: "column",
-    rowGap: "0.125rem",
+    rowGap: {
+      default: "0.25rem",
+      "@media (min-width: 1024px)": "0.3125rem",
+    },
   },
   title: {
     fontWeight: 600,
-    fontSize: "17px",
+    fontSize: {
+      default: "17px",
+      "@media (min-width: 1024px)": "19px",
+    },
     letterSpacing: "-0.01em",
     lineHeight: 1,
   },
   time: {
-    fontSize: "13px",
+    fontSize: {
+      default: "13px",
+      "@media (min-width: 1024px)": "14px",
+    },
     color: "var(--muted-foreground)",
     lineHeight: 1,
   },
@@ -127,8 +158,15 @@ const styles = stylex.create({
   },
   cardPad: {
     position: "relative",
-    paddingBlock: "1.5rem",
-    paddingInline: "1.5rem",
+    paddingBlock: {
+      default: "1.25rem",
+      "@media (min-width: 1024px)": "1.5rem",
+    },
+    paddingInline: {
+      default: "1.125rem",
+      "@media (min-width: 640px)": "1.25rem",
+      "@media (min-width: 1024px)": "1.5rem",
+    },
   },
   gradientShell: {
     borderRadius: "1rem",

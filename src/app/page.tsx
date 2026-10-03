@@ -11,12 +11,21 @@ const styles = stylex.create({
       default: "1rem",
       "@media (min-width: 640px)": "1.5rem",
       "@media (min-width: 768px)": "2rem",
+      "@media (min-width: 1280px)": "3rem",
     },
-    paddingBlock: "2rem",
+    paddingBlock: {
+      default: "1.5rem",
+      "@media (min-width: 768px)": "2.5rem",
+      "@media (min-width: 1280px)": "3.5rem",
+    },
   },
   inner: {
     marginInline: "auto",
-    maxWidth: "56rem",
+    maxWidth: {
+      default: "56rem",
+      "@media (min-width: 1024px)": "64rem",
+      "@media (min-width: 1440px)": "70rem",
+    },
     display: "flex",
     flexDirection: "column",
     rowGap: "1.5rem",

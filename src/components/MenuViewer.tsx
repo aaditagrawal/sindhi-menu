@@ -39,29 +39,39 @@ const styles = stylex.create({
   },
   title: {
     fontSize: {
-      default: "26px",
+      default: "28px",
       "@media (min-width: 640px)": "32px",
+      "@media (min-width: 1024px)": "38px",
     },
     fontWeight: 600,
     letterSpacing: "-0.02em",
     lineHeight: 1.1,
   },
   description: {
-    fontSize: "0.875rem",
-    lineHeight: "calc(1.25 / 0.875)",
+    fontSize: {
+      default: "0.875rem",
+      "@media (min-width: 1024px)": "0.9375rem",
+    },
+    lineHeight: 1.45,
     color: "var(--muted-foreground)",
   },
   note: {
-    fontSize: "0.875rem",
-    lineHeight: "calc(1.25 / 0.875)",
+    fontSize: {
+      default: "0.875rem",
+      "@media (min-width: 1024px)": "0.9375rem",
+    },
+    lineHeight: 1.45,
     color: "var(--muted-foreground)",
   },
   controls: {
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
-    columnGap: "1rem",
-    rowGap: "0.5rem",
+    columnGap: {
+      default: "1rem",
+      "@media (min-width: 1024px)": "1.5rem",
+    },
+    rowGap: "0.75rem",
   },
   extras: {
     display: "flex",
