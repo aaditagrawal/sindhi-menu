@@ -16,13 +16,20 @@ const styles = stylex.create({
     marginInline: "auto",
     maxWidth: "48rem",
   },
+  // reset.css gives [data-prose] a 2rem left inset; on phones that doubles the page gutter.
+  innerPhoneInset: {
+    paddingLeft: {
+      default: "0",
+      "@media (min-width: 640px)": "2rem",
+    },
+  },
 });
 
 /** Render contribution instructions with the preserved prose typography. */
 export default function ContributingPage() {
   return (
     <div {...stylex.props(styles.page)}>
-      <div {...stylex.props(styles.inner)} data-prose="">
+      <div {...stylex.props(styles.inner, styles.innerPhoneInset)} data-prose="">
         <h1>Contributing</h1>
         <p className="lead">
           Thanks for your interest in improving this menu viewer! The app now reads from a static

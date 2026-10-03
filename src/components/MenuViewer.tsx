@@ -94,6 +94,7 @@ const styles = stylex.create({
     gridTemplateColumns: {
       default: "repeat(1, minmax(0, 1fr))",
       "@media (min-width: 640px)": "repeat(2, minmax(0, 1fr))",
+      "@media (min-width: 1280px)": "repeat(3, minmax(0, 1fr))",
     },
     rowGap: "0.5rem",
     columnGap: "0.5rem",

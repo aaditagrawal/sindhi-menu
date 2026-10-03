@@ -43,7 +43,7 @@ const styles = stylex.create({
     scrollSnapAlign: "center",
     // From tablet up, lunch and dinner share the row as a pair.
     width: {
-      default: "84%",
+      default: "92%",
       "@media (min-width: 640px)": "68%",
       "@media (min-width: 768px)": "calc(50% - 0.5rem)",
     },

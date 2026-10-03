@@ -167,7 +167,7 @@ const styles = stylex.create({
   // Offscreen cells skip rendering, so give each one a height estimate from its dish count;
   // otherwise one placeholder size inflates short rows. `auto` keeps the real size once seen.
   dayCellSize: (height: number) => ({
-    containIntrinsicSize: `auto 320px auto ${height}px`,
+    containIntrinsicSize: `auto 300px auto ${height}px`,
   }),
   noMealCell: {
     paddingBlock: "1rem",
@@ -256,7 +256,7 @@ export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekVi
   const sortedDays = React.useMemo(() => Object.keys(week.menu).sort(), [week.menu]);
   const dayCount = sortedDays.length;
   // Fixed tracks: a `1fr` track would grow to its content as offscreen cells render, shifting the scrollbar.
-  const desktopCols = `clamp(140px, 12vw, 176px) repeat(${dayCount}, clamp(300px, 30vw, 440px))`;
+  const desktopCols = `clamp(120px, 10vw, 148px) repeat(${dayCount}, clamp(280px, 22vw, 320px))`;
 
   const scrollerRef = React.useRef<HTMLDivElement>(null);
   useMountEffect(() => {
