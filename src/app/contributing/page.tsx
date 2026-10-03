@@ -1,12 +1,35 @@
 import * as stylex from "@stylexjs/stylex";
-import { styles } from "@/styles/site.stylex";
+
 export const dynamic = "force-static";
+
+const styles = stylex.create({
+  page: {
+    minHeight: "100vh",
+    paddingInline: {
+      default: "1rem",
+      "@media (min-width: 640px)": "1.5rem",
+      "@media (min-width: 768px)": "2rem",
+    },
+    paddingBlock: "2rem",
+  },
+  inner: {
+    marginInline: "auto",
+    maxWidth: "48rem",
+  },
+  // reset.css gives [data-prose] a 2rem left inset; on phones that doubles the page gutter.
+  innerPhoneInset: {
+    paddingLeft: {
+      default: "0",
+      "@media (min-width: 640px)": "2rem",
+    },
+  },
+});
 
 /** Render contribution instructions with the preserved prose typography. */
 export default function ContributingPage() {
   return (
-    <div {...stylex.props(styles.contributingPage)}>
-      <div {...stylex.props(styles.contributingContent)} data-prose="">
+    <div {...stylex.props(styles.page)}>
+      <div {...stylex.props(styles.inner, styles.innerPhoneInset)} data-prose="">
         <h1>Contributing</h1>
         <p className="lead">
           Thanks for your interest in improving this menu viewer! The app now reads from a static

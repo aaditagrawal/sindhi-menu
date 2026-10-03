@@ -1,22 +1,69 @@
-import * as stylex from "@stylexjs/stylex";
-import { styles, themeMarker } from "@/styles/site.stylex";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import { Toaster } from "@/components/ui/sonner";
-import { MenuNotification } from "@/components/MenuNotification";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import * as stylex from "@stylexjs/stylex";
+import { AppChrome } from "@/components/AppChrome";
+import { easing } from "@/lib/tokens.stylex";
+import { sxc } from "@/lib/utils";
+import { geistSans, geistMono } from "./fonts";
 import Script from "next/script";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const styles = stylex.create({
+  body: {
+    WebkitFontSmoothing: "antialiased",
+    MozOsxFontSmoothing: "grayscale",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+  },
+  main: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: "0%",
+  },
+  footer: {
+    paddingBlock: {
+      default: "1.5rem",
+      "@media (min-width: 1024px)": "2.5rem",
+    },
+    paddingInline: "1rem",
+    display: "flex",
+    justifyContent: "center",
+  },
+  footerPill: {
+    display: "inline-flex",
+    paddingInline: {
+      default: "1.25rem",
+      "@media (min-width: 640px)": "1.5rem",
+    },
+    paddingBlock: "0.75rem",
+    borderRadius: {
+      default: "1.25rem",
+      "@media (min-width: 1024px)": "9999px",
+    },
+    backgroundColor: "color-mix(in oklab, var(--secondary) 40%, transparent)",
+    borderWidth: "1px",
+    maxWidth: "min(100%, 52rem)",
+  },
+  footerText: {
+    fontSize: {
+      default: "0.75rem",
+      "@media (min-width: 1024px)": "0.8125rem",
+    },
+    lineHeight: 1.6,
+    color: "var(--muted-foreground)",
+    textAlign: "center",
+  },
+  footerLink: {
+    color: {
+      default: null,
+      ":hover": "var(--foreground)",
+    },
+    transitionProperty:
+      "color, background-color, border-color, outline-color, text-decoration-color, fill, stroke",
+    transitionDuration: "150ms",
+    transitionTimingFunction: easing.twDefault,
+  },
 });
 
 export const metadata: Metadata = {
@@ -35,30 +82,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning {...stylex.props(themeMarker)}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${stylex.props(styles.body).className}`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body {...sxc(`${geistSans.variable} ${geistMono.variable} scroll-optimized`, styles.body)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <div {...stylex.props(styles.themeControl)}>
-            <ThemeSwitcher />
-          </div>
-          <MenuNotification />
           <main {...stylex.props(styles.main)}>{children}</main>
           <footer {...stylex.props(styles.footer)}>
-            <div {...stylex.props(styles.footerContent)} data-stack="2">
+            <div {...stylex.props(styles.footerPill)}>
               <p {...stylex.props(styles.footerText)}>
                 Made by{" "}
                 <a
                   href="https://aadit.cc"
                   target="_blank"
                   rel="noopener noreferrer"
-                  {...stylex.props(styles.authorLink)}
+                  {...stylex.props(styles.footerLink)}
                 >
                   Aadit (aadit.cc)
                 </a>
@@ -70,7 +111,7 @@ export default function RootLayout({
                   href="https://github.com/aaditagrawal/sindhi-menu"
                   target="_blank"
                   rel="noopener noreferrer"
-                  {...stylex.props(styles.sourceLink)}
+                  {...stylex.props(styles.footerLink)}
                 >
                   open source on GitHub
                 </a>
@@ -79,14 +120,14 @@ export default function RootLayout({
                   href="/openapi.json"
                   target="_blank"
                   rel="noopener noreferrer"
-                  {...stylex.props(styles.apiLink)}
+                  {...stylex.props(styles.footerLink)}
                 >
                   API docs (OpenAPI JSON)
                 </a>
               </p>
             </div>
           </footer>
-          <Toaster />
+          <AppChrome />
         </ThemeProvider>
         <Script defer src="https://stat.sys256.com/script.js" />
       </body>

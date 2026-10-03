@@ -1,108 +1,250 @@
 "use client";
 
-import * as stylex from "@stylexjs/stylex";
-import { styles } from "@/styles/site.stylex";
-
 import * as React from "react";
+import * as stylex from "@stylexjs/stylex";
 import type { Meal, MealKey } from "@/lib/types";
 import { MealCard } from "@/components/MealCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { sxc } from "@/lib/utils";
+import { useMountEffect } from "@/hooks/useMountEffect";
 
-/** Position the daily meal cards and preserve previous/next navigation. */
-export function MealCarousel({
-  meals,
-  highlightKey,
-  isPrimaryUpcoming,
-}: {
-  meals: Array<{ key: MealKey; meal: Meal; timeRange: string; title: string }>;
-  highlightKey: MealKey;
-  isPrimaryUpcoming: boolean;
-}) {
+const styles = stylex.create({
+  root: {
+    position: "relative",
+    overflow: "visible",
+    // On phones the carousel bleeds into the page gutter so the next card peeks in from the edge.
+    marginInline: {
+      default: "-1rem",
+      "@media (min-width: 640px)": "0",
+    },
+  },
+  scroller: {
+    display: "flex",
+    rowGap: "1rem",
+    columnGap: "1rem",
+    overflowX: "auto",
+    paddingBlock: "1rem",
+    paddingInline: {
+      default: "1rem",
+      "@media (min-width: 640px)": "0",
+    },
+    scrollSnapType: "x mandatory",
+    borderRadius: "1rem",
+    outlineStyle: {
+      default: null,
+      ":focus-visible": "none",
+    },
+    boxShadow: {
+      default: null,
+      ":focus-visible":
+        "0 0 0 2px var(--background), 0 0 0 4px color-mix(in oklab, var(--ring) 40%, transparent)",
+    },
+  },
+  item: {
+    scrollSnapAlign: "center",
+    // From tablet up, lunch and dinner share the row as a pair.
+    width: {
+      default: "92%",
+      "@media (min-width: 640px)": "68%",
+      "@media (min-width: 768px)": "calc(50% - 0.5rem)",
+    },
+    flexShrink: 0,
+    paddingInline: "0.25rem",
+  },
+  itemHighlighted: {
+    opacity: 1,
+    scale: "1",
+  },
+  itemDimmed: {
+    opacity: 0.6,
+    scale: {
+      default: "0.97",
+      "@media (prefers-reduced-motion: reduce)": "1",
+    },
+  },
+  scrim: {
+    display: {
+      default: "block",
+      "@media (min-width: 768px)": "none",
+    },
+    pointerEvents: "none",
+    position: "absolute",
+    insetBlock: 0,
+    width: {
+      default: "1rem",
+      "@media (min-width: 640px)": "2rem",
+    },
+  },
+  scrimLeft: {
+    left: 0,
+    backgroundImage: "linear-gradient(to right in oklab, var(--background), transparent)",
+  },
+  scrimRight: {
+    right: 0,
+    backgroundImage: "linear-gradient(to left in oklab, var(--background), transparent)",
+  },
+});
+
+export interface MealCarouselHandle {
+  goPrev: () => void;
+  goNext: () => void;
+}
+
+export const MealCarousel = React.forwardRef<
+  MealCarouselHandle,
+  {
+    meals: Array<{ key: MealKey; meal: Meal; timeRange: string; title: string }>;
+    highlightKey: MealKey;
+    isPrimaryUpcoming: boolean;
+    isLive: boolean;
+  }
+>(function MealCarousel({ meals, highlightKey, isPrimaryUpcoming, isLive }, ref) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const itemRefs = React.useRef<Array<HTMLDivElement | null>>([]);
-  const [tilt, setTilt] = React.useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [centerIndex, setCenterIndex] = React.useState<number>(() =>
-    Math.max(
-      0,
-      meals.findIndex((m) => m.key === highlightKey),
-    ),
+  const highlightIndex = React.useMemo(
+    () =>
+      Math.max(
+        0,
+        meals.findIndex((m) => m.key === highlightKey),
+      ),
+    [meals, highlightKey],
   );
 
-  // Keep centered item in sync with highlighted meal
-  React.useEffect(() => {
-    const idx = meals.findIndex((m) => m.key === highlightKey);
-    if (idx >= 0) setCenterIndex(idx);
-  }, [highlightKey, meals]);
+  const scrollToHighlight = React.useCallback(() => {
+    const container = containerRef.current;
+    const el = itemRefs.current[highlightIndex];
+    if (!container || !el) return;
 
-  // Scroll the focused item into view
-  React.useEffect(() => {
-    const el = itemRefs.current[centerIndex];
-    if (el && el.scrollIntoView) {
-      el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-    }
-  }, [centerIndex]);
+    const containerWidth = container.clientWidth;
+    const elLeft = el.offsetLeft;
+    const elWidth = el.offsetWidth;
+    const scrollX = elLeft - (containerWidth - elWidth) / 2;
 
-  React.useEffect(() => {
-    function handler(e: DeviceOrientationEvent) {
-      const x = (e.beta ?? 0) / 45; // -45..45
-      const y = (e.gamma ?? 0) / 45; // -45..45
-      setTilt({ x, y });
-    }
-    window.addEventListener("deviceorientation", handler);
-    return () => window.removeEventListener("deviceorientation", handler);
+    container.scrollTo({ left: scrollX, behavior: "instant" });
+  }, [highlightIndex]);
+
+  React.useLayoutEffect(() => {
+    scrollToHighlight();
+  }, [scrollToHighlight]);
+
+  useMountEffect(() => {
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(scrollToHighlight, 100);
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  });
+
+  const bounceAnimation = React.useRef<Animation | null>(null);
+  const bounceEdge = React.useCallback((direction: "start" | "end") => {
+    const container = containerRef.current;
+    if (!container) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const shift = direction === "start" ? 16 : -16;
+    bounceAnimation.current?.cancel();
+    bounceAnimation.current = container.animate(
+      [
+        { transform: "translateX(0)" },
+        { transform: `translateX(${shift}px)`, offset: 0.3 },
+        { transform: `translateX(${shift * -0.25}px)`, offset: 0.7 },
+        { transform: "translateX(0)" },
+      ],
+      { duration: 340, easing: "cubic-bezier(0.23, 1, 0.32, 1)" },
+    );
   }, []);
 
-  const goPrev = () => setCenterIndex((i) => Math.max(0, i - 1));
-  const goNext = () => setCenterIndex((i) => Math.min(meals.length - 1, i + 1));
+  const goPrev = React.useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    if (container.scrollLeft <= 1) {
+      bounceEdge("start");
+      return;
+    }
+    const scrollAmount = container.clientWidth * 0.6;
+    container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+  }, [bounceEdge]);
+
+  const goNext = React.useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (container.scrollLeft >= maxScroll - 1) {
+      bounceEdge("end");
+      return;
+    }
+    const scrollAmount = container.clientWidth * 0.6;
+    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  }, [bounceEdge]);
+
+  React.useImperativeHandle(ref, () => ({ goPrev, goNext }), [goPrev, goNext]);
+
+  useMountEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goNext();
+      }
+    }
+
+    container.addEventListener("keydown", handleKeyDown);
+    return () => container.removeEventListener("keydown", handleKeyDown);
+  });
 
   return (
-    <div {...stylex.props(styles.carousel)}>
-      {/* Arrows */}
-      <div {...stylex.props(styles.carouselControls)}>
-        <button
-          type="button"
-          aria-label="Previous"
-          onClick={goPrev}
-          {...stylex.props(styles.carouselPrevious)}
-          disabled={centerIndex === 0}
-        >
-          <ChevronLeft {...stylex.props(styles.carouselPreviousIcon)} />
-        </button>
-        <button
-          type="button"
-          aria-label="Next"
-          onClick={goNext}
-          {...stylex.props(styles.carouselNext)}
-          disabled={centerIndex === meals.length - 1}
-        >
-          <ChevronRight {...stylex.props(styles.carouselNextIcon)} />
-        </button>
-      </div>
-
-      {/* Track */}
-      <div {...stylex.props(styles.carouselTrack)}>
+    <div {...stylex.props(styles.root)}>
+      {/* oxlint-disable jsx-a11y/no-noninteractive-tabindex */}
+      <div
+        ref={containerRef}
+        tabIndex={0}
+        aria-label="Meals"
+        {...sxc("scrollbar-hide", styles.scroller)}
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          touchAction: "pan-x pan-y",
+          overscrollBehaviorX: "contain",
+        }}
+      >
+        {/* oxlint-enable jsx-a11y/no-noninteractive-tabindex */}
         {meals.map(({ key, meal, timeRange, title }, idx) => {
-          const isActive = key === highlightKey;
+          const isHighlighted = key === highlightKey;
           return (
             <div
               key={key}
               ref={(el) => {
                 itemRefs.current[idx] = el;
               }}
-              {...stylex.props(isActive ? styles.carouselActive : styles.carouselInactive)}
+              {...sxc(
+                "carousel-card",
+                styles.item,
+                isHighlighted ? styles.itemHighlighted : styles.itemDimmed,
+              )}
             >
               <MealCard
                 title={title}
                 timeRange={timeRange}
                 meal={meal}
                 mealKey={key}
-                highlight={isActive}
-                primaryUpcoming={isActive && isPrimaryUpcoming}
-                tilt={tilt}
+                highlight={isHighlighted}
+                primaryUpcoming={isPrimaryUpcoming && isHighlighted}
+                isLive={isLive && isHighlighted}
               />
             </div>
           );
         })}
       </div>
+      <div aria-hidden {...stylex.props(styles.scrim, styles.scrimLeft)} />
+      <div aria-hidden {...stylex.props(styles.scrim, styles.scrimRight)} />
     </div>
   );
-}
+});

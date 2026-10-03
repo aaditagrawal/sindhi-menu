@@ -1,14 +1,42 @@
 import * as stylex from "@stylexjs/stylex";
-import { styles } from "@/styles/site.stylex";
 import { notFound } from "next/navigation";
-import { getWeekMenu } from "@/data/weeks";
+import { loadMenuByName } from "@/data/weeks";
+import { getMenuNameForWeek } from "@/lib/menuManager";
 import { MenuViewer } from "@/components/MenuViewer";
+import { sxc } from "@/lib/utils";
 
 export const revalidate = 604800;
 
 export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
+
+const styles = stylex.create({
+  page: {
+    paddingInline: {
+      default: "1rem",
+      "@media (min-width: 640px)": "1.5rem",
+      "@media (min-width: 768px)": "2rem",
+      "@media (min-width: 1280px)": "3rem",
+    },
+    paddingBlock: {
+      default: "1.5rem",
+      "@media (min-width: 768px)": "2.5rem",
+      "@media (min-width: 1280px)": "3.5rem",
+    },
+  },
+  inner: {
+    marginInline: "auto",
+    maxWidth: {
+      default: "56rem",
+      "@media (min-width: 1024px)": "64rem",
+      "@media (min-width: 1440px)": "70rem",
+    },
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "1.5rem",
+  },
+});
 
 /** Load the selected rotation menu into the daily viewer. */
 export default async function WeekNumberPage({
@@ -20,13 +48,13 @@ export default async function WeekNumberPage({
   const weekNum = parseInt(weekNumber, 10);
   if (weekNum < 1 || weekNum > 4) return notFound();
 
-  const weekId = `${weekNum}`;
-  const week = await getWeekMenu(weekId);
+  const menuName = getMenuNameForWeek(weekNum);
+  const week = await loadMenuByName(menuName);
 
   return (
-    <div {...stylex.props(styles.rotationPage)}>
-      <div {...stylex.props(styles.rotationContent)} data-stack="6">
-        <MenuViewer initialWeek={week} initialWeekOverride={weekNum} />
+    <div {...sxc("scroll-optimized", styles.page)}>
+      <div {...stylex.props(styles.inner)}>
+        <MenuViewer initialWeek={week} initialMenuName={menuName} initialWeekOverride={weekNum} />
       </div>
     </div>
   );
