@@ -1,8 +1,6 @@
 "use client";
 
 import * as stylex from "@stylexjs/stylex";
-import { styles } from "@/styles/site.stylex";
-
 import * as React from "react";
 import type { WeekMenu, MealKey, DayMenu, Meal, MealSectionKind } from "@/lib/types";
 import { MealCard } from "@/components/MealCard";
@@ -11,6 +9,8 @@ import { UtensilsCrossed, Moon } from "lucide-react";
 import { buildWeekMenu, type MenuFile } from "@/lib/menuFile";
 import { getMenuNameForWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { filterMenuItems } from "@/lib/exceptions";
+import { sxc } from "@/lib/utils";
+import { easing } from "@/lib/tokens.stylex";
 
 interface ComprehensiveWeekViewProps {
   week: WeekMenu;
@@ -29,13 +29,182 @@ const mealTitles = {
   dinner: "Dinner",
 };
 
-const sectionTone = {
-  specialVeg: styles.gridToneSpecialVeg,
-  veg: styles.gridToneVeg,
-  vegSides: styles.gridToneVegSides,
-  nonVeg: styles.gridToneNonVeg,
-  note: styles.gridToneNote,
-} satisfies Record<MealSectionKind, stylex.StyleXStyles<Record<string, string | number | null>>>;
+const styles = stylex.create({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "2rem",
+  },
+  mobileWrap: {
+    display: {
+      default: "flex",
+      "@media (min-width: 1024px)": "none",
+    },
+    flexDirection: "column",
+    rowGap: "1.5rem",
+  },
+  desktopWrap: {
+    display: {
+      default: "none",
+      "@media (min-width: 1024px)": "block",
+    },
+  },
+  desktopScroll: {
+    overflowX: "auto",
+  },
+  desktopGrid: {
+    display: "grid",
+    rowGap: "0.75rem",
+    columnGap: "0.75rem",
+    minWidth: "max-content",
+    paddingBottom: "1rem",
+    alignItems: "flex-start",
+    scrollSnapType: "x mandatory",
+    scrollPadding: "1rem",
+  },
+  gridCols: (cols: string) => ({
+    gridTemplateColumns: cols,
+  }),
+  stickyHeaderRow: {
+    position: "sticky",
+    top: 0,
+    zIndex: 10,
+    backgroundColor: "color-mix(in oklab, var(--background) 95%, transparent)",
+    WebkitBackdropFilter: "blur(8px)",
+    backdropFilter: "blur(8px)",
+    borderBottomWidth: "1px",
+    borderBottomColor: "color-mix(in oklab, var(--border) 50%, transparent)",
+    gridColumn: "1 / -1",
+  },
+  headerGrid: {
+    display: "grid",
+    rowGap: "0.75rem",
+    columnGap: "0.75rem",
+    alignItems: "flex-start",
+    paddingInline: "1rem",
+    paddingBlock: "0.75rem",
+  },
+  mealsHeading: {
+    fontWeight: 600,
+    fontSize: "1.125rem",
+    lineHeight: "calc(1.75 / 1.125)",
+  },
+  dayHeaderCell: {
+    textAlign: "center",
+  },
+  semibold: {
+    fontWeight: 600,
+  },
+  dayHeaderDate: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    color: "var(--muted-foreground)",
+    marginTop: "0.25rem",
+  },
+  mealRowGrid: {
+    display: "grid",
+    rowGap: "0.75rem",
+    columnGap: "0.75rem",
+    alignItems: "flex-start",
+    borderTopWidth: "1px",
+    borderTopColor: "color-mix(in oklab, var(--border) 50%, transparent)",
+    gridColumn: "1 / -1",
+  },
+  mealTypeHeader: {
+    paddingBlock: "0.75rem",
+    paddingInline: "0.75rem",
+  },
+  mealTypeRow: {
+    display: "flex",
+    alignItems: "center",
+    rowGap: "0.5rem",
+    columnGap: "0.5rem",
+  },
+  mealTypeIconCircle: {
+    display: "inline-flex",
+    height: "2rem",
+    width: "2rem",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "9999px",
+    backgroundColor: "color-mix(in oklab, var(--primary) 15%, transparent)",
+  },
+  icon16: {
+    height: "1rem",
+    width: "1rem",
+    color: "var(--primary)",
+  },
+  medium: {
+    fontWeight: 500,
+  },
+  dayCell: {
+    paddingBlock: "0.75rem",
+    paddingInline: "0.75rem",
+    scrollSnapAlign: "start",
+  },
+  noMealCell: {
+    paddingBlock: "1rem",
+    paddingInline: "1rem",
+    borderRadius: "var(--radius)",
+    borderWidth: "2px",
+    borderStyle: "dashed",
+    borderColor: "color-mix(in oklab, var(--muted-foreground) 20%, transparent)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "8rem",
+  },
+  mutedSm: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    color: "var(--muted-foreground)",
+  },
+  extras: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "0.75rem",
+  },
+  extrasTitle: {
+    fontSize: "1.125rem",
+    lineHeight: "calc(1.75 / 1.125)",
+    fontWeight: 600,
+  },
+  extrasDescription: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    color: "var(--muted-foreground)",
+  },
+  extrasGrid: {
+    display: "grid",
+    gridTemplateColumns: {
+      default: "repeat(1, minmax(0, 1fr))",
+      "@media (min-width: 640px)": "repeat(2, minmax(0, 1fr))",
+      "@media (min-width: 1024px)": "repeat(3, minmax(0, 1fr))",
+    },
+    rowGap: "0.5rem",
+    columnGap: "0.5rem",
+  },
+  extra: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    columnGap: "0.75rem",
+    borderRadius: "calc(var(--radius) - 2px)",
+    borderWidth: "1px",
+    borderColor: "color-mix(in oklab, var(--border) 60%, transparent)",
+    backgroundColor: "var(--card)",
+    paddingInline: "0.75rem",
+    paddingBlock: "0.5rem",
+  },
+  extraName: {
+    fontSize: "0.875rem",
+  },
+  extraPrice: {
+    fontSize: "0.875rem",
+    color: "var(--muted-foreground)",
+    fontVariantNumeric: "tabular-nums",
+  },
+});
 
 /** Present the same week as stacked days or a transposed desktop grid. */
 export function ComprehensiveWeekView({
@@ -67,9 +236,10 @@ export function ComprehensiveWeekView({
     void refresh();
     return () => controller.abort();
   }, [weekNumber, calendarWeek]);
-  // Sort days chronologically
+
   const sortedDays = React.useMemo(() => Object.keys(week.menu).sort(), [week.menu]);
   const dayCount = sortedDays.length;
+  const desktopCols = `200px repeat(${dayCount}, minmax(280px, 1fr))`;
 
   const extras = React.useMemo(() => {
     const data = week.extras;
@@ -89,62 +259,60 @@ export function ComprehensiveWeekView({
   }, [week.extras]);
 
   return (
-    <div {...stylex.props(styles.weekView)} data-stack="8">
-      {/* Mobile/Tablet View - Days stacked vertically */}
-      <div {...stylex.props(styles.mobileWeek)} data-stack="6">
+    <div {...stylex.props(styles.root)}>
+      <div {...stylex.props(styles.mobileWrap)}>
         {sortedDays.map((dateKey) => {
           const day = week.menu[dateKey];
+          if (!day) return null;
           return <DaySection key={dateKey} day={day} />;
         })}
       </div>
 
-      {/* Desktop View - Transposed grid: Meals as rows, Days as columns */}
-      <div {...stylex.props(styles.desktopWeek)}>
-        <div {...stylex.props(styles.weekScroll)}>
-          <div
-            {...stylex.props(styles.weekGrid)}
-            style={{
-              gridTemplateColumns: `200px repeat(${dayCount}, minmax(280px, 1fr))`,
-            }}
-          >
-            {/* Header row with days */}
-            <div {...stylex.props(styles.mealColumnHeading)}>
-              <h3 {...stylex.props(styles.mealColumnTitle)}>Meals</h3>
-            </div>
-            {sortedDays.map((dateKey) => {
-              const day = week.menu[dateKey];
-              return (
-                <div key={dateKey} {...stylex.props(styles.dayColumnHeading)}>
-                  <h3 {...stylex.props(styles.dayColumnTitle)}>{day.day}</h3>
-                  <p {...stylex.props(styles.dayDate)}>{day.displayDate}</p>
+      <div {...stylex.props(styles.desktopWrap)}>
+        <div {...sxc("scroll-container scrollbar-hide", styles.desktopScroll)}>
+          <div {...sxc("scroll-grid", styles.desktopGrid, styles.gridCols(desktopCols))}>
+            <div {...stylex.props(styles.stickyHeaderRow)}>
+              <div {...stylex.props(styles.headerGrid, styles.gridCols(desktopCols))}>
+                <div>
+                  <h3 {...stylex.props(styles.mealsHeading)}>Meals</h3>
                 </div>
-              );
-            })}
+                {sortedDays.map((dateKey) => {
+                  const day = week.menu[dateKey];
+                  if (!day) return null;
+                  return (
+                    <div key={`header-${dateKey}`} {...stylex.props(styles.dayHeaderCell)}>
+                      <h3 {...stylex.props(styles.semibold)}>{day.day}</h3>
+                      <p {...stylex.props(styles.dayHeaderDate)}>{day.displayDate}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
-            {/* Meal rows */}
             {mealOrder.map((mealKey) => (
-              <React.Fragment key={mealKey}>
-                {/* Meal type header */}
-                <div {...stylex.props(styles.mealRowHeading)}>
-                  <div {...stylex.props(styles.mealRowLabel)}>
-                    <span {...stylex.props(styles.mealRowBadge)}>
+              <div
+                key={mealKey}
+                {...stylex.props(styles.mealRowGrid, styles.gridCols(desktopCols))}
+              >
+                <div {...stylex.props(styles.mealTypeHeader)}>
+                  <div {...stylex.props(styles.mealTypeRow)}>
+                    <span {...stylex.props(styles.mealTypeIconCircle)}>
                       {React.createElement(mealIcons[mealKey], {
-                        ...stylex.props(styles.mealRowIcon),
+                        ...stylex.props(styles.icon16),
                       })}
                     </span>
                     <div>
-                      <span {...stylex.props(styles.mealRowTitle)}>{mealTitles[mealKey]}</span>
+                      <span {...stylex.props(styles.medium)}>{mealTitles[mealKey]}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Meal content for each day */}
                 {sortedDays.map((dateKey) => {
                   const day = week.menu[dateKey];
-                  const meal = day.meals[mealKey];
+                  const meal = day?.meals[mealKey];
 
                   return (
-                    <div key={`${mealKey}-${dateKey}`} {...stylex.props(styles.mealCell)}>
+                    <div key={`${mealKey}-${dateKey}`} {...stylex.props(styles.dayCell)}>
                       {meal ? (
                         <MealGridCard
                           meal={meal}
@@ -152,33 +320,30 @@ export function ComprehensiveWeekView({
                           timeRange={`${meal.startTime} – ${meal.endTime} IST`}
                         />
                       ) : (
-                        <div {...stylex.props(styles.missingMeal)}>
-                          <span {...stylex.props(styles.missingMealText)}>No meal</span>
+                        <div {...stylex.props(styles.noMealCell)}>
+                          <span {...stylex.props(styles.mutedSm)}>No meal</span>
                         </div>
                       )}
                     </div>
                   );
                 })}
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
       </div>
 
       {extras ? (
-        <section {...stylex.props(styles.weekExtras)}>
-          <h2 {...stylex.props(styles.weekExtrasTitle)}>{extras.data.category}</h2>
-          <p {...stylex.props(styles.weekExtrasDescription)}>
+        <section {...stylex.props(styles.extras)}>
+          <h2 {...stylex.props(styles.extrasTitle)}>{extras.data.category}</h2>
+          <p {...stylex.props(styles.extrasDescription)}>
             Add-ons available for any meal. Prices listed in {extras.data.currency}.
           </p>
-          <ul
-            {...stylex.props(styles.weekExtrasGrid)}
-            aria-label={`${extras.data.category} add-ons`}
-          >
+          <ul {...stylex.props(styles.extrasGrid)} aria-label={`${extras.data.category} add-ons`}>
             {extras.data.items.map((item) => (
-              <li key={item.name} {...stylex.props(styles.weekExtra)}>
-                <span {...stylex.props(styles.weekExtraName)}>{item.name}</span>
-                <span {...stylex.props(styles.weekExtraPrice)}>
+              <li key={item.name} {...stylex.props(styles.extra)}>
+                <span {...stylex.props(styles.extraName)}>{item.name}</span>
+                <span {...stylex.props(styles.extraPrice)}>
                   {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
                 </span>
               </li>
@@ -190,18 +355,41 @@ export function ComprehensiveWeekView({
   );
 }
 
-/** Group one day’s meal cards under its date heading. */
+const dayStyles = stylex.create({
+  titleRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    columnGap: "0.75rem",
+  },
+  dateLabel: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    fontWeight: 400,
+    color: "var(--muted-foreground)",
+  },
+  mealsGrid: {
+    display: "grid",
+    gridTemplateColumns: {
+      default: "repeat(1, minmax(0, 1fr))",
+      "@media (min-width: 640px)": "repeat(2, minmax(0, 1fr))",
+    },
+    rowGap: "1rem",
+    columnGap: "1rem",
+  },
+});
+
 function DaySection({ day }: { day: DayMenu }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle xstyle={styles.dayTitle}>
+        <CardTitle style={dayStyles.titleRow}>
           <span>{day.day}</span>
-          <span {...stylex.props(styles.dayDisplayDate)}>{day.displayDate}</span>
+          <span {...stylex.props(dayStyles.dateLabel)}>{day.displayDate}</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div {...stylex.props(styles.dayMeals)}>
+        <div {...stylex.props(dayStyles.mealsGrid)}>
           {mealOrder.map((mealKey) => {
             const meal = day.meals[mealKey];
             if (!meal) return null;
@@ -222,7 +410,115 @@ function DaySection({ day }: { day: DayMenu }) {
   );
 }
 
-/** Keep a compact meal cell stable while surrounding week sections render. */
+const gridCardStyles = stylex.create({
+  card: {
+    boxShadow: {
+      default: null,
+      ":hover": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+    },
+    transitionProperty: "transform, opacity, box-shadow",
+    transitionDuration: "0.12s",
+    transitionTimingFunction: easing.spring,
+  },
+  headerPad: {
+    paddingBottom: "0.5rem",
+  },
+  title: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    rowGap: "0.5rem",
+    columnGap: "0.5rem",
+    fontSize: "0.875rem",
+  },
+  titleLeft: {
+    display: "flex",
+    alignItems: "center",
+    rowGap: "0.25rem",
+    columnGap: "0.25rem",
+  },
+  icon12: {
+    height: "0.75rem",
+    width: "0.75rem",
+    color: "var(--primary)",
+  },
+  medium: {
+    fontWeight: 500,
+  },
+  timeLabel: {
+    fontSize: "0.75rem",
+    lineHeight: "calc(1 / 0.75)",
+    color: "var(--muted-foreground)",
+    fontWeight: 400,
+  },
+  contentPad: {
+    paddingTop: 0,
+  },
+  items: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "0.25rem",
+  },
+  item: {
+    fontSize: "0.75rem",
+    borderRadius: "calc(var(--radius) - 2px)",
+    paddingInline: "0.5rem",
+    paddingBlock: "0.25rem",
+    lineHeight: 1.25,
+    borderWidth: "1px",
+  },
+  badgeGreen: {
+    backgroundColor: "var(--badge-green-bg)",
+    borderColor: "var(--badge-green-border)",
+    color: "var(--badge-green-text)",
+  },
+  badgeRed: {
+    backgroundColor: "var(--badge-red-bg)",
+    borderColor: "var(--badge-red-border)",
+    color: "var(--badge-red-text)",
+  },
+  badgeBlue: {
+    backgroundColor: "var(--badge-blue-bg)",
+    borderColor: "var(--badge-blue-border)",
+    color: "var(--badge-blue-text)",
+  },
+  badgeNeutral: {
+    backgroundColor: "color-mix(in oklab, var(--muted) 40%, transparent)",
+    borderColor: "color-mix(in oklab, var(--muted-foreground) 20%, transparent)",
+    color: "var(--muted-foreground)",
+  },
+  badgeSide: {
+    backgroundColor: "color-mix(in oklab, var(--foreground) 5%, transparent)",
+    borderColor: "color-mix(in oklab, var(--foreground) 10%, transparent)",
+    color: "var(--foreground)",
+  },
+  fallbackItem: {
+    fontSize: "0.75rem",
+    borderRadius: "calc(var(--radius) - 2px)",
+    backgroundColor: "color-mix(in oklab, var(--muted) 50%, transparent)",
+    paddingInline: "0.5rem",
+    paddingBlock: "0.25rem",
+    lineHeight: 1.25,
+    borderWidth: "1px",
+    borderColor: "color-mix(in oklab, var(--border) 20%, transparent)",
+  },
+  noItems: {
+    fontSize: "0.75rem",
+    lineHeight: "calc(1 / 0.75)",
+    color: "var(--muted-foreground)",
+    fontStyle: "italic",
+    paddingBlock: "0.5rem",
+  },
+});
+
+const sectionTone = {
+  specialVeg: gridCardStyles.badgeBlue,
+  veg: gridCardStyles.badgeGreen,
+  vegSides: gridCardStyles.badgeSide,
+  nonVeg: gridCardStyles.badgeRed,
+  note: gridCardStyles.badgeNeutral,
+} satisfies Record<MealSectionKind, stylex.StyleXStyles>;
+
 const MealGridCard = React.memo(function MealGridCard({
   meal,
   mealKey,
@@ -246,25 +542,25 @@ const MealGridCard = React.memo(function MealGridCard({
   const fallbackItems = React.useMemo(() => filterMenuItems(meal.items), [meal.items]);
 
   return (
-    <Card xstyle={styles.gridCard}>
-      <CardHeader xstyle={styles.gridCardHeader}>
-        <CardTitle xstyle={styles.gridCardTitle}>
-          <span {...stylex.props(styles.gridMealLabel)}>
-            <Icon {...stylex.props(styles.gridMealIcon)} />
-            <span {...stylex.props(styles.gridMealName)}>{mealTitles[mealKey]}</span>
+    <Card style={gridCardStyles.card}>
+      <CardHeader style={gridCardStyles.headerPad}>
+        <CardTitle style={gridCardStyles.title}>
+          <span {...stylex.props(gridCardStyles.titleLeft)}>
+            <Icon {...stylex.props(gridCardStyles.icon12)} />
+            <span {...stylex.props(gridCardStyles.medium)}>{mealTitles[mealKey]}</span>
           </span>
-          <span {...stylex.props(styles.gridMealTime)}>{timeRange}</span>
+          <span {...sxc("tabular-nums", gridCardStyles.timeLabel)}>{timeRange}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent xstyle={styles.gridCardContent}>
-        <div {...stylex.props(styles.gridMealSections)} data-stack="2">
+      <CardContent style={gridCardStyles.contentPad}>
+        <div {...stylex.props(gridCardStyles.items)}>
           {filteredSections.length > 0 ? (
-            <ul aria-label="Menu items" {...stylex.props(styles.gridMealItems)}>
+            <ul aria-label="Menu items" {...stylex.props(gridCardStyles.items)}>
               {filteredSections.flatMap((section, sectionIdx) =>
                 section.items.map((item, idx) => (
                   <li
                     key={`${section.kind}-${sectionIdx}-${idx}`}
-                    {...stylex.props(sectionTone[section.kind] ?? sectionTone.note)}
+                    {...stylex.props(gridCardStyles.item, sectionTone[section.kind])}
                   >
                     {item}
                   </li>
@@ -273,12 +569,12 @@ const MealGridCard = React.memo(function MealGridCard({
             </ul>
           ) : fallbackItems.length > 0 ? (
             fallbackItems.map((item, idx) => (
-              <div key={`fallback-${idx}`} {...stylex.props(styles.gridFallbackItem)}>
+              <div key={`fallback-${idx}`} {...stylex.props(gridCardStyles.fallbackItem)}>
                 {item}
               </div>
             ))
           ) : (
-            <div {...stylex.props(styles.gridNoItems)}>No items available</div>
+            <div {...stylex.props(gridCardStyles.noItems)}>No items available</div>
           )}
         </div>
       </CardContent>

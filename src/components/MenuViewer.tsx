@@ -1,8 +1,6 @@
 "use client";
 
 import * as stylex from "@stylexjs/stylex";
-import { styles } from "@/styles/site.stylex";
-
 import * as React from "react";
 import type { MealKey, WeekMenu } from "@/lib/types";
 import {
@@ -23,9 +21,126 @@ import { InlineSelect } from "@/components/InlineSelect";
 import { WeekSelector } from "@/components/WeekSelector";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Grid3X3 } from "lucide-react";
+import { Grid3X3, Loader2 } from "lucide-react";
 
 const WEEK_OVERRIDE_STORAGE_KEY = "sindhi-menu-week-override";
+
+const spin = stylex.keyframes({
+  from: { transform: "rotate(0deg)" },
+  to: { transform: "rotate(360deg)" },
+});
+
+const styles = stylex.create({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "1rem",
+  },
+  header: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "0.375rem",
+  },
+  title: {
+    fontSize: {
+      default: "26px",
+      "@media (min-width: 640px)": "32px",
+    },
+    fontWeight: 600,
+    letterSpacing: "-0.02em",
+    lineHeight: 1.1,
+  },
+  description: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    color: "var(--muted-foreground)",
+  },
+  note: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    color: "var(--muted-foreground)",
+  },
+  controls: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    columnGap: "1rem",
+    rowGap: "0.5rem",
+  },
+  loading: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: "0.75rem",
+    paddingBlock: "3rem",
+    color: "var(--muted-foreground)",
+    fontSize: "0.875rem",
+  },
+  spinner: {
+    height: "1.25rem",
+    width: "1.25rem",
+    animationName: spin,
+    animationDuration: "1s",
+    animationTimingFunction: "linear",
+    animationIterationCount: "infinite",
+  },
+  extras: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "0.75rem",
+    marginTop: "0.5rem",
+  },
+  extrasTitle: {
+    fontSize: "1.125rem",
+    lineHeight: "calc(1.75 / 1.125)",
+    fontWeight: 600,
+  },
+  extrasDescription: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    color: "var(--muted-foreground)",
+  },
+  extrasGrid: {
+    display: "grid",
+    gridTemplateColumns: {
+      default: "repeat(1, minmax(0, 1fr))",
+      "@media (min-width: 640px)": "repeat(2, minmax(0, 1fr))",
+    },
+    rowGap: "0.5rem",
+    columnGap: "0.5rem",
+  },
+  extra: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    columnGap: "0.75rem",
+    borderRadius: "calc(var(--radius) - 2px)",
+    borderWidth: "1px",
+    borderColor: "color-mix(in oklab, var(--border) 60%, transparent)",
+    backgroundColor: "var(--card)",
+    paddingInline: "0.75rem",
+    paddingBlock: "0.5rem",
+  },
+  extraName: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+  },
+  extraPrice: {
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    color: "var(--muted-foreground)",
+    fontVariantNumeric: "tabular-nums",
+  },
+  actions: {
+    display: "flex",
+    marginTop: "0.5rem",
+  },
+  buttonIcon: {
+    height: "1rem",
+    width: "1rem",
+    marginRight: "0.5rem",
+  },
+});
 
 /** Fetch the menu document for a rotation week and project it onto the current IST week. */
 async function loadMenuForWeekNumber(weekNumber: number, signal?: AbortSignal): Promise<WeekMenu> {
@@ -160,6 +275,12 @@ export function MenuViewer({
   const picked = pickHighlightMealForDay(currentWeek, effectiveDateKey, now);
   const highlightKey: MealKey = picked?.mealKey ?? meals[0]?.key ?? "lunch";
   const isPrimaryUpcoming = Boolean(picked?.isPrimaryUpcoming);
+  const isLive = Boolean(
+    pointer &&
+    pointer.isOngoing &&
+    pointer.dateKey === effectiveDateKey &&
+    pointer.mealKey === highlightKey,
+  );
 
   const dayOptions = sortedDayKeys.map((key) => {
     const entry = currentWeek.menu[key];
@@ -178,16 +299,16 @@ export function MenuViewer({
   });
 
   return (
-    <div {...stylex.props(styles.viewer)} data-stack="4">
-      <header {...stylex.props(styles.viewerHeader)}>
-        <div {...stylex.props(styles.viewerTitle)}>{currentWeek.foodCourt}</div>
-        <p {...stylex.props(styles.viewerDescription)}>Weekly rotating menu (4-week cycle)</p>
-        <p {...stylex.props(styles.viewerNote)}>
+    <div {...stylex.props(styles.root)}>
+      <header {...stylex.props(styles.header)}>
+        <div {...stylex.props(styles.title)}>{currentWeek.foodCourt}</div>
+        <p {...stylex.props(styles.description)}>Weekly rotating menu (4-week cycle)</p>
+        <p {...stylex.props(styles.note)}>
           Sometimes, the Sindhi mess doesn&apos;t adhere to any menu.
         </p>
       </header>
 
-      <div {...stylex.props(styles.viewerControls)}>
+      <div {...stylex.props(styles.controls)}>
         <WeekSelector
           onWeekChange={(weekNum) => {
             setWeekOverride(weekNum === -1 ? null : weekNum);
@@ -205,8 +326,8 @@ export function MenuViewer({
 
       {isLoading && (
         <div {...stylex.props(styles.loading)}>
-          <div {...stylex.props(styles.loadingSpinner)} />
-          <span {...stylex.props(styles.loadingText)}>Loading menu...</span>
+          <Loader2 {...stylex.props(styles.spinner)} />
+          <span>Loading menu...</span>
         </div>
       )}
 
@@ -216,6 +337,7 @@ export function MenuViewer({
             meals={meals}
             highlightKey={highlightKey}
             isPrimaryUpcoming={isPrimaryUpcoming}
+            isLive={isLive}
           />
 
           {extras ? (
@@ -241,13 +363,13 @@ export function MenuViewer({
             </section>
           ) : null}
 
-          <div {...stylex.props(styles.viewerActions)}>
+          <div {...stylex.props(styles.actions)}>
             <Button asChild variant="outline">
               <Link
                 href={`/week/${getMenuNumberForWeek(weekOverride ?? calendarWeek)}/full`}
                 title="View full week menu"
               >
-                <Grid3X3 {...stylex.props(styles.fullWeekIcon)} />
+                <Grid3X3 {...stylex.props(styles.buttonIcon)} />
                 View Full Week Menu
               </Link>
             </Button>

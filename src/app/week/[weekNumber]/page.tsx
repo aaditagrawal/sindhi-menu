@@ -1,14 +1,32 @@
 import * as stylex from "@stylexjs/stylex";
-import { styles } from "@/styles/site.stylex";
 import { notFound } from "next/navigation";
 import { getWeekMenu } from "@/data/weeks";
 import { MenuViewer } from "@/components/MenuViewer";
+import { sxc } from "@/lib/utils";
 
 export const revalidate = 604800;
 
 export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
+
+const styles = stylex.create({
+  page: {
+    paddingInline: {
+      default: "1rem",
+      "@media (min-width: 640px)": "1.5rem",
+      "@media (min-width: 768px)": "2rem",
+    },
+    paddingBlock: "2rem",
+  },
+  inner: {
+    marginInline: "auto",
+    maxWidth: "56rem",
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "1.5rem",
+  },
+});
 
 /** Load the selected rotation menu into the daily viewer. */
 export default async function WeekNumberPage({
@@ -24,8 +42,8 @@ export default async function WeekNumberPage({
   const week = await getWeekMenu(weekId);
 
   return (
-    <div {...stylex.props(styles.rotationPage)}>
-      <div {...stylex.props(styles.rotationContent)} data-stack="6">
+    <div {...sxc("scroll-optimized", styles.page)}>
+      <div {...stylex.props(styles.inner)}>
         <MenuViewer initialWeek={week} initialWeekOverride={weekNum} />
       </div>
     </div>

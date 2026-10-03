@@ -1,56 +1,158 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import * as stylex from "@stylexjs/stylex";
-import { styles } from "@/styles/site.stylex";
 
-const variants = {
-  default: styles.buttonVariant_default,
-  destructive: styles.buttonVariant_destructive,
-  outline: styles.buttonVariant_outline,
-  secondary: styles.buttonVariant_secondary,
-  ghost: styles.buttonVariant_ghost,
-  link: styles.buttonVariant_link,
-};
-const sizes = {
-  default: styles.buttonSize_default,
-  sm: styles.buttonSize_sm,
-  lg: styles.buttonSize_lg,
-  icon: styles.buttonSize_icon,
-};
-type Variant = keyof typeof variants;
-type Size = keyof typeof sizes;
+import { easing } from "@/lib/tokens.stylex";
 
-/** Compose button appearance and size classes while retaining the public helper. */
-export function buttonVariants({
-  variant = "default",
-  size = "default",
-  className,
-  class: extraClass,
-}: {
-  variant?: Variant | null;
-  size?: Size | null;
-  className?: string;
-  class?: string;
-} = {}) {
-  return [
-    stylex.props(styles.buttonBase, variant && variants[variant], size && sizes[size]).className,
-    className,
-    extraClass,
-  ]
-    .filter(Boolean)
-    .join(" ");
-}
+const styles = stylex.create({
+  base: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    whiteSpace: "nowrap",
+    borderRadius: "calc(var(--radius) - 2px)",
+    fontSize: "0.875rem",
+    lineHeight: "calc(1.25 / 0.875)",
+    fontWeight: 500,
+    transitionProperty: {
+      default: "background-color,color,border-color,box-shadow,transform,scale",
+      "@media (prefers-reduced-motion: reduce)": "none",
+    },
+    transitionDuration: "150ms",
+    transitionTimingFunction: easing.spring,
+    scale: {
+      default: null,
+      ":active": {
+        default: "0.98",
+        "@media (prefers-reduced-motion: reduce)": "1",
+      },
+    },
+    outlineStyle: {
+      default: null,
+      ":focus-visible": "none",
+    },
+    boxShadow: {
+      default: null,
+      ":focus-visible": "0 0 0 2px var(--background), 0 0 0 4px var(--ring)",
+    },
+    pointerEvents: {
+      default: null,
+      ":disabled": "none",
+    },
+    opacity: {
+      default: null,
+      ":disabled": 0.5,
+    },
+  },
+  variantDefault: {
+    backgroundColor: {
+      default: "var(--primary)",
+      ":hover": "color-mix(in oklab, var(--primary) 90%, transparent)",
+    },
+    color: "var(--primary-foreground)",
+  },
+  variantDestructive: {
+    backgroundColor: {
+      default: "var(--destructive)",
+      ":hover": "color-mix(in oklab, var(--destructive) 90%, transparent)",
+    },
+  },
+  variantOutline: {
+    borderWidth: "1px",
+    borderColor: "var(--input)",
+    backgroundColor: {
+      default: "var(--background)",
+      ":hover": "var(--accent)",
+    },
+    color: {
+      default: null,
+      ":hover": "var(--accent-foreground)",
+    },
+  },
+  variantSecondary: {
+    backgroundColor: {
+      default: "var(--secondary)",
+      ":hover": "color-mix(in oklab, var(--secondary) 80%, transparent)",
+    },
+    color: "var(--secondary-foreground)",
+  },
+  variantGhost: {
+    backgroundColor: {
+      default: null,
+      ":hover": "var(--accent)",
+    },
+    color: {
+      default: null,
+      ":hover": "var(--accent-foreground)",
+    },
+  },
+  variantLink: {
+    color: "var(--primary)",
+    textUnderlineOffset: "4px",
+    textDecorationLine: {
+      default: null,
+      ":hover": "underline",
+    },
+  },
+  sizeDefault: {
+    height: "2.5rem",
+    paddingInline: "1rem",
+    paddingBlock: "0.5rem",
+  },
+  sizeSm: {
+    height: "2.25rem",
+    borderRadius: "calc(var(--radius) - 2px)",
+    paddingInline: "0.75rem",
+  },
+  sizeLg: {
+    height: "2.75rem",
+    borderRadius: "calc(var(--radius) - 2px)",
+    paddingInline: "2rem",
+  },
+  sizeIcon: {
+    height: "2.5rem",
+    width: "2.5rem",
+  },
+});
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: Variant | null;
-  size?: Size | null;
+const variantStyles = {
+  default: styles.variantDefault,
+  destructive: styles.variantDestructive,
+  outline: styles.variantOutline,
+  secondary: styles.variantSecondary,
+  ghost: styles.variantGhost,
+  link: styles.variantLink,
+} as const;
+
+const sizeStyles = {
+  default: styles.sizeDefault,
+  sm: styles.sizeSm,
+  lg: styles.sizeLg,
+  icon: styles.sizeIcon,
+} as const;
+
+export interface ButtonProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "className" | "style"
+> {
+  variant?: keyof typeof variantStyles;
+  size?: keyof typeof sizeStyles;
   asChild?: boolean;
+  style?: stylex.StyleXStyles;
 }
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ variant = "default", size = "default", asChild = false, style, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={buttonVariants({ variant, size, className })} ref={ref} {...props} />;
+    return (
+      <Comp
+        {...stylex.props(styles.base, variantStyles[variant], sizeStyles[size], style)}
+        ref={ref}
+        {...props}
+      />
+    );
   },
 );
 Button.displayName = "Button";
+
 export { Button };
