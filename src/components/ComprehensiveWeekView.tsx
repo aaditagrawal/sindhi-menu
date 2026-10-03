@@ -9,6 +9,7 @@ import { UtensilsCrossed, Moon } from "lucide-react";
 import { buildWeekMenu, type MenuFile } from "@/lib/menuFile";
 import { getMenuNameForWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { filterMenuItems } from "@/lib/exceptions";
+import { useMountEffect } from "@/hooks/useMountEffect";
 import { sxc } from "@/lib/utils";
 import { easing } from "@/lib/tokens.stylex";
 
@@ -51,6 +52,8 @@ const styles = stylex.create({
   },
   desktopScroll: {
     overflowX: "auto",
+    scrollBehavior: "auto",
+    overscrollBehaviorX: "contain",
   },
   desktopGrid: {
     display: "grid",
@@ -206,6 +209,14 @@ const styles = stylex.create({
   },
 });
 
+function verticalWheelPixels(event: WheelEvent, el: HTMLElement) {
+  if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return 0;
+  if (event.deltaY === 0) return 0;
+  if (event.deltaMode === 1) return event.deltaY * 16;
+  if (event.deltaMode === 2) return event.deltaY * el.clientWidth;
+  return event.deltaY;
+}
+
 /** Present the same week as stacked days or a transposed desktop grid. */
 export function ComprehensiveWeekView({
   week: initialWeek,
@@ -241,6 +252,28 @@ export function ComprehensiveWeekView({
   const dayCount = sortedDays.length;
   const desktopCols = `200px repeat(${dayCount}, minmax(280px, 1fr))`;
 
+  const scrollerRef = React.useRef<HTMLDivElement>(null);
+  useMountEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    function onWheel(event: WheelEvent) {
+      const scroller = scrollerRef.current;
+      if (!scroller) return;
+      const delta = verticalWheelPixels(event, scroller);
+      if (delta === 0) return;
+      if (scroller.scrollWidth <= scroller.clientWidth + 1) return;
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      const next = Math.min(max, Math.max(0, scroller.scrollLeft + delta));
+      if (next === scroller.scrollLeft) return;
+      event.preventDefault();
+      scroller.scrollLeft = next;
+    }
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  });
+
   const extras = React.useMemo(() => {
     const data = week.extras;
     if (!data || data.items.length === 0) return undefined;
@@ -269,7 +302,7 @@ export function ComprehensiveWeekView({
       </div>
 
       <div {...stylex.props(styles.desktopWrap)}>
-        <div {...sxc("scroll-container scrollbar-hide", styles.desktopScroll)}>
+        <div ref={scrollerRef} {...stylex.props(styles.desktopScroll)}>
           <div {...sxc("scroll-grid", styles.desktopGrid, styles.gridCols(desktopCols))}>
             <div {...stylex.props(styles.stickyHeaderRow)}>
               <div {...stylex.props(styles.headerGrid, styles.gridCols(desktopCols))}>
