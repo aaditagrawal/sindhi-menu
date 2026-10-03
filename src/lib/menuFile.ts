@@ -5,15 +5,8 @@ import {
   formatISTShortDate,
   getISTNow,
   startOfISTWeek,
-} from "@/lib/date";
-import type {
-  Meal,
-  MealKey,
-  MealSection,
-  MealSectionKind,
-  MenuExtras,
-  WeekMenu,
-} from "@/lib/types";
+} from "./date";
+import type { Meal, MealKey, MealSection, MealSectionKind, MenuExtras, WeekMenu } from "./types";
 
 /**
  * Contract for the menu documents committed to `public/menu*.json`.
@@ -157,9 +150,13 @@ function readMeal(source: MenuFileMeal | undefined, mealKey: MealKey): Meal | un
  * `weekLabel` is appended to the rendered date range so callers can say which rotation the
  * document came from.
  */
-export function buildWeekMenu(file: MenuFile, weekLabel: string): WeekMenu {
+export function buildWeekMenu(
+  file: MenuFile,
+  weekLabel: string,
+  now: Date = getISTNow(),
+): WeekMenu {
   const days = file.menu ?? {};
-  const monday = startOfISTWeek(getISTNow());
+  const monday = startOfISTWeek(now);
   const menu: WeekMenu["menu"] = {};
 
   DAYS_ORDER.forEach((dayName, index) => {

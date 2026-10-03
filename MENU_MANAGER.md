@@ -43,8 +43,8 @@ Calculates the week number based on any given date, using Oct 13, 2025 (Monday o
 **Example:**
 
 ```typescript
-const weekNum = getWeekNumberFromDate(new Date("2025-10-20")); // Returns 2
-const weekNum = getWeekNumberFromDate(new Date("2025-10-27")); // Returns 3
+const weekNum = getWeekNumberFromDate(new Date("2025-10-20")); // Returns 3
+const weekNum = getWeekNumberFromDate(new Date("2025-10-27")); // Returns 4
 ```
 
 #### `getMenuNumberForWeek(weekNumber: number): number`

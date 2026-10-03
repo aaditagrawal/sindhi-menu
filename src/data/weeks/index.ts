@@ -1,5 +1,5 @@
-import type { WeekMenu, WeekMeta } from "@/lib/types";
-import { getISTNow, sortDateKeysAsc } from "@/lib/date";
+import type { WeekMenu } from "@/lib/types";
+import { getISTNow } from "@/lib/date";
 import { buildWeekMenu, type MenuFile } from "@/lib/menuFile";
 import { getMenuNameForDate, type MenuName } from "@/lib/menuManager";
 import { promises as fs } from "fs";
@@ -37,35 +37,9 @@ export async function loadFixedMenu(): Promise<WeekMenu> {
   return loadMenuForDate();
 }
 
-export function computeWeekIdFromMenu(week: WeekMenu): WeekId {
-  const keys = sortDateKeysAsc(Object.keys(week.menu));
-  const start = keys[0];
-  const end = keys[keys.length - 1];
-  return `${start}_to_${end}`;
-}
 
-export async function getAllWeeks(): Promise<WeekId[]> {
-  const latest = await getLatestWeekId();
-  return latest ? [latest] : [];
-}
-
-export async function getLatestWeekId(): Promise<WeekId> {
-  const latestWeek = await loadFixedMenu();
-  return computeWeekIdFromMenu(latestWeek);
-}
-
-// oxlint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getWeekMenu(_id: WeekId): Promise<WeekMenu> {
-  // For fixed menu, ignore id and return the same constructed week for current dates
-  return loadFixedMenu();
-}
-
-export async function getWeeksMeta(): Promise<WeekMeta[]> {
-  const ids = await getAllWeeks();
-  const metas: WeekMeta[] = [];
-  for (const id of ids) {
-    const menu = await getWeekMenu(id);
-    metas.push({ id, year: id.slice(0, 4), foodCourt: menu.foodCourt, week: menu.week });
-  }
-  return metas;
+export async function getWeekMenu(id: WeekId): Promise<WeekMenu> {
+  const names = new Map<string, MenuName>([["1", "menu1"], ["2", "menu2"], ["3", "menu3"], ["4", "menu4"]]);
+  const menuName = names.get(id);
+  return menuName ? loadMenuByName(menuName) : loadFixedMenu();
 }

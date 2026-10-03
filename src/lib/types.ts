@@ -45,10 +45,3 @@ export interface CurrentMealPointer {
   mealKey: MealKey;
   isOngoing: boolean;
 }
-
-export interface WeekMeta {
-  id: string;
-  year: string;
-  foodCourt: string;
-  week: string;
-}

@@ -42,39 +42,11 @@ export function CardTitle({ className, xstyle, ...props }: StyledProps<HTMLHeadi
   );
 }
 
-/** Apply muted description styling while forwarding paragraph attributes. */
-export function CardDescription({
-  className,
-  xstyle,
-  ...props
-}: StyledProps<HTMLParagraphElement>) {
-  return (
-    <p
-      className={[stylex.props(styles.CardDescription, xstyle).className, className]
-        .filter(Boolean)
-        .join(" ")}
-      {...props}
-    />
-  );
-}
-
 /** Preserve the content inset and forward root attributes. */
 export function CardContent({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
   return (
     <div
       className={[stylex.props(styles.CardContent, xstyle).className, className]
-        .filter(Boolean)
-        .join(" ")}
-      {...props}
-    />
-  );
-}
-
-/** Align footer content with the card’s existing content inset. */
-export function CardFooter({ className, xstyle, ...props }: StyledProps<HTMLDivElement>) {
-  return (
-    <div
-      className={[stylex.props(styles.CardFooter, xstyle).className, className]
         .filter(Boolean)
         .join(" ")}
       {...props}

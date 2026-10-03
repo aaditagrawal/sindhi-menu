@@ -4,15 +4,15 @@ Sindhi Menu is a fast, friendly viewer for the Sindhi Mess weekly menu. It ships
 
 ## Overview
 
-- **Static-first data** – all meals are sourced from `public/sindhi-menu.json` and baked into the build.
+- **Static-first data** – the active rotation loads from `public/menu1.json through public/menu4.json` and baked into the build.
 - **Time aware** – detects the current or upcoming meal in IST and scrolls/highlights it automatically.
 - **Responsive card UI** – swipeable carousel on smaller screens, transposed grid on large displays.
 - **Accessible theming** – light and dark palettes with readable chips for special veg / non-veg sections and a manual theme toggle.
 
 ## Tech Stack
 
-- Next.js App Router (SSG + ISR) with TypeScript
-- Tailwind CSS v4 with CSS variables for themes
+- Next.js App Router with static export with TypeScript
+- StyleX with preserved reset and theme CSS
 - `next-themes` for runtime theme switching
 - shadcn-inspired UI primitives (Card, Button) and `lucide-react` icons
 
@@ -36,7 +36,6 @@ Visit http://localhost:3000. The current week is generated from the JSON file ea
 
 ```bash
 bun run build
-bun run start
 ```
 
 ### Linting
@@ -49,7 +48,7 @@ bun run lint
 
 ## Updating Menu Data
 
-1. Edit `public/sindhi-menu.json` with the latest banner contents.
+1. Edit `public/menu1.json through public/menu4.json` with the latest banner contents.
 2. Keep each meal’s `specialVeg`, `veg`, and `nonVeg` entries as strings or arrays. Multi-item strings can be comma/newline/semicolon separated; the loader splits them automatically.
 3. Run `bun run dev` locally and verify the Tuesday dinner (dinners often expose the splitting) plus light/dark themes.
 4. Commit the JSON along with any related UI tweaks.

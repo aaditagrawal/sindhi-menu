@@ -1738,18 +1738,7 @@ export const styles = stylex.create({
     "--tw-tracking": "var(--tracking-tight)",
     letterSpacing: "var(--tracking-tight)",
   },
-  CardDescription: {
-    fontSize: "var(--text-sm)",
-    lineHeight: "var(--tw-leading,var(--text-sm--line-height))",
-    color: "var(--muted-foreground)",
-  },
   CardContent: {
-    padding: "calc(var(--spacing) * 6)",
-    paddingTop: "0",
-  },
-  CardFooter: {
-    display: "flex",
-    alignItems: "center",
     padding: "calc(var(--spacing) * 6)",
     paddingTop: "0",
   },
