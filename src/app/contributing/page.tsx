@@ -30,11 +30,12 @@ export default function ContributingPage() {
 
         <h2>Data</h2>
         <p>
-          This app reads a fixed weekly menu from <code>public/sindhi-menu.json</code>.
+          This app reads four rotating weekly menus from{" "}
+          <code>public/menu1.json through public/menu4.json</code>.
         </p>
         <h2 id="code-contributions">Code Contributions</h2>
         <p>
-          Since the app now uses an external API for data, code contributions focus on improving the
+          Menu contributions update the four public JSON documents. Code contributions improve the
           user experience, adding features, and enhancing the UI.
         </p>
         <p>Areas where you can contribute:</p>

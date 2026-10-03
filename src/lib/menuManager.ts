@@ -30,17 +30,11 @@ const REFERENCE_WEEK_NUMBER = 2;
  * Calculate which week number we're in based on a reference date
  */
 export function getWeekNumberFromDate(date: Date): number {
-  // Get start of week (Monday) in IST
-  const IST_OFFSET_MINUTES = 5 * 60 + 30;
-  const utcMs = date.getTime() + date.getTimezoneOffset() * 60_000;
-  const istDate = new Date(utcMs + IST_OFFSET_MINUTES * 60_000);
-
-  // Calculate Monday of this week
-  const dayOfWeek = istDate.getDay();
-  const daysSinceMonday = (dayOfWeek + 6) % 7; // Sunday is 0, so Monday is index 1
-  const monday = new Date(istDate);
-  monday.setDate(istDate.getDate() - daysSinceMonday);
-  monday.setHours(0, 0, 0, 0);
+  const local = new Date(date.getTime() + 330 * 60_000);
+  const daysSinceMonday = (local.getUTCDay() + 6) % 7;
+  const monday = new Date(
+    Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() - daysSinceMonday),
+  );
 
   // Calculate number of weeks since reference
   const timeDiff = monday.getTime() - REFERENCE_DATE.getTime();
@@ -74,22 +68,6 @@ export function getMenuNameForWeek(weekNumber: number): MenuName {
 export function getMenuNameForDate(date: Date): MenuName {
   const weekNumber = getWeekNumberFromDate(date);
   return getMenuNameForWeek(weekNumber);
-}
-
-/**
- * Get metadata about the current menu state
- */
-export function getMenuMetadata(date: Date = new Date()) {
-  const weekNumber = getWeekNumberFromDate(date);
-  const menuName = getMenuNameForWeek(weekNumber);
-  const menuNumber = parseInt(menuName.replace("menu", ""), 10);
-
-  return {
-    weekNumber,
-    menuName,
-    menuNumber,
-    description: `Week ${weekNumber} • ${menuName}`,
-  };
 }
 
 /**

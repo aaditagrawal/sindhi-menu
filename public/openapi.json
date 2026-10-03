@@ -3,10 +3,12 @@
   "info": {
     "title": "Sindhi Menu API",
     "version": "1.0.0",
-    "description": "API contract describing the fixed Sindhi Mess weekly menu endpoint."
+    "description": "Current Sindhi Mess menu selected from the four-week rotation, with dates projected in IST."
   },
   "servers": [
-    { "url": "/" }
+    {
+      "url": "/"
+    }
   ],
   "paths": {
     "/api/menu": {
@@ -18,7 +20,9 @@
             "description": "Current weekly menu",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MenuResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/MenuResponse"
+                }
               }
             }
           },
@@ -26,7 +30,9 @@
             "description": "Server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Error" }
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
               }
             }
           }
@@ -39,100 +45,202 @@
       "MenuExtraItem": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "price": { "type": "number", "example": 10 }
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "example": 10
+          }
         },
-        "required": ["name", "price"]
+        "required": [
+          "name",
+          "price"
+        ]
       },
       "MenuExtras": {
         "type": "object",
         "properties": {
-          "category": { "type": "string", "example": "Extras" },
-          "currency": { "type": "string", "example": "INR" },
+          "category": {
+            "type": "string",
+            "example": "Extras"
+          },
+          "currency": {
+            "type": "string",
+            "example": "INR"
+          },
           "items": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/MenuExtraItem" }
+            "items": {
+              "$ref": "#/components/schemas/MenuExtraItem"
+            }
           }
         },
-        "required": ["category", "currency", "items"]
+        "required": [
+          "category",
+          "currency",
+          "items"
+        ]
       },
       "MealSection": {
         "type": "object",
         "properties": {
-          "kind": { "type": "string", "enum": ["specialVeg", "veg", "nonVeg", "note"] },
-          "title": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "specialVeg",
+              "veg",
+              "nonVeg",
+              "note"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
           "items": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           }
         },
-        "required": ["kind", "title", "items"]
+        "required": [
+          "kind",
+          "title",
+          "items"
+        ]
       },
       "Meal": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "startTime": { "type": "string", "example": "11:30" },
-          "endTime": { "type": "string", "example": "14:15" },
+          "name": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "example": "11:30"
+          },
+          "endTime": {
+            "type": "string",
+            "example": "14:15"
+          },
           "items": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
           "sections": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/MealSection" }
+            "items": {
+              "$ref": "#/components/schemas/MealSection"
+            }
           }
         },
-        "required": ["name", "startTime", "endTime", "items", "sections"]
+        "required": [
+          "name",
+          "startTime",
+          "endTime",
+          "items",
+          "sections"
+        ]
       },
       "DayMenu": {
         "type": "object",
         "properties": {
-          "day": { "type": "string", "example": "Monday" },
-          "displayDate": { "type": "string", "example": "Sep 04" },
+          "day": {
+            "type": "string",
+            "example": "Monday"
+          },
+          "displayDate": {
+            "type": "string",
+            "example": "Sep 04"
+          },
           "meals": {
             "type": "object",
             "properties": {
-              "lunch": { "$ref": "#/components/schemas/Meal" },
-              "dinner": { "$ref": "#/components/schemas/Meal" }
+              "lunch": {
+                "$ref": "#/components/schemas/Meal"
+              },
+              "dinner": {
+                "$ref": "#/components/schemas/Meal"
+              }
             },
             "additionalProperties": false
           }
         },
-        "required": ["day", "displayDate", "meals"]
+        "required": [
+          "day",
+          "displayDate",
+          "meals"
+        ]
       },
       "WeekMenu": {
         "type": "object",
         "properties": {
-          "foodCourt": { "type": "string", "example": "Sindhi Mess" },
-          "week": { "type": "string", "example": "04 Sep – 09 Sep • Fixed weekly menu" },
+          "foodCourt": {
+            "type": "string",
+            "example": "Sindhi Mess"
+          },
+          "week": {
+            "type": "string",
+            "example": "04 Sep \u2013 09 Sep \u2022 Fixed weekly menu"
+          },
           "menu": {
             "type": "object",
-            "additionalProperties": { "$ref": "#/components/schemas/DayMenu" }
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DayMenu"
+            }
           },
-          "extras": { "$ref": "#/components/schemas/MenuExtras" }
+          "extras": {
+            "$ref": "#/components/schemas/MenuExtras"
+          }
         },
-        "required": ["foodCourt", "week", "menu", "extras"]
+        "required": [
+          "foodCourt",
+          "week",
+          "menu",
+          "extras"
+        ]
       },
       "MenuResponse": {
         "allOf": [
           {
             "type": "object",
             "properties": {
-              "id": { "type": "string", "example": "2024-09-02_to_2024-09-07" },
-              "generatedAt": { "type": "string", "format": "date-time" },
-              "source": { "type": "string", "example": "/sindhi-menu.json" }
+              "id": {
+                "type": "string",
+                "example": "2024-09-02_to_2024-09-07"
+              },
+              "generatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "source": {
+                "type": "string",
+                "example": "/sindhi-menu.json"
+              }
             },
-            "required": ["id", "generatedAt", "source"]
+            "required": [
+              "id",
+              "generatedAt",
+              "source"
+            ]
           },
-          { "$ref": "#/components/schemas/WeekMenu" }
+          {
+            "$ref": "#/components/schemas/WeekMenu"
+          }
         ]
       },
       "Error": {
         "type": "object",
         "properties": {
-          "error": { "type": "string" },
-          "details": { "type": "string" }
+          "error": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
         }
       }
     }

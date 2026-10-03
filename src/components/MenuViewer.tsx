@@ -55,6 +55,12 @@ export function MenuViewer({
   initialWeek: WeekMenu;
   initialWeekOverride?: number;
 }) {
+  const [now, setNow] = React.useState(() => new Date());
+  const calendarWeek = getWeekNumberFromDate(now);
+  React.useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
   const [currentWeek, setCurrentWeek] = React.useState<WeekMenu>(initialWeek);
 
   const [weekOverride, setWeekOverride] = React.useState<number | null>(null);
@@ -101,7 +107,7 @@ export function MenuViewer({
     async function loadCurrentWeek() {
       try {
         setIsLoading(true);
-        const weekNumber = weekOverride ?? getWeekNumberFromDate(new Date());
+        const weekNumber = weekOverride ?? calendarWeek;
         const week = await loadMenuForWeekNumber(weekNumber, controller.signal);
         setCurrentWeek(week);
       } catch (error) {
@@ -114,36 +120,10 @@ export function MenuViewer({
 
     loadCurrentWeek();
     return () => controller.abort();
-  }, [weekOverride]);
+  }, [weekOverride, calendarWeek]);
 
-  // Set initial dateKey to current/upcoming meal after week is loaded
-  React.useEffect(() => {
-    const ptr = findCurrentOrUpcomingMeal(currentWeek);
-    if (ptr?.dateKey && currentWeek.menu[ptr.dateKey]) {
-      setDateKey(ptr.dateKey);
-    } else if (sortedDayKeys.length > 0) {
-      // Fallback to first day only if no current/upcoming meal found
-      setDateKey(sortedDayKeys[0]);
-    }
-  }, [currentWeek, sortedDayKeys]);
-
-  // Update date key periodically for auto date adjustment
-  React.useEffect(() => {
-    const updateDate = () => {
-      const ptr = findCurrentOrUpcomingMeal(currentWeek);
-      if (ptr?.dateKey && currentWeek.menu[ptr.dateKey]) {
-        setDateKey(ptr.dateKey);
-      }
-    };
-
-    // Update immediately and then every minute
-    updateDate();
-    const interval = setInterval(updateDate, 60000); // Update every minute
-
-    return () => clearInterval(interval);
-  }, [currentWeek]);
-
-  const pointer = findCurrentOrUpcomingMeal(currentWeek);
+  React.useEffect(() => setDateKey(""), [currentWeek]);
+  const pointer = findCurrentOrUpcomingMeal(currentWeek, now);
   const effectiveDateKey = dateKey || pointer?.dateKey || (sortedDayKeys[0] ?? "");
   const fallbackKey = sortedDayKeys[0] ?? "";
   const day = currentWeek.menu[effectiveDateKey] ?? currentWeek.menu[fallbackKey];
@@ -177,7 +157,7 @@ export function MenuViewer({
     return { data, formatter };
   }, [currentWeek.extras]);
 
-  const picked = pickHighlightMealForDay(currentWeek, effectiveDateKey);
+  const picked = pickHighlightMealForDay(currentWeek, effectiveDateKey, now);
   const highlightKey: MealKey = picked?.mealKey ?? meals[0]?.key ?? "lunch";
   const isPrimaryUpcoming = Boolean(picked?.isPrimaryUpcoming);
 
@@ -264,7 +244,7 @@ export function MenuViewer({
           <div {...stylex.props(styles.viewerActions)}>
             <Button asChild variant="outline">
               <Link
-                href={`/week/${getMenuNumberForWeek(weekOverride ?? getWeekNumberFromDate(new Date()))}/full`}
+                href={`/week/${getMenuNumberForWeek(weekOverride ?? calendarWeek)}/full`}
                 title="View full week menu"
               >
                 <Grid3X3 {...stylex.props(styles.fullWeekIcon)} />

@@ -1,6 +1,5 @@
 import { type MealKey, type WeekMenu, type CurrentMealPointer } from "./types";
 
-const IST_OFFSET_MINUTES = 5 * 60 + 30; // +05:30
 const IST_TIME_ZONE = "Asia/Kolkata";
 const DAY_INDEX_LOOKUP = new Map([
   ["Sun", 0],
@@ -32,10 +31,9 @@ const shortDayNameFormatter = new Intl.DateTimeFormat("en-US", {
   weekday: "short",
 });
 
+/** Real instant; calendar readers apply IST exactly once. */
 export function getISTNow(): Date {
-  const now = new Date();
-  const utcMs = now.getTime() + now.getTimezoneOffset() * 60_000;
-  return new Date(utcMs + IST_OFFSET_MINUTES * 60_000);
+  return new Date();
 }
 
 export function formatDateKey(date: Date): string {
@@ -75,20 +73,12 @@ export function parseTimeToMinutes(timeHHmm: string): number {
 }
 
 export function getTimeOfDayMinutes(date: Date): number {
-  return date.getHours() * 60 + date.getMinutes();
+  const local = new Date(date.getTime() + 330 * 60_000);
+  return local.getUTCHours() * 60 + local.getUTCMinutes();
 }
 
 export function sortDateKeysAsc(keys: string[]): string[] {
   return [...keys].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
-}
-
-export function mealOrder(meal: MealKey): number {
-  switch (meal) {
-    case "lunch":
-      return 0;
-    case "dinner":
-      return 1;
-  }
 }
 
 export function findCurrentOrUpcomingMeal(

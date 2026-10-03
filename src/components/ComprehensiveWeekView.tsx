@@ -7,26 +7,25 @@ import * as React from "react";
 import type { WeekMenu, MealKey, DayMenu, Meal, MealSectionKind } from "@/lib/types";
 import { MealCard } from "@/components/MealCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Coffee, UtensilsCrossed, Cookie, Moon } from "lucide-react";
+import { UtensilsCrossed, Moon } from "lucide-react";
+import { buildWeekMenu, type MenuFile } from "@/lib/menuFile";
+import { getMenuNameForWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { filterMenuItems } from "@/lib/exceptions";
 
 interface ComprehensiveWeekViewProps {
   week: WeekMenu;
+  weekNumber: number;
 }
 
 const mealOrder: MealKey[] = ["lunch", "dinner"];
 
 const mealIcons = {
-  breakfast: Coffee,
   lunch: UtensilsCrossed,
-  snacks: Cookie,
   dinner: Moon,
 };
 
 const mealTitles = {
-  breakfast: "Breakfast",
   lunch: "Lunch",
-  snacks: "Snacks",
   dinner: "Dinner",
 };
 
@@ -39,7 +38,35 @@ const sectionTone = {
 } satisfies Record<MealSectionKind, stylex.StyleXStyles<Record<string, string | number | null>>>;
 
 /** Present the same week as stacked days or a transposed desktop grid. */
-export function ComprehensiveWeekView({ week }: ComprehensiveWeekViewProps) {
+export function ComprehensiveWeekView({
+  week: initialWeek,
+  weekNumber,
+}: ComprehensiveWeekViewProps) {
+  const [week, setWeek] = React.useState(initialWeek);
+  const [calendarWeek, setCalendarWeek] = React.useState(() => getWeekNumberFromDate(new Date()));
+  React.useEffect(() => {
+    const timer = setInterval(() => setCalendarWeek(getWeekNumberFromDate(new Date())), 60000);
+    return () => clearInterval(timer);
+  }, []);
+  React.useEffect(() => {
+    const controller = new AbortController();
+    const menuName = getMenuNameForWeek(weekNumber);
+    async function refresh() {
+      try {
+        const response = await fetch(`/${menuName}.json`, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        if (!response.ok) return;
+        const file: MenuFile = await response.json();
+        if (!controller.signal.aborted) setWeek(buildWeekMenu(file, menuName));
+      } catch {
+        /* Keep the server fallback if offline. */
+      }
+    }
+    void refresh();
+    return () => controller.abort();
+  }, [weekNumber, calendarWeek]);
   // Sort days chronologically
   const sortedDays = React.useMemo(() => Object.keys(week.menu).sort(), [week.menu]);
   const dayCount = sortedDays.length;

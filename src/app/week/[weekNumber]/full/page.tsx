@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export const revalidate = 604800;
-
 export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
 }
@@ -45,7 +43,7 @@ export default async function WeekNumberFullPage({
             </Button>
           </div>
         </div>
-        <ComprehensiveWeekView week={week} />
+        <ComprehensiveWeekView week={week} weekNumber={weekNum} />
       </div>
     </div>
   );
