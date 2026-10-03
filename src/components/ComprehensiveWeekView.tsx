@@ -6,8 +6,6 @@ import type { WeekMenu, MealKey, DayMenu, Meal, MealSectionKind } from "@/lib/ty
 import { MealCard } from "@/components/MealCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UtensilsCrossed, Moon } from "lucide-react";
-import { buildWeekMenu, type MenuFile } from "@/lib/menuFile";
-import { getMenuNameForWeek, getWeekNumberFromDate } from "@/lib/menuManager";
 import { filterMenuItems } from "@/lib/exceptions";
 import { useMountEffect } from "@/hooks/useMountEffect";
 import { sxc } from "@/lib/utils";
@@ -15,7 +13,6 @@ import { easing } from "@/lib/tokens.stylex";
 
 interface ComprehensiveWeekViewProps {
   week: WeekMenu;
-  weekNumber: number;
 }
 
 const mealOrder: MealKey[] = ["lunch", "dinner"];
@@ -144,6 +141,8 @@ const styles = stylex.create({
     paddingBlock: "0.75rem",
     paddingInline: "0.75rem",
     scrollSnapAlign: "start",
+    contentVisibility: "auto",
+    containIntrinsicSize: "auto 280px 24rem",
   },
   noMealCell: {
     paddingBlock: "1rem",
@@ -218,35 +217,8 @@ function verticalWheelPixels(event: WheelEvent, el: HTMLElement) {
 }
 
 /** Present the same week as stacked days or a transposed desktop grid. */
-export function ComprehensiveWeekView({
-  week: initialWeek,
-  weekNumber,
-}: ComprehensiveWeekViewProps) {
-  const [week, setWeek] = React.useState(initialWeek);
-  const [calendarWeek, setCalendarWeek] = React.useState(() => getWeekNumberFromDate(new Date()));
-  React.useEffect(() => {
-    const timer = setInterval(() => setCalendarWeek(getWeekNumberFromDate(new Date())), 60000);
-    return () => clearInterval(timer);
-  }, []);
-  React.useEffect(() => {
-    const controller = new AbortController();
-    const menuName = getMenuNameForWeek(weekNumber);
-    async function refresh() {
-      try {
-        const response = await fetch(`/${menuName}.json`, {
-          signal: controller.signal,
-          cache: "no-store",
-        });
-        if (!response.ok) return;
-        const file: MenuFile = await response.json();
-        if (!controller.signal.aborted) setWeek(buildWeekMenu(file, menuName));
-      } catch {
-        /* Keep the server fallback if offline. */
-      }
-    }
-    void refresh();
-    return () => controller.abort();
-  }, [weekNumber, calendarWeek]);
+export function ComprehensiveWeekView({ week: initialWeek }: ComprehensiveWeekViewProps) {
+  const week = initialWeek;
 
   const sortedDays = React.useMemo(() => Object.keys(week.menu).sort(), [week.menu]);
   const dayCount = sortedDays.length;
@@ -257,21 +229,61 @@ export function ComprehensiveWeekView({
     const el = scrollerRef.current;
     if (!el) return;
 
+    let max = 0;
+    let left = el.scrollLeft;
+    let queued = 0;
+    let frame = 0;
+
+    function measure() {
+      const node = scrollerRef.current;
+      if (!node) return;
+      max = Math.max(0, node.scrollWidth - node.clientWidth);
+      if (frame === 0) left = node.scrollLeft;
+    }
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    const grid = el.firstElementChild;
+    if (grid) observer.observe(grid);
+
+    function flush() {
+      const node = scrollerRef.current;
+      frame = 0;
+      if (!node) return;
+      const next = Math.min(max, Math.max(0, left + queued));
+      queued = 0;
+      if (next === left) return;
+      left = next;
+      node.scrollLeft = next;
+    }
+
     function onWheel(event: WheelEvent) {
-      const scroller = scrollerRef.current;
-      if (!scroller) return;
-      const delta = verticalWheelPixels(event, scroller);
-      if (delta === 0) return;
-      if (scroller.scrollWidth <= scroller.clientWidth + 1) return;
-      const max = scroller.scrollWidth - scroller.clientWidth;
-      const next = Math.min(max, Math.max(0, scroller.scrollLeft + delta));
-      if (next === scroller.scrollLeft) return;
+      const node = scrollerRef.current;
+      if (!node) return;
+      const delta = verticalWheelPixels(event, node);
+      if (delta === 0 || max <= 1) return;
+      const next = Math.min(max, Math.max(0, left + queued + delta));
+      if (next === left + queued) return;
       event.preventDefault();
-      scroller.scrollLeft = next;
+      queued += delta;
+      if (frame === 0) frame = requestAnimationFrame(flush);
+    }
+
+    function onScroll() {
+      const node = scrollerRef.current;
+      if (!node || frame !== 0) return;
+      left = node.scrollLeft;
     }
 
     el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("scroll", onScroll);
+      observer.disconnect();
+      if (frame !== 0) cancelAnimationFrame(frame);
+    };
   });
 
   const extras = React.useMemo(() => {

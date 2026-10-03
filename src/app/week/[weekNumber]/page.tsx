@@ -1,6 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import { notFound } from "next/navigation";
-import { getWeekMenu } from "@/data/weeks";
+import { loadMenuByName } from "@/data/weeks";
+import { getMenuNameForWeek } from "@/lib/menuManager";
 import { MenuViewer } from "@/components/MenuViewer";
 import { sxc } from "@/lib/utils";
 
@@ -38,13 +39,13 @@ export default async function WeekNumberPage({
   const weekNum = parseInt(weekNumber, 10);
   if (weekNum < 1 || weekNum > 4) return notFound();
 
-  const weekId = `${weekNum}`;
-  const week = await getWeekMenu(weekId);
+  const menuName = getMenuNameForWeek(weekNum);
+  const week = await loadMenuByName(menuName);
 
   return (
     <div {...sxc("scroll-optimized", styles.page)}>
       <div {...stylex.props(styles.inner)}>
-        <MenuViewer initialWeek={week} initialWeekOverride={weekNum} />
+        <MenuViewer initialWeek={week} initialMenuName={menuName} initialWeekOverride={weekNum} />
       </div>
     </div>
   );

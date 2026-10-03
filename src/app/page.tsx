@@ -1,6 +1,8 @@
 import * as stylex from "@stylexjs/stylex";
-import { getWeekMenu } from "@/data/weeks";
+import { loadMenuByName } from "@/data/weeks";
 import { MenuViewer } from "@/components/MenuViewer";
+import { getMenuNameForDate } from "@/lib/menuManager";
+import { getISTNow } from "@/lib/date";
 import { sxc } from "@/lib/utils";
 
 const styles = stylex.create({
@@ -23,11 +25,12 @@ const styles = stylex.create({
 
 /** Load the current rotation menu for the daily viewer. */
 export default async function Home() {
-  const week = await getWeekMenu("current");
+  const menuName = getMenuNameForDate(getISTNow());
+  const week = await loadMenuByName(menuName);
   return (
     <div {...sxc("scroll-optimized", styles.page)}>
       <div {...stylex.props(styles.inner)}>
-        <MenuViewer initialWeek={week} />
+        <MenuViewer initialWeek={week} initialMenuName={menuName} />
       </div>
     </div>
   );

@@ -92,7 +92,7 @@ export default async function WeekNumberFullPage({
             </Button>
           </div>
         </div>
-        <ComprehensiveWeekView week={week} weekNumber={weekNum} />
+        <ComprehensiveWeekView week={week} />
       </div>
     </div>
   );

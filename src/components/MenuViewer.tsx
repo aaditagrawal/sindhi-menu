@@ -14,6 +14,7 @@ import {
   getMenuNameForOverriddenWeek,
   getMenuNumberForWeek,
   getWeekNumberFromDate,
+  type MenuName,
 } from "@/lib/menuManager";
 import { buildWeekMenu, type MenuFile } from "@/lib/menuFile";
 import { MealCarousel } from "@/components/MealCarousel";
@@ -21,14 +22,9 @@ import { InlineSelect } from "@/components/InlineSelect";
 import { WeekSelector } from "@/components/WeekSelector";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Grid3X3, Loader2 } from "lucide-react";
+import { Grid3X3 } from "lucide-react";
 
 const WEEK_OVERRIDE_STORAGE_KEY = "sindhi-menu-week-override";
-
-const spin = stylex.keyframes({
-  from: { transform: "rotate(0deg)" },
-  to: { transform: "rotate(360deg)" },
-});
 
 const styles = stylex.create({
   root: {
@@ -66,23 +62,6 @@ const styles = stylex.create({
     alignItems: "center",
     columnGap: "1rem",
     rowGap: "0.5rem",
-  },
-  loading: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    columnGap: "0.75rem",
-    paddingBlock: "3rem",
-    color: "var(--muted-foreground)",
-    fontSize: "0.875rem",
-  },
-  spinner: {
-    height: "1.25rem",
-    width: "1.25rem",
-    animationName: spin,
-    animationDuration: "1s",
-    animationTimingFunction: "linear",
-    animationIterationCount: "infinite",
   },
   extras: {
     display: "flex",
@@ -145,7 +124,7 @@ const styles = stylex.create({
 /** Fetch the menu document for a rotation week and project it onto the current IST week. */
 async function loadMenuForWeekNumber(weekNumber: number, signal?: AbortSignal): Promise<WeekMenu> {
   const { menuName } = getMenuNameForOverriddenWeek(weekNumber);
-  const res = await fetch(`/${menuName}.json`, { cache: "no-store", signal });
+  const res = await fetch(`/${menuName}.json`, { signal });
   if (!res.ok) throw new Error(`Failed to load ${menuName}.json`);
   // SAFETY: this is the same `public/menu*.json` document the server reads in `@/data/weeks`;
   // it is served from this app's own origin and authored against `MenuFile`, whose fields are all
@@ -165,9 +144,11 @@ function readStoredWeekOverride(): number | null {
 /** Coordinate rotation overrides, day selection, and the current meal view. */
 export function MenuViewer({
   initialWeek,
+  initialMenuName,
   initialWeekOverride,
 }: {
   initialWeek: WeekMenu;
+  initialMenuName: MenuName;
   initialWeekOverride?: number;
 }) {
   const [now, setNow] = React.useState(() => new Date());
@@ -195,7 +176,7 @@ export function MenuViewer({
     }
   }, [initialWeekOverride]);
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  const loadedMenuName = React.useRef(initialMenuName);
 
   const sortedDayKeys = React.useMemo(
     () => sortDateKeysAsc(Object.keys(currentWeek.menu)),
@@ -215,27 +196,35 @@ export function MenuViewer({
     }
   }, [hasRestoredOverride, weekOverride]);
 
-  // Load current week menu on client side
+  // The server already rendered `initialMenuName`. Fetch only when the rotation
+  // or a saved override points at a different immutable menu document.
   React.useEffect(() => {
-    const controller = new AbortController();
+    if (!hasRestoredOverride) return;
+    const selection = getMenuNameForOverriddenWeek(weekOverride);
+    if (selection.menuName === loadedMenuName.current) return;
+    if (selection.menuName === initialMenuName) {
+      loadedMenuName.current = initialMenuName;
+      setCurrentWeek(initialWeek);
+      return;
+    }
 
+    const controller = new AbortController();
+    const menuName = selection.menuName;
     async function loadCurrentWeek() {
       try {
-        setIsLoading(true);
-        const weekNumber = weekOverride ?? calendarWeek;
-        const week = await loadMenuForWeekNumber(weekNumber, controller.signal);
+        const week = await loadMenuForWeekNumber(selection.weekNumber, controller.signal);
+        if (controller.signal.aborted) return;
+        loadedMenuName.current = menuName;
         setCurrentWeek(week);
       } catch (error) {
         if (controller.signal.aborted) return;
         console.error("Failed to load week menu:", error);
-      } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
 
-    loadCurrentWeek();
+    void loadCurrentWeek();
     return () => controller.abort();
-  }, [weekOverride, calendarWeek]);
+  }, [hasRestoredOverride, weekOverride, initialMenuName, initialWeek]);
 
   React.useEffect(() => setDateKey(""), [currentWeek]);
   const pointer = findCurrentOrUpcomingMeal(currentWeek, now);
@@ -320,62 +309,46 @@ export function MenuViewer({
           value={effectiveDateKey}
           options={dayOptions}
           onChange={(v) => setDateKey(String(v))}
-          disabled={isLoading}
         />
       </div>
 
-      {isLoading && (
-        <div {...stylex.props(styles.loading)}>
-          <Loader2 {...stylex.props(styles.spinner)} />
-          <span>Loading menu...</span>
-        </div>
-      )}
+      <MealCarousel
+        meals={meals}
+        highlightKey={highlightKey}
+        isPrimaryUpcoming={isPrimaryUpcoming}
+        isLive={isLive}
+      />
 
-      {!isLoading && (
-        <>
-          <MealCarousel
-            meals={meals}
-            highlightKey={highlightKey}
-            isPrimaryUpcoming={isPrimaryUpcoming}
-            isLive={isLive}
-          />
+      {extras ? (
+        <section {...stylex.props(styles.extras)}>
+          <h2 {...stylex.props(styles.extrasTitle)}>{extras.data.category}</h2>
+          <p {...stylex.props(styles.extrasDescription)}>
+            Prices are listed in {extras.data.currency}.
+          </p>
+          <ul {...stylex.props(styles.extrasGrid)} aria-label={`${extras.data.category} add-ons`}>
+            {extras.data.items.map((item) => (
+              <li key={item.name} {...stylex.props(styles.extra)}>
+                <span {...stylex.props(styles.extraName)}>{item.name}</span>
+                <span {...stylex.props(styles.extraPrice)}>
+                  {extras.formatter?.format(item.price) ?? `${extras.data.currency} ${item.price}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
-          {extras ? (
-            <section {...stylex.props(styles.extras)}>
-              <h2 {...stylex.props(styles.extrasTitle)}>{extras.data.category}</h2>
-              <p {...stylex.props(styles.extrasDescription)}>
-                Prices are listed in {extras.data.currency}.
-              </p>
-              <ul
-                {...stylex.props(styles.extrasGrid)}
-                aria-label={`${extras.data.category} add-ons`}
-              >
-                {extras.data.items.map((item) => (
-                  <li key={item.name} {...stylex.props(styles.extra)}>
-                    <span {...stylex.props(styles.extraName)}>{item.name}</span>
-                    <span {...stylex.props(styles.extraPrice)}>
-                      {extras.formatter?.format(item.price) ??
-                        `${extras.data.currency} ${item.price}`}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          <div {...stylex.props(styles.actions)}>
-            <Button asChild variant="outline">
-              <Link
-                href={`/week/${getMenuNumberForWeek(weekOverride ?? calendarWeek)}/full`}
-                title="View full week menu"
-              >
-                <Grid3X3 {...stylex.props(styles.buttonIcon)} />
-                View Full Week Menu
-              </Link>
-            </Button>
-          </div>
-        </>
-      )}
+      <div {...stylex.props(styles.actions)}>
+        <Button asChild variant="outline">
+          <Link
+            href={`/week/${getMenuNumberForWeek(weekOverride ?? calendarWeek)}/full`}
+            title="View full week menu"
+          >
+            <Grid3X3 {...stylex.props(styles.buttonIcon)} />
+            View Full Week Menu
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }
