@@ -14,9 +14,6 @@ interface WeekSelectorProps {
 
 /** Translate a selected menu rotation into the existing week override. */
 export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProps) {
-  const now = new Date();
-  const currentWeekNumber = getWeekNumberFromDate(now);
-
   // Generate options for menus 1-4 (the 4-week cycle)
   const menuOptions = React.useMemo(() => {
     return [
@@ -51,6 +48,7 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
           value={currentMenuNumber}
           onChange={(e) => {
             const selectedMenuNumber = parseInt(e.target.value, 10);
+            const currentWeekNumber = getWeekNumberFromDate(new Date());
 
             // Calculate the week offset from the actual current week (not the currently displayed menu)
             let weekOffset = selectedMenuNumber - actualCurrentMenuNumber;

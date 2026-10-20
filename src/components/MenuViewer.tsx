@@ -74,6 +74,10 @@ export function MenuViewer({
     }
   }, [initialWeekOverride]);
 
+  const [currentWeekNumber, setCurrentWeekNumber] = React.useState(() =>
+    getWeekNumberFromDate(new Date()),
+  );
+
   const [isLoading, setIsLoading] = React.useState(false);
 
   const sortedDayKeys = React.useMemo(
@@ -130,6 +134,7 @@ export function MenuViewer({
   // Update date key periodically for auto date adjustment
   React.useEffect(() => {
     const updateDate = () => {
+      setCurrentWeekNumber(getWeekNumberFromDate(new Date()));
       const ptr = findCurrentOrUpcomingMeal(currentWeek);
       if (ptr?.dateKey && currentWeek.menu[ptr.dateKey]) {
         setDateKey(ptr.dateKey);
@@ -264,7 +269,7 @@ export function MenuViewer({
           <div {...stylex.props(styles.viewerActions)}>
             <Button asChild variant="outline">
               <Link
-                href={`/week/${getMenuNumberForWeek(weekOverride ?? getWeekNumberFromDate(new Date()))}/full`}
+                href={`/week/${getMenuNumberForWeek(weekOverride ?? currentWeekNumber)}/full`}
                 title="View full week menu"
               >
                 <Grid3X3 {...stylex.props(styles.fullWeekIcon)} />
