@@ -90,9 +90,6 @@ const styles = stylex.create({
 
 /** Translate a selected menu rotation into the existing week override. */
 export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProps) {
-  const now = new Date();
-  const currentWeekNumber = getWeekNumberFromDate(now);
-
   const menuOptions = React.useMemo(() => {
     return [
       { menuNumber: 1, label: "Menu 1" },
@@ -125,6 +122,7 @@ export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProp
           value={currentMenuNumber}
           onChange={(e) => {
             const selectedMenuNumber = parseInt(e.target.value, 10);
+            const currentWeekNumber = getWeekNumberFromDate(new Date());
 
             let weekOffset = selectedMenuNumber - actualCurrentMenuNumber;
             if (weekOffset < -2) weekOffset += 4;
