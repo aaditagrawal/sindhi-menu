@@ -10,7 +10,8 @@
     "lint:fix": "oxlint src tools/oxlint/anti-slop --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "typecheck": "bunx --bun tsrs --noEmit && bunx --bun tsrs -p tools/oxlint/anti-slop/tsconfig.json"
+    "typecheck": "bunx --bun tsrs --noEmit && bunx --bun tsrs -p tools/oxlint/anti-slop/tsconfig.json",
+    "test:security": "node scripts/security-braces.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.5.0",
@@ -41,5 +42,8 @@
   "packageManager": "bun@1.4.2",
   "trustedDependencies": [
     "unrs-resolver"
-  ]
+  ],
+  "patchedDependencies": {
+    "braces@3.0.3": "patches/braces@3.0.3.patch"
+  }
 }
