@@ -90,7 +90,7 @@ const styles = stylex.create({
 
 /** Translate a selected menu rotation into the existing week override. */
 export function WeekSelector({ onWeekChange, currentOverride }: WeekSelectorProps) {
-  const now = new Date();
+  const [now] = React.useState(() => new Date());
   const currentWeekNumber = getWeekNumberFromDate(now);
 
   const menuOptions = React.useMemo(() => {
