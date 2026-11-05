@@ -5,7 +5,7 @@ import * as React from "react";
 import type { WeekMenu, MealKey, DayMenu, Meal, MealSectionKind } from "@/lib/types";
 import { MealCard } from "@/components/MealCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UtensilsCrossed, Moon } from "lucide-react";
+import { UtensilsCrossed, Moon } from "@/components/ui/icons";
 import { filterMenuItems } from "@/lib/exceptions";
 import { useMountEffect } from "@/hooks/useMountEffect";
 import { sxc } from "@/lib/utils";

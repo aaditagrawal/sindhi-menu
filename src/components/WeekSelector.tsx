@@ -2,7 +2,7 @@
 
 import * as stylex from "@stylexjs/stylex";
 import * as React from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/icons";
 import { getWeekNumberFromDate, getMenuNameForOverriddenWeek } from "@/lib/menuManager";
 import { easing } from "@/lib/tokens.stylex";
 

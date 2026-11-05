@@ -2,9 +2,8 @@ import * as stylex from "@stylexjs/stylex";
 import { notFound } from "next/navigation";
 import { getWeekMenu } from "@/data/weeks";
 import { ComprehensiveWeekView } from "@/components/ComprehensiveWeekView";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { ButtonLink } from "@/components/ui/button-link";
+import { ArrowLeft } from "@/components/ui/icons";
 
 export async function generateStaticParams() {
   return [{ weekNumber: "1" }, { weekNumber: "2" }, { weekNumber: "3" }, { weekNumber: "4" }];
@@ -84,12 +83,10 @@ export default async function WeekNumberFullPage({
                 Week {weekNum} • {week.foodCourt}
               </p>
             </div>
-            <Button asChild variant="outline">
-              <Link href={`/week/${weekNumber}`} title="Back to daily view">
-                <ArrowLeft {...stylex.props(styles.icon)} />
-                Daily View
-              </Link>
-            </Button>
+            <ButtonLink variant="outline" href={`/week/${weekNumber}`} title="Back to daily view">
+              <ArrowLeft {...stylex.props(styles.icon)} />
+              Daily View
+            </ButtonLink>
           </div>
         </div>
         <ComprehensiveWeekView week={week} />

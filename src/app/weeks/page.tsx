@@ -1,7 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Grid3X3, Calendar } from "lucide-react";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Grid3X3, Calendar } from "@/components/ui/icons";
 
 const styles = stylex.create({
   page: {
@@ -81,18 +81,24 @@ export default function WeeksPage() {
                 </Link>
               </div>
               <div {...stylex.props(styles.actions)}>
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/week/${weekNum}`} title="View daily menu">
-                    <Calendar {...stylex.props(styles.icon)} />
-                    Daily
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/week/${weekNum}/full`} title="View full week menu">
-                    <Grid3X3 {...stylex.props(styles.icon)} />
-                    Full
-                  </Link>
-                </Button>
+                <ButtonLink
+                  variant="outline"
+                  size="sm"
+                  href={`/week/${weekNum}`}
+                  title="View daily menu"
+                >
+                  <Calendar {...stylex.props(styles.icon)} />
+                  Daily
+                </ButtonLink>
+                <ButtonLink
+                  variant="outline"
+                  size="sm"
+                  href={`/week/${weekNum}/full`}
+                  title="View full week menu"
+                >
+                  <Grid3X3 {...stylex.props(styles.icon)} />
+                  Full
+                </ButtonLink>
               </div>
             </li>
           ))}
