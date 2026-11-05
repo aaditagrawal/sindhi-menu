@@ -2,11 +2,10 @@
 
 import * as React from "react";
 import * as stylex from "@stylexjs/stylex";
-import { Moon, Sun, Monitor } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Moon, Sun, Monitor } from "@/components/ui/icons";
+import { getTheme, getServerTheme, setTheme, subscribeTheme } from "@/lib/theme";
 
 import { Button } from "@/components/ui/button";
-import { useMountEffect } from "@/hooks/useMountEffect";
 
 const styles = stylex.create({
   icon: {
@@ -33,14 +32,9 @@ const styles = stylex.create({
 });
 
 export function ThemeSwitcher() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
+  const theme = React.useSyncExternalStore(subscribeTheme, getTheme, getServerTheme);
 
-  useMountEffect(() => {
-    setMounted(true);
-  });
-
-  if (!mounted) {
+  if (!theme) {
     return (
       <Button variant="outline" size="icon" disabled>
         <Sun {...stylex.props(styles.icon)} />

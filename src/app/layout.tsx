@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
+import { THEME_INIT } from "@/lib/theme";
 import * as stylex from "@stylexjs/stylex";
 import { AppChrome } from "@/components/AppChrome";
 import { easing } from "@/lib/tokens.stylex";
@@ -83,52 +83,48 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={THEME_INIT} />
+      </head>
       <body {...sxc(`${geistSans.variable} ${geistMono.variable} scroll-optimized`, styles.body)}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main {...stylex.props(styles.main)}>{children}</main>
-          <footer {...stylex.props(styles.footer)}>
-            <div {...stylex.props(styles.footerPill)}>
-              <p {...stylex.props(styles.footerText)}>
-                Made by{" "}
-                <a
-                  href="https://aadit.cc"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  {...stylex.props(styles.footerLink)}
-                >
-                  Aadit (aadit.cc)
-                </a>
-                {" • "}
-                Data as put on the Sindhi Mess banner.
-                {" • "}
-                This project is{" "}
-                <a
-                  href="https://github.com/aaditagrawal/sindhi-menu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  {...stylex.props(styles.footerLink)}
-                >
-                  open source on GitHub
-                </a>
-                {" • "}
-                <a
-                  href="/openapi.json"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  {...stylex.props(styles.footerLink)}
-                >
-                  API docs (OpenAPI JSON)
-                </a>
-              </p>
-            </div>
-          </footer>
-          <AppChrome />
-        </ThemeProvider>
+        <main {...stylex.props(styles.main)}>{children}</main>
+        <footer {...stylex.props(styles.footer)}>
+          <div {...stylex.props(styles.footerPill)}>
+            <p {...stylex.props(styles.footerText)}>
+              Made by{" "}
+              <a
+                href="https://aadit.cc"
+                target="_blank"
+                rel="noopener noreferrer"
+                {...stylex.props(styles.footerLink)}
+              >
+                Aadit (aadit.cc)
+              </a>
+              {" • "}
+              Data as put on the Sindhi Mess banner.
+              {" • "}
+              This project is{" "}
+              <a
+                href="https://github.com/aaditagrawal/sindhi-menu"
+                target="_blank"
+                rel="noopener noreferrer"
+                {...stylex.props(styles.footerLink)}
+              >
+                open source on GitHub
+              </a>
+              {" • "}
+              <a
+                href="/openapi.json"
+                target="_blank"
+                rel="noopener noreferrer"
+                {...stylex.props(styles.footerLink)}
+              >
+                API docs (OpenAPI JSON)
+              </a>
+            </p>
+          </div>
+        </footer>
+        <AppChrome />
         <Script defer src="https://stat.sys256.com/script.js" />
       </body>
     </html>

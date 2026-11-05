@@ -2,7 +2,6 @@
 
 import * as stylex from "@stylexjs/stylex";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { Toaster } from "@/components/ui/sonner";
 import { MenuNotification } from "@/components/MenuNotification";
 
 const styles = stylex.create({
@@ -21,7 +20,6 @@ export function AppChrome() {
         <ThemeSwitcher />
       </div>
       <MenuNotification />
-      <Toaster />
     </>
   );
 }

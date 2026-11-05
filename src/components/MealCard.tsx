@@ -5,7 +5,7 @@ import * as stylex from "@stylexjs/stylex";
 import type { Meal, MealKey, MealSection, MealSectionKind } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { sxc } from "@/lib/utils";
-import { UtensilsCrossed, Moon, Leaf, Beef } from "lucide-react";
+import { UtensilsCrossed, Moon, Leaf, Beef } from "@/components/ui/icons";
 import { filterMenuItems } from "@/lib/exceptions";
 
 const styles = stylex.create({
