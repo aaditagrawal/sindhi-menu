@@ -22,7 +22,7 @@ import { MealCarousel } from "@/components/MealCarousel";
 import { InlineSelect } from "@/components/InlineSelect";
 import { WeekSelector } from "@/components/WeekSelector";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Grid3X3 } from "lucide-react";
 
 const WEEK_OVERRIDE_STORAGE_KEY = "sindhi-menu-week-override";
@@ -267,15 +267,14 @@ export function MenuViewer({
           ) : null}
 
           <div {...stylex.props(styles.viewerActions)}>
-            <Button asChild variant="outline">
-              <Link
-                href={`/week/${getMenuNumberForWeek(weekOverride ?? currentWeekNumber)}/full`}
-                title="View full week menu"
-              >
-                <Grid3X3 {...stylex.props(styles.fullWeekIcon)} />
-                View Full Week Menu
-              </Link>
-            </Button>
+            <Link
+              className={buttonVariants({ variant: "outline" })}
+              href={`/week/${getMenuNumberForWeek(weekOverride ?? currentWeekNumber)}/full`}
+              title="View full week menu"
+            >
+              <Grid3X3 {...stylex.props(styles.fullWeekIcon)} />
+              View Full Week Menu
+            </Link>
           </div>
         </>
       )}

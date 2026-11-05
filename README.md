@@ -13,7 +13,7 @@ Sindhi Menu is a fast, friendly viewer for the Sindhi Mess weekly menu. It ships
 
 - Next.js App Router (SSG + ISR) with TypeScript
 - Tailwind CSS v4 with CSS variables for themes
-- `next-themes` for runtime theme switching
+- An original browser theme controller for light, dark, and system preferences
 - shadcn-inspired UI primitives (Card, Button) and `lucide-react` icons
 
 ---

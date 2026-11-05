@@ -3,22 +3,15 @@
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/styles/site.stylex";
 
-import * as React from "react";
 import { Moon, Sun, Monitor } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/useTheme";
 
 import { Button } from "@/components/ui/button";
 
 /** Cycle theme preference while keeping its label available to assistive technology. */
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
+  if (!theme) {
     return (
       <Button variant="outline" size="icon" disabled>
         <Sun {...stylex.props(styles.themePlaceholderIcon)} />
