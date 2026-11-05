@@ -1,7 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/styles/site.stylex";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Grid3X3, Calendar } from "lucide-react";
 
 /** Link each rotation week to its daily and full-week views. */
@@ -22,18 +22,22 @@ export default function WeeksPage() {
                 </Link>
               </div>
               <div {...stylex.props(styles.weekActions)}>
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/week/${weekNum}`} title="View daily menu">
-                    <Calendar {...stylex.props(styles.weekDailyIcon)} />
-                    Daily
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/week/${weekNum}/full`} title="View full week menu">
-                    <Grid3X3 {...stylex.props(styles.weekFullIcon)} />
-                    Full
-                  </Link>
-                </Button>
+                <Link
+                  className={buttonVariants({ variant: "outline", size: "sm" })}
+                  href={`/week/${weekNum}`}
+                  title="View daily menu"
+                >
+                  <Calendar {...stylex.props(styles.weekDailyIcon)} />
+                  Daily
+                </Link>
+                <Link
+                  className={buttonVariants({ variant: "outline", size: "sm" })}
+                  href={`/week/${weekNum}/full`}
+                  title="View full week menu"
+                >
+                  <Grid3X3 {...stylex.props(styles.weekFullIcon)} />
+                  Full
+                </Link>
               </div>
             </li>
           ))}

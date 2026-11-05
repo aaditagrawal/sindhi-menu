@@ -2,6 +2,90 @@
 
 @stylex;
 
+.menu-notice {
+  position: fixed;
+  z-index: 100;
+  inset-block-start: 24px;
+  inset-inline-start: 50%;
+  width: min(356px, calc(100% - 32px));
+  transform: translateX(-50%);
+  translate: 0 var(--notice-drag, 0px);
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  touch-action: none;
+  animation: notice-enter 400ms ease;
+  transition: translate 400ms ease;
+}
+
+.menu-notice[data-dragging="true"] {
+  transition: none;
+}
+
+.menu-notice:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.menu-notice[data-phase="leaving"] {
+  pointer-events: none;
+  animation: notice-exit 400ms ease forwards;
+}
+
+.menu-notice[data-dismissal="swipe"] {
+  animation-duration: 200ms;
+  animation-timing-function: ease-out;
+}
+
+@keyframes notice-exit {
+  from {
+    opacity: 1;
+    translate: 0 var(--notice-drag, 0px);
+  }
+  to {
+    opacity: 0;
+    translate: 0 calc(var(--notice-drag, 0px) - 100%);
+  }
+}
+
+@keyframes notice-enter {
+  from {
+    opacity: 0;
+    translate: 0 -100%;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .menu-notice {
+    inset-block-start: 16px;
+    width: calc(100% - 32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-notice {
+    animation: none;
+    transition: none;
+  }
+  .menu-notice[data-phase="leaving"] {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* Parent-specific spacing also preserves nested lists with different spacing. */
 :where([data-stack="2"] > :not(:last-child)) {
   margin-block-start: 0;

@@ -3,7 +3,7 @@ import { styles } from "@/styles/site.stylex";
 import { notFound } from "next/navigation";
 import { getWeekMenu } from "@/data/weeks";
 import { ComprehensiveWeekView } from "@/components/ComprehensiveWeekView";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -37,12 +37,17 @@ export default async function WeekNumberFullPage({
                 Week {weekNum} • {week.foodCourt}
               </p>
             </div>
-            <Button asChild variant="outline" {...stylex.props(styles.dailyIcon)}>
-              <Link href={`/week/${weekNumber}`} title="Back to daily view">
-                <ArrowLeft {...stylex.props(styles.homeIcon)} />
-                Daily View
-              </Link>
-            </Button>
+            <Link
+              className={buttonVariants({
+                variant: "outline",
+                className: stylex.props(styles.dailyIcon).className,
+              })}
+              href={`/week/${weekNumber}`}
+              title="Back to daily view"
+            >
+              <ArrowLeft {...stylex.props(styles.homeIcon)} />
+              Daily View
+            </Link>
           </div>
         </div>
         <ComprehensiveWeekView week={week} />
